@@ -20,7 +20,17 @@ npm run test:e2e
 npm run serve
 ```
 
-Open http://127.0.0.1:4173. `dist/` is generated, intentionally ignored by Git. Never edit it directly. Tests cover exact fractional arithmetic, every puzzle's solvability, metadata/entry validation, path traversal/symlink rejection, portal navigation, success/failure, undo/restart, division by zero and a fraction-only puzzle. Browser projects: desktop Chromium, Android Chromium profile, iPhone WebKit profile. Emulation is **not a real iPhone Safari device test**.
+Open http://127.0.0.1:4173. `dist/` is generated, intentionally ignored by Git. Never edit it directly. Tests validate the original HTML checksum and every embedded reference solution, metadata/entry validation, path traversal/symlink rejection, portal navigation, game success/failure, undo/restart, division by zero, sound activation, touch/drag interaction, and timer modes/pause/timeout behavior. Browser projects: desktop Chromium, Android Chromium profile, iPhone WebKit profile. Emulation is **not a real iPhone Safari device test**.
+
+## Original 24-point game
+
+The platform reuses the original `24点数字探险家.html` version 3, rather than a rewritten demo. Its 164,499 bytes are preserved exactly in `games/twenty-four/index.html`:
+
+SHA-256: `8251778d3900e59886ceae173a4d30e157fef336150256177c6a35739d1bbc86`
+
+The game contains 50 levels, 500 distinct puzzles and 1,658 embedded reference solutions. It offers tap/drag merging, 10/30/60-second modes, Web Audio sound effects, explanations and local progress saving. Sound starts after a user gesture; synthesized audio activation tests do not verify audible output on a physical iPhone. No external resources or network endpoints were found in this original file. The original has no platform back-link added; use the browser Back button to return to the lobby.
+
+Prettier excludes the imported HTML. `game.json` pins `sourceSha256`; the build refuses accidental changes, writes each game's `entrySha256` to the manifest, and public HTTP verification checks the deployed bytes against that hash. Any future intentional edit to the original requires a reviewed checksum update, not silent reformatting.
 
 ## Structure
 
@@ -105,7 +115,7 @@ Checklist items are not marked done by source generation. Authentication, reposi
 
 ## Maintenance
 
-Review dependency updates in a PR and rerun all checks. Keep Node 24's supported patch level updated. To add new game capabilities, avoid introducing a shared framework until needed. Cloudflare stores the deployed static artifacts; stopping the build/editing computer does not stop hosting. Nothing in this app stores user data or requires login. The 24-point score is session-only and resets on page reload.
+Review dependency updates in a PR and rerun all checks. Keep Node 24's supported patch level updated. To add new game capabilities, avoid introducing a shared framework until needed. Cloudflare stores the deployed static artifacts; stopping the build/editing computer does not stop hosting. The platform has no account registration or remote data collection. The original game stores progress, sound preference and unfinished timed rounds in the current browser's localStorage. It does not sync across devices; clearing browser data removes that progress.
 
 Official references:
 

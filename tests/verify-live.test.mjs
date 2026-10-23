@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { verifyLive } from "../scripts/verify-live.mjs";
@@ -13,7 +14,13 @@ const files = {
   "/games.json": [
     "application/json",
     JSON.stringify([
-      { url: "/games/test/index.html", cover: "/games/test/cover.svg" },
+      {
+        url: "/games/test/index.html",
+        cover: "/games/test/cover.svg",
+        entrySha256: createHash("sha256")
+          .update('<html><script src="./game.js"></script></html>')
+          .digest("hex"),
+      },
     ]),
   ],
   "/games/test/index.html": [
@@ -41,6 +48,7 @@ function mock(overrides = {}) {
         status,
         headers: new Headers({ "content-type": type }),
         text: async () => body,
+        arrayBuffer: async () => Buffer.from(body),
       };
     },
   };
@@ -185,6 +193,8 @@ test("same-origin Pages HTML canonical redirects are followed safely", async () 
         status: 200,
         headers: new Headers({ "content-type": "text/html" }),
         text: async () => files["/games/test/index.html"][1],
+        arrayBuffer: async () =>
+          Buffer.from(files["/games/test/index.html"][1]),
       };
     return normal.fetchImpl(url, options);
   };
@@ -213,4 +223,20 @@ test("cross-origin redirects never trigger an external request", async () => {
     /unexpected origin/,
   );
   assert.equal(calls.length, 1);
+});
+
+test("live verification rejects changed original HTML bytes", async () => {
+  const { fetchImpl } = mock({
+    "/games/test/index.html": ["text/html", "<html>substituted game</html>"],
+  });
+  await assert.rejects(
+    verifyLive({
+      baseUrl,
+      expectedCommit: commit,
+      fetchImpl,
+      timeoutMs: 100,
+      intervalMs: 100,
+    }),
+    /SHA-256/,
+  );
 });

@@ -1,10 +1,11 @@
 {
   "id": "twenty-four",
-  "name": "24 点实验室",
-  "description": "四张数字卡，一点巧思。用加减乘除，把灵感拼成 24。",
+  "name": "24点 · 数字探险家",
+  "description": "原版 50 关、500 道挑战。点按或拖动合成数字，搭配计时模式、音效与解法讲解。",
   "entry": "index.html",
   "cover": "cover.svg",
   "published": true,
-  "tags": ["数字解谜", "轻松益智"],
-  "order": 1
+  "tags": ["原版小游戏", "数字闯关"],
+  "order": 1,
+  "sourceSha256": "8251778d3900e59886ceae173a4d30e157fef336150256177c6a35739d1bbc86"
 }

@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import {
   readdir,
   readFile,
@@ -75,9 +76,20 @@ export async function scanGames(directory) {
         throw new Error(`Missing ${key}`);
     }
     if (!/\.html$/.test(game.entry)) throw new Error("Entry must be HTML");
+    const entrySha256 = createHash("sha256")
+      .update(await readFile(path.join(base, game.entry)))
+      .digest("hex");
+    if (
+      game.sourceSha256 !== undefined &&
+      (!/^[a-f0-9]{64}$/.test(game.sourceSha256) ||
+        game.sourceSha256 !== entrySha256)
+    ) {
+      throw new Error(`Original game checksum mismatch: ${game.id}`);
+    }
     ids.add(game.id);
     games.push({
       id: game.id,
+      entrySha256,
       name: game.name,
       description: game.description,
       tags: game.tags,

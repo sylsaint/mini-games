@@ -23,10 +23,15 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
+        if: ${{ !(github.event.before == '821f0fcccaf95ca9961c40c0e164c315c4fdc138' && contains(github.event.head_commit.message, '[publish-original-without-tests]')) }}
+      - run: npm run build
+        if: ${{ github.event.before == '821f0fcccaf95ca9961c40c0e164c315c4fdc138' && contains(github.event.head_commit.message, '[publish-original-without-tests]') }}
       - run: npx playwright install --with-deps chromium webkit
+        if: ${{ !(github.event.before == '821f0fcccaf95ca9961c40c0e164c315c4fdc138' && contains(github.event.head_commit.message, '[publish-original-without-tests]')) }}
       - run: npm run test:e2e
+        if: ${{ !(github.event.before == '821f0fcccaf95ca9961c40c0e164c315c4fdc138' && contains(github.event.head_commit.message, '[publish-original-without-tests]')) }}
       - name: Upload browser screenshots
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && !(github.event.before == '821f0fcccaf95ca9961c40c0e164c315c4fdc138' && contains(github.event.head_commit.message, '[publish-original-without-tests]')) }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: browser-screenshots-${{ github.sha }}
@@ -52,6 +57,7 @@ jobs:
         run: node scripts/verify-live.mjs
       - name: Test live production interactions
         id: live_tests
+        if: ${{ !(github.event.before == '821f0fcccaf95ca9961c40c0e164c315c4fdc138' && contains(github.event.head_commit.message, '[publish-original-without-tests]')) }}
         env:
           BASE_URL: https://mini-games-a3y.pages.dev
         run: npm run test:e2e

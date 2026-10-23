@@ -3,3 +3,6 @@ dist/
 test-results/
 playwright-report/
 package-lock.json
+
+# Preserve the imported original game bytes exactly.
+games/twenty-four/index.html

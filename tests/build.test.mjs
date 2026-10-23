@@ -41,7 +41,7 @@ test("build creates registered catalog and independent game resource", async () 
       path.join(root, "dist/games/twenty-four/index.html"),
       "utf8",
     ),
-    /24 点实验室/,
+    /24点 · 数字探险家/,
   );
 });
 test("valid new game automatically registers", async (t) => {
@@ -96,4 +96,9 @@ test("build metadata contains only validated commit and timestamp", async () => 
     if (original === undefined) delete process.env.GITHUB_SHA;
     else process.env.GITHUB_SHA = original;
   }
+});
+
+test("original game checksum prevents accidental formatting or substitution", async (t) => {
+  const { base } = await fixture(t, { sourceSha256: "0".repeat(64) });
+  await assert.rejects(scanGames(base), /checksum mismatch/);
 });

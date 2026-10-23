@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -53,6 +54,7 @@ export async function verifyLive({
   for (let attempt = 1; attempt <= maxAttempts && now() < deadline; attempt++) {
     try {
       const checked = new Set();
+      const hashes = new Map();
       async function get(resource, type) {
         let url = new URL(resource, origin + "/");
         if (url.origin !== origin || url.username || url.password)
@@ -96,7 +98,12 @@ export async function verifyLive({
         const contentType = response.headers.get("content-type") ?? "";
         if (type && !contentType.includes(type))
           throw new Error(`Unexpected content type for ${url.pathname}`);
-        const body = await response.text();
+        const bytes = Buffer.from(await response.arrayBuffer());
+        hashes.set(
+          new URL(resource, origin + "/").pathname,
+          createHash("sha256").update(bytes).digest("hex"),
+        );
+        const body = bytes.toString("utf8");
         if (!body.trim()) throw new Error(`Empty resource: ${url.pathname}`);
         checked.add(url.pathname);
         return body;
@@ -132,6 +139,14 @@ export async function verifyLive({
         )
           throw new Error("Invalid game resource paths.");
         const html = await get(game.url, "text/html");
+        if (
+          !/^[a-f0-9]{64}$/.test(game.entrySha256 ?? "") ||
+          hashes.get(game.url) !== game.entrySha256
+        ) {
+          throw new Error(
+            "Deployed game bytes do not match the build manifest SHA-256.",
+          );
+        }
         if (!/<html\b/i.test(html)) throw new Error("Invalid game HTML.");
         collect(html, origin + game.url);
         assets.add(game.cover);
@@ -161,6 +176,10 @@ export async function verifyLive({
         origin,
         sourceCommit: commit,
         games: catalog.length,
+        gameHashes: catalog.map((game) => ({
+          url: game.url,
+          sha256: hashes.get(game.url),
+        })),
         resources: checked.size,
         attempts: attempt,
       };
@@ -188,6 +207,8 @@ if (
     console.log(
       `Verified ${result.origin}: commit ${result.sourceCommit}, ${result.games} game(s), ${result.resources} resources, ${result.attempts} attempt(s).`,
     );
+    for (const game of result.gameHashes)
+      console.log(`Verified game ${game.url} SHA-256 ${game.sha256}`);
   } catch (error) {
     console.error(error.message);
     process.exitCode = 1;

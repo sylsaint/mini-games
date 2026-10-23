@@ -63,6 +63,16 @@ Do not put tokens in source, chat, command arguments, or `.env` committed to Git
 
 Do not use `pull_request_target` to run untrusted PR source with secrets. Workflow permissions are `contents: read`, checkout does not persist credentials, and deployments are serialized. Cloudflare token exists only in credential/deploy steps. No payment or custom domain required for the static V1 implementation; account entitlements and any charges must be confirmed by the owner.
 
+## One-time safe project bootstrap
+
+The temporary `Create new mini-games Pages project (one-time bootstrap)` CD step runs only after tests and credential checks. `scripts/bootstrap-pages.mjs` looks up exactly `mini-games` in the account named by the repository secret. It makes one create request only when the lookup returns HTTP 404 and Cloudflare's explicit `8000007` project-not-found error. It refuses existing projects, unknown errors, authorization failures and ambiguous responses. It does not deploy or modify projects.
+
+After confirmed creation, remove that temporary workflow step before any future run. If creation times out or its response is uncertain, inspect the project in Cloudflare first; never rerun blindly. The script intentionally refuses to adopt a project on a rerun, even one created by a previous attempt. The normal deployment step continues to use Wrangler and must remain separate.
+
+The build also creates public `build.json` containing only `sourceCommit` (a validated 40-character Git commit SHA or `local`) and `builtAt` (an ISO timestamp), to verify the exact deployed revision. No account IDs or credentials are included.
+
+API references: [get project](https://developers.cloudflare.com/api/resources/pages/subresources/projects/methods/get/), [create project](https://developers.cloudflare.com/api/resources/pages/subresources/projects/methods/create/). The not-found code is confirmed in [Cloudflare's Wrangler source](https://github.com/cloudflare/workers-sdk/blob/main/packages/wrangler/src/pages/deploy.ts).
+
 ## Deployment verification checklist
 
 - [ ] New GitHub repository URL verified; no existing repository overwritten.

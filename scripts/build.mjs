@@ -109,6 +109,17 @@ export async function build(base = root) {
     path.join(out, "_headers"),
     "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: DENY\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n",
   );
+  const sourceCommit = /^[a-f0-9]{40}$/i.test(process.env.GITHUB_SHA ?? "")
+    ? process.env.GITHUB_SHA.toLowerCase()
+    : "local";
+  await writeFile(
+    path.join(out, "build.json"),
+    JSON.stringify(
+      { sourceCommit, builtAt: new Date().toISOString() },
+      null,
+      2,
+    ) + "\n",
+  );
   console.log(`Built ${games.length} game(s) into dist/`);
   return games;
 }

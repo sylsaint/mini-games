@@ -74,3 +74,26 @@ test("credential-shaped hidden files rejected", async (t) => {
   await writeFile(path.join(dir, ".env"), "secret");
   await assert.rejects(scanGames(base), /Private/);
 });
+
+test("build metadata contains only validated commit and timestamp", async () => {
+  const original = process.env.GITHUB_SHA;
+  try {
+    process.env.GITHUB_SHA = "a".repeat(40);
+    await build();
+    const info = JSON.parse(
+      await readFile(path.join(root, "dist/build.json"), "utf8"),
+    );
+    assert.deepEqual(Object.keys(info).sort(), ["builtAt", "sourceCommit"]);
+    assert.equal(info.sourceCommit, "a".repeat(40));
+    assert.ok(Number.isFinite(Date.parse(info.builtAt)));
+    process.env.GITHUB_SHA = "invalid-secret-shaped-value";
+    await build();
+    const fallback = JSON.parse(
+      await readFile(path.join(root, "dist/build.json"), "utf8"),
+    );
+    assert.equal(fallback.sourceCommit, "local");
+  } finally {
+    if (original === undefined) delete process.env.GITHUB_SHA;
+    else process.env.GITHUB_SHA = original;
+  }
+});

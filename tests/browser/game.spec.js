@@ -95,3 +95,26 @@ test("mobile touch combines cards and both layouts fit viewport", async ({
     ),
   ).toBeTruthy();
 });
+
+test("capture portal and game for visual review", async ({
+  page,
+}, testInfo) => {
+  await page.goto("/");
+  await expect(page.locator(".game-card")).toHaveCount(1);
+  await expect(page.locator(".game-card img")).toBeVisible();
+  await page.locator(".game-card img").evaluate(async (image) => {
+    await image.decode();
+  });
+  await page.screenshot({
+    path: testInfo.outputPath("portal.png"),
+    fullPage: true,
+    animations: "disabled",
+  });
+  await page.locator(".game-card").click();
+  await expect(page.locator(".number-card")).toHaveCount(4);
+  await page.screenshot({
+    path: testInfo.outputPath("twenty-four.png"),
+    fullPage: true,
+    animations: "disabled",
+  });
+});

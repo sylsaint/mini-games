@@ -1,0 +1,10 @@
+{
+  "id": "twenty-four",
+  "name": "24 点实验室",
+  "description": "四张数字卡，一点巧思。用加减乘除，把灵感拼成 24。",
+  "entry": "index.html",
+  "cover": "cover.svg",
+  "published": true,
+  "tags": ["数字解谜", "轻松益智"],
+  "order": 1
+}

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#f7f6f2" />
+    <title>24 点实验室 · Mini Games</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script type="module" src="./game.js"></script>
+  </head>
+  <body>
+    <main>
+      <header><a href="/">← 游戏大厅</a><span>MINI GAMES / 01</span></header>
+      <section class="intro">
+        <span class="eyebrow">A LITTLE NUMBER MAGIC</span>
+        <h1>24 点实验室<span>✦</span></h1>
+        <p>用完四张数字卡，把答案变成 <strong>24</strong>。</p>
+      </section>
+      <section class="board" aria-label="24 点游戏">
+        <div class="board-top">
+          <span id="round">第 1 题</span
+          ><span class="target">目标 <strong>24</strong></span
+          ><span id="score">已解锁 0 题</span>
+        </div>
+        <p id="instruction">先选一张数字卡，再选运算符，最后选另一张卡。</p>
+        <div id="cards" class="cards"></div>
+        <div class="operators" aria-label="运算符">
+          <button data-op="+" aria-label="加">+</button
+          ><button data-op="-" aria-label="减">−</button
+          ><button data-op="*" aria-label="乘">×</button
+          ><button data-op="/" aria-label="除">÷</button>
+        </div>
+        <div id="feedback" role="status" aria-live="polite">
+          准备好了？让数字碰个面吧。
+        </div>
+        <div class="actions">
+          <button id="undo">↶ 撤销</button><button id="restart">重新开始</button
+          ><button id="next" class="primary">下一题 →</button>
+        </div>
+        <details>
+          <summary>需要一点灵感？</summary>
+          <p id="hint"></p>
+          <small>这只是一种解法。你也可以找到自己的路线。</small>
+        </details>
+      </section>
+      <section class="how">
+        <h2>怎么玩？</h2>
+        <ol>
+          <li>点一张数字卡作为第一个数。</li>
+          <li>选择 +、−、× 或 ÷，再点第二张卡，两张卡就会合并。</li>
+          <li>用完所有卡片，最后一个数等于 24 就成功了！</li>
+        </ol>
+        <p>
+          减法和除法有先后顺序。可以使用分数和负数，但不能除以
+          0。选错了？随时撤销。
+        </p>
+      </section>
+      <footer>慢慢想，有时候灵感就在下一步。</footer>
+      <noscript>这个游戏需要开启 JavaScript。</noscript>
+    </main>
+    <div id="celebration" aria-hidden="true"></div>
+  </body>
+</html>

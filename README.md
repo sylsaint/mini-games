@@ -2,6 +2,12 @@
 
 A small, maintainable static game platform. One repository, one Cloudflare Pages Direct Upload project, no backend and no dependence on an owner's computer staying online.
 
+Production: https://mini-games-a3y.pages.dev
+
+Source: https://github.com/sylsaint/mini-games
+
+Initial Pages creation and deployment were confirmed by GitHub Actions run [39891793211](https://github.com/sylsaint/mini-games/actions/runs/39891793211), commit `405fc80735058de18f37f7c97ee226456b2cc74f`. The CD workflow now checks the deployed revision and runs public-site browser interactions after every deploy.
+
 ## Requirements and local checks
 
 Node.js 24, npm. Runtime has **zero third-party dependencies**. Wrangler and Playwright are pinned development tools; commit `package-lock.json`.
@@ -65,13 +71,23 @@ Do not use `pull_request_target` to run untrusted PR source with secrets. Workfl
 
 ## One-time safe project bootstrap
 
-The temporary `Create new mini-games Pages project (one-time bootstrap)` CD step runs only after tests and credential checks. `scripts/bootstrap-pages.mjs` looks up exactly `mini-games` in the account named by the repository secret. It makes one create request only when the lookup returns HTTP 404 and Cloudflare's explicit `8000007` project-not-found error. It refuses existing projects, unknown errors, authorization failures and ambiguous responses. It does not deploy or modify projects.
+The normal CD workflow does not create projects. `scripts/bootstrap-pages.mjs` is a separately invoked create-only tool, not part of regular deployment. It looks up exactly `mini-games` in the account named by the repository secret and makes one create request only after HTTP 404 with Cloudflare's explicit `8000007` project-not-found error. It refuses existing projects, unknown errors, authorization failures and ambiguous responses.
 
-After confirmed creation, remove that temporary workflow step before any future run. If creation times out or its response is uncertain, inspect the project in Cloudflare first; never rerun blindly. The script intentionally refuses to adopt a project on a rerun, even one created by a previous attempt. The normal deployment step continues to use Wrangler and must remain separate.
+Do not run the bootstrap on an existing project. If a creation outcome is uncertain, inspect Cloudflare first; never rerun blindly. Removing the temporary bootstrap step is appropriate only after initial creation has been confirmed. Source cleanup by itself is not evidence that a project exists.
 
 The build also creates public `build.json` containing only `sourceCommit` (a validated 40-character Git commit SHA or `local`) and `builtAt` (an ISO timestamp), to verify the exact deployed revision. No account IDs or credentials are included.
 
 API references: [get project](https://developers.cloudflare.com/api/resources/pages/subresources/projects/methods/get/), [create project](https://developers.cloudflare.com/api/resources/pages/subresources/projects/methods/create/). The not-found code is confirmed in [Cloudflare's Wrangler source](https://github.com/cloudflare/workers-sdk/blob/main/packages/wrangler/src/pages/deploy.ts).
+
+## Verify the public deployment
+
+After obtaining the actual production Pages origin, run:
+
+```sh
+BASE_URL=https://mini-games-a3y.pages.dev EXPECTED_COMMIT=FULL_COMMIT_SHA node scripts/verify-live.mjs
+```
+
+This read-only check verifies the exact public build revision, lobby, catalog, all registered games, their covers, scripts, styles and local static module imports. It waits up to two minutes for propagation and fails clearly if the expected revision/resources do not appear. It never uses Cloudflare credentials. This HTTP check supplements Playwright interaction tests; it does not replace them or real iPhone Safari testing. The production URL above was verified from the successful initial deployment; replace FULL_COMMIT_SHA with the exact deployed commit.
 
 ## Deployment verification checklist
 

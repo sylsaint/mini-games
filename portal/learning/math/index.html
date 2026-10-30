@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#f7f5ed" />
+    <meta
+      name="description"
+      content="悠悠的学习之旅：记录每一次发现，理解每一个为什么。"
+    />
+    <title>数学 · 悠悠的学习之旅</title>
+    <link rel="stylesheet" href="/learning/learning.css" />
+    <script type="module" src="/learning/learning.js"></script>
+  </head>
+  <body data-subject="math">
+    <div class="page">
+      <header class="topbar">
+        <a class="wordmark" href="/learning/">✳ 悠悠的学习之旅</a
+        ><a class="back" href="/">← 游戏大厅</a>
+      </header>
+      <main>
+        <nav class="breadcrumb">
+          <a href="/learning/">学习地图</a><span>/</span><span>数学</span>
+        </nav>
+        <section class="subject-heading" style="--card: #c2e6d3">
+          <span class="subject-icon" aria-hidden="true">✦</span>
+          <div>
+            <p class="eyebrow">线与角 · 几何探险</p>
+            <h1>数学小世界</h1>
+            <p>从一条线出发，找到推理的乐趣。</p>
+          </div>
+        </section>
+        <section class="featured">
+          <div>
+            <p class="eyebrow">已收录 · 第二单元学业质量测评</p>
+            <h2>先认识这次的发现</h2>
+            <p>
+              计算是已有的优势。接下来，重点探索线段与射线、角的度量、平行垂直，以及生活中的图形推理。
+            </p>
+            <p class="report-date">报告生成于 2026-10-30 · 考试日期未提供</p>
+            <div class="actions">
+              <a class="button secondary" href="report.html">阅读原版分析 ↗</a
+              ><a class="button" href="practice.html"
+                >错题巩固 · 几何思维闯关 →</a
+              >
+            </div>
+          </div>
+          <div class="score-stamp">
+            <strong>82<span>/100</span></strong
+            ><small>一次记录，不是能力的标签</small>
+          </div>
+        </section>
+        <aside class="note">
+          <strong>先说明依据：</strong
+          >原报告根据照片中可辨认的答案与批改痕迹整理，部分笔迹不清晰，属于定性分析，不能代替精确逐题核对。练习针对报告中的知识薄弱点新编，不冒充原卷错题。
+        </aside>
+        <section class="improvement">
+          <h2>把“会记住”，变成“会解释”</h2>
+          <div class="plan-grid">
+            <article>
+              <span>✋ 先动手</span>
+              <h3>看见不变的性质</h3>
+              <p>
+                延长线条、调整角度、旋转图形。方向变了，端点数量与角度关系会变吗？
+              </p>
+            </article>
+            <article>
+              <span>✎ 再画图</span>
+              <h3>用图说清已知条件</h3>
+              <p>把生活中的路线和物体变成点、线、角。先分清问题，再选方法。</p>
+            </article>
+            <article>
+              <span>💡 最后推理</span>
+              <h3>答案之外，说出原因</h3>
+              <p>
+                从图形关系过渡到算式，再用一道变式题检验。错了先看提示，不靠反复猜答案。
+              </p>
+            </article>
+          </div>
+        </section>
+        <section class="records-section">
+          <div class="section-title">
+            <div>
+              <p class="eyebrow">MY LEARNING JOURNAL</p>
+              <h2>我的考试记录</h2>
+            </div>
+            <div class="record-tools">
+              <button type="button" id="export-records" class="quiet-button">
+                导出本机记录 ↓</button
+              ><label class="quiet-button import-label"
+                >导入备份 ↑<input
+                  id="import-records"
+                  type="file"
+                  accept="application/json,.json"
+              /></label>
+            </div>
+          </div>
+          <p class="storage-note">
+            新增记录只保存在当前浏览器，不会上传或跨设备同步。它们是私人记录，不会自动出现在公开报告中。
+          </p>
+          <p id="storage-status" role="status" class="notice" hidden></p>
+          <div id="import-preview" class="notice" hidden>
+            <p id="import-summary"></p>
+            <button id="confirm-import" type="button" class="quiet-button">
+              确认合并记录
+            </button>
+            <button id="cancel-import" type="button" class="quiet-button">
+              取消导入
+            </button>
+          </div>
+          <p id="import-status" role="status"></p>
+          <div id="record-list" class="record-list" aria-live="polite"></div>
+          <details class="add-record" open>
+            <summary>＋ 记录一次考试与发现</summary>
+            <form id="record-form" novalidate>
+              <div class="form-grid">
+                <label
+                  >考试名称<input
+                    name="title"
+                    required
+                    maxlength="80"
+                    placeholder="例如：第三单元小测"
+                    autocomplete="off" /></label
+                ><label
+                  >考试日期<input name="date" type="date" required /></label
+                ><label
+                  >我的分数<input
+                    name="score"
+                    type="number"
+                    min="0"
+                    step="0.5"
+                    inputmode="decimal"
+                    required
+                    placeholder="0" /></label
+                ><label
+                  >满分<input
+                    name="total"
+                    type="number"
+                    min="1"
+                    max="10000"
+                    step="0.5"
+                    inputmode="decimal"
+                    required
+                    value="100"
+                /></label>
+              </div>
+              <label
+                >这次的发现 / 下次想试的方法<textarea
+                  name="reflection"
+                  maxlength="1000"
+                  rows="3"
+                  placeholder="例如：我会算角度了，但需要先标出哪些角组成平角。"
+                ></textarea>
+              </label>
+              <p id="form-status" role="status"></p>
+              <button class="button" type="submit">
+                保存这份发现 <span>✓</span>
+              </button>
+            </form>
+          </details>
+        </section>
+      </main>
+      <footer>
+        一点点发现，一步步成长。<span>不和别人比，只看见自己的进步。</span>
+      </footer>
+    </div>
+  </body>
+</html>

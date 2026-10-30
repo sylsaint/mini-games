@@ -41,3 +41,12 @@ test('reset retains reward and reopening restores a single reward',()=>{
 test('standalone page uses no external resource dependencies',()=>{
  assert.doesNotMatch(html,/<(?:script|link|img)[^>]+(?:src|href)=["']https?:/i);
 });
+
+test('early review summary does not mark untouched topics complete',()=>{
+ const h=harness();h.run('state.solved=[0];state.wrong=[0];state.revisited=[0];showSummary()');
+ const result=h.els.get('#work').innerHTML;
+ assert.match(result,/线的秘密：已完成 1\/5/);
+ assert.match(result,/角度工坊：未开始/);
+ assert.doesNotMatch(result,/全部完成（5\/5）/);
+ assert.match(result,/resumeChallenge/);
+});

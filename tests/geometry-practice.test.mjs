@@ -50,3 +50,10 @@ test('early review summary does not mark untouched topics complete',()=>{
  assert.doesNotMatch(result,/全部完成（5\/5）/);
  assert.match(result,/resumeChallenge/);
 });
+
+test('responsive grid constrains horizontally scrolling map instead of expanding viewport',()=>{
+ assert.match(html,/grid-template-columns:240px minmax\(0,1fr\)/);
+ assert.match(html,/\.layout\{grid-template-columns:minmax\(0,1fr\)\}/);
+ assert.match(html,/\.panel\{min-width:0/);
+ assert.match(html,/\.map\{max-width:100%;min-width:0/);
+});

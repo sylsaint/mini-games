@@ -1,11 +1,10 @@
 import { test, expect } from "@playwright/test";
 const subjects = ["math", "chinese", "english", "science", "computing"];
 async function fits(page) {
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= innerWidth + 1,
-    ),
-  ).toBeTruthy();
+  // Android may enlarge innerWidth to contain overflow, hiding the bug if compared to itself.
+  const viewport = page.viewportSize();
+  const width = await page.evaluate(() => document.documentElement.scrollWidth);
+  expect(width).toBeLessThanOrEqual(viewport.width + 1);
 }
 
 test("learning journey navigation, five subjects and mobile layouts", async ({
@@ -212,7 +211,12 @@ test("geometry mastery checks reasoning, revisits errors and persists a single c
   test.setTimeout(120000);
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  await page.goto("/learning/math/practice.html");
+  await test.step("open geometry and verify viewport containment", async () => {
+    console.info("QA geometry: opening practice");
+    await page.goto("/learning/math/practice.html");
+    await fits(page);
+    console.info("QA geometry: page loaded, viewport containment passed");
+  });
   await expect(page.locator("#rewardButton")).toHaveCount(0);
   await expect(page.locator("#labDone")).toBeDisabled();
   let insertedError = false;
@@ -221,6 +225,10 @@ test("geometry mastery checks reasoning, revisits errors and persists a single c
   for (let step = 0; step < 180; step++) {
     if (await page.locator("#rewardButton").isVisible()) break;
     if (await page.locator("#labDone").isVisible()) {
+      console.info(
+        "QA geometry: manipulating lab",
+        await page.evaluate(() => window.geometryAdventure.getState().level),
+      );
       if (await page.locator("[data-mode]").count())
         await page.locator("[data-mode]").last().click();
       else await page.locator("#more").click();
@@ -234,6 +242,7 @@ test("geometry mastery checks reasoning, revisits errors and persists a single c
           fullPage: true,
           animations: "disabled",
         });
+      console.info("QA geometry: lab done enabled, starting questions");
       await page.locator("#labDone").click();
     } else if (await page.locator("#next").isVisible()) {
       await page.locator("#next").click();
@@ -243,6 +252,10 @@ test("geometry mastery checks reasoning, revisits errors and persists a single c
       revisited = true;
       await page.locator("#startReview").click();
     } else if (await page.locator("#questionTitle").isVisible()) {
+      console.info(
+        "QA geometry: answering challenge",
+        (await currentQuestion(page)).id,
+      );
       if (!insertedError) {
         await solveVisibleQuestion(page, true);
         await expect(page.locator("#feedback")).not.toHaveClass(/good/);
@@ -274,6 +287,7 @@ test("geometry mastery checks reasoning, revisits errors and persists a single c
   expect(
     await page.evaluate(() => window.geometryAdventure.isComplete()),
   ).toBeTruthy();
+  console.info("QA geometry: all challenges complete, opening rewards");
   await page.locator("#rewardButton").click();
   const limits = await page.evaluate(() =>
     window.geometryAdventure.rewards.map((reward) => reward.limit),
@@ -332,7 +346,10 @@ test("geometry malformed saved state and unavailable storage remain usable", asy
   await page.addInitScript(() => {
     localStorage.setItem("yoyo-geometry-v1", "{bad-json");
   });
+  console.info("QA malformed storage: opening practice");
   await page.goto("/learning/math/practice.html");
+  await fits(page);
+  console.info("QA malformed storage: clicking initial lab control");
   await expect(page.locator("#labDone")).toBeVisible();
   await page.locator("[data-mode]").last().click();
   await page.locator("#labDone").click();
@@ -374,6 +391,7 @@ test("complete report preserves sections and saves all fourteen days and five re
   await page.screenshot({
     path: testInfo.outputPath("learning-report.png"),
     fullPage: true,
+    scale: "css",
     animations: "disabled",
   });
 });
@@ -409,7 +427,9 @@ test("scratch card responds to real pointer or touch input after a completed-ses
   page,
   isMobile,
 }) => {
+  console.info("QA scratch: opening practice");
   await page.goto("/learning/math/practice.html");
+  await fits(page);
   // Fixture isolates scratch mechanics. The previous test earns completion through the actual UI.
   await page.evaluate(() => {
     const app = window.geometryAdventure;
@@ -423,6 +443,7 @@ test("scratch card responds to real pointer or touch input after a completed-ses
     localStorage.removeItem("yoyo-geometry-reward-v1");
   });
   await page.reload();
+  console.info("QA scratch: opening earned reward");
   await page.locator("#rewardButton").click();
   await page.locator("#parentOK").check();
   page.once("dialog", (dialog) => dialog.accept());
@@ -445,7 +466,10 @@ test("scratch card responds to real pointer or touch input after a completed-ses
 test("early wrong-question review returns to unfinished challenges without unlocking rewards", async ({
   page,
 }) => {
+  console.info("QA early review: opening practice");
   await page.goto("/learning/math/practice.html");
+  await fits(page);
+  console.info("QA early review: manipulating initial lab");
   await page.locator("[data-mode]").last().click();
   await page.locator("#labDone").click();
   await solveVisibleQuestion(page, true);

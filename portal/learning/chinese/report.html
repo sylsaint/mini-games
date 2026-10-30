@@ -1,0 +1,1234 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="color-scheme" content="light" />
+    <meta
+      name="description"
+      content="悠悠的四年级语文考试复盘：依据作答发现优势，练习字词运用、阅读依据与清楚表达。"
+    />
+    <title>悠悠的语文考试分析 · 从发现到表达</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: #f7f5ef;
+        color: #283f39;
+        font:
+          17px/1.85 system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "PingFang SC",
+          sans-serif;
+      }
+      a {
+        color: #256254;
+        text-underline-offset: 4px;
+      }
+      button,
+      input,
+      textarea {
+        font: inherit;
+      }
+      button,
+      a.button {
+        cursor: pointer;
+        border: 0;
+        border-radius: 12px;
+        padding: 12px 18px;
+        background: #367166;
+        color: white;
+        text-decoration: none;
+      }
+      button:hover,
+      a.button:hover {
+        background: #28594f;
+      }
+      :focus-visible {
+        outline: 3px solid #d27c36;
+        outline-offset: 4px;
+      }
+      main {
+        width: min(980px, 100%);
+        margin: auto;
+        padding: 24px 20px 70px;
+        min-width: 0;
+      }
+      nav {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 14px 0;
+      }
+      .eyebrow {
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        color: #8b5c3b;
+        font-weight: 800;
+      }
+      header {
+        padding: 34px 0 20px;
+      }
+      h1 {
+        font-size: clamp(30px, 5vw, 46px);
+        letter-spacing: -0.04em;
+        line-height: 1.3;
+        margin: 10px 0 16px;
+      }
+      h2 {
+        font-size: 25px;
+        line-height: 1.5;
+        margin: 0 0 22px;
+        color: #23584c;
+      }
+      h3 {
+        font-size: 21px;
+        line-height: 1.6;
+        margin: 28px 0 14px;
+      }
+      p {
+        margin: 14px 0;
+      }
+      section {
+        min-width: 0;
+        background: #fffefa;
+        border: 1px solid #e3e5d9;
+        border-radius: 22px;
+        padding: 28px;
+        margin: 22px 0;
+        box-shadow: 0 8px 30px #3b564106;
+      }
+      .notice {
+        background: #f7e8da;
+        border-left: 4px solid #b57d4c;
+        padding: 18px;
+        border-radius: 10px;
+        font-size: 15px;
+      }
+      .small {
+        font-size: 14px;
+        color: #60726a;
+      }
+      .table-wrap {
+        max-width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 15px;
+        min-width: 580px;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 13px 12px;
+        border-bottom: 1px solid #dde5d8;
+        vertical-align: top;
+      }
+      th {
+        background: #eff3e8;
+        font-size: 14px;
+      }
+      .score-number {
+        font-size: 64px;
+        font-weight: 800;
+        line-height: 1.15;
+        margin: 12px 0;
+        color: #367166;
+      }
+      .score-number small {
+        font-size: 24px;
+        font-weight: 500;
+      }
+      li {
+        margin: 9px 0;
+      }
+      .status {
+        display: inline-block;
+        font-size: 13px;
+        border-radius: 16px;
+        padding: 2px 9px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .right {
+        background: #dcebdd;
+        color: #24553e;
+      }
+      .partial {
+        background: #fff0c9;
+        color: #785315;
+      }
+      .wrong {
+        background: #fbe2dc;
+        color: #8b3d2f;
+      }
+      .unclear {
+        background: #e7e8ee;
+        color: #555c6b;
+      }
+      .plan {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+      }
+      .day {
+        min-width: 0;
+        border: 1px solid #dde5d8;
+        border-radius: 14px;
+        background: #fbfcf5;
+        padding: 16px;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        cursor: pointer;
+      }
+      .day input {
+        width: 22px;
+        height: 22px;
+        accent-color: #367166;
+        flex: none;
+        margin-top: 5px;
+      }
+      .day strong {
+        display: block;
+      }
+      .day small {
+        display: block;
+        font-size: 14px;
+        line-height: 1.65;
+        margin-top: 5px;
+      }
+      .day:has(input:checked) {
+        background: #e9f1e1;
+        border-color: #8eae7a;
+      }
+      progress {
+        width: 100%;
+        height: 12px;
+        accent-color: #367166;
+      }
+      .quiz {
+        padding: 24px 0;
+        border-top: 1px solid #dde5d8;
+      }
+      .quiz h3 {
+        margin: 0 0 14px;
+        font-size: 19px;
+      }
+      .quiz label {
+        display: block;
+        margin-top: 12px;
+        font-size: 14px;
+      }
+      .quiz textarea {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        padding: 12px;
+        border: 1px solid #aab9a8;
+        border-radius: 10px;
+        background: white;
+        color: #263f3a;
+        margin-top: 6px;
+        resize: vertical;
+        min-height: 92px;
+      }
+      .quiz details {
+        margin-top: 14px;
+        background: #eff3e8;
+        padding: 12px 16px;
+        border-radius: 10px;
+      }
+      .quiz summary {
+        cursor: pointer;
+        font-weight: 700;
+      }
+      .story {
+        background: #f6f1e7;
+        padding: 16px;
+        border-radius: 12px;
+      }
+      .section-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .section-nav a {
+        font-size: 14px;
+        background: #e9efe2;
+        padding: 6px 12px;
+        border-radius: 20px;
+        text-decoration: none;
+      }
+      .actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+      .ghost {
+        background: transparent;
+        color: #367166;
+        border: 1px solid #b8c8b0;
+      }
+      footer {
+        text-align: center;
+        color: #60726a;
+        font-size: 14px;
+        padding: 20px;
+      }
+      .priority {
+        border-left: 4px solid #88aa8d;
+        padding-left: 18px;
+      }
+      section p,
+      section li {
+        overflow-wrap: anywhere;
+      }
+      @media (max-width: 600px) {
+        main {
+          padding: 14px 12px 40px;
+        }
+        header {
+          padding: 24px 8px 12px;
+        }
+        section {
+          padding: 20px 16px;
+          border-radius: 18px;
+        }
+        .plan {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        h2 {
+          font-size: 22px;
+        }
+        h3 {
+          font-size: 19px;
+        }
+        .score-number {
+          font-size: 54px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+      }
+      @media print {
+        body {
+          background: white;
+        }
+        main {
+          width: 100%;
+          padding: 0;
+        }
+        nav,
+        .section-nav,
+        .actions,
+        button {
+          display: none;
+        }
+        section {
+          box-shadow: none;
+          border: 0;
+          border-radius: 0;
+          padding: 12px 0;
+        }
+        h2,
+        h3 {
+          break-after: avoid;
+        }
+        .day,
+        .quiz {
+          break-inside: avoid;
+        }
+        .plan {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        details {
+          display: block;
+        }
+        details > p {
+          display: block;
+        }
+        .table-wrap {
+          overflow: visible;
+        }
+        table {
+          min-width: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <nav aria-label="页面导航">
+        <a href="/learning/">← 悠悠的学习之旅</a
+        ><a href="/learning/chinese/">语文学习</a
+        ><a href="/learning/chinese/practice.html">语文闯关 ↗</a>
+      </nav>
+      <header>
+        <p class="eyebrow">YOYO · WORDS INTO WORLDS</p>
+        <h1>把读懂的故事，<br />变成说清的表达。</h1>
+        <p>四年级语文 · 第一、二单元学业质量标准达标检测</p>
+        <p class="small">报告生成：2026-10-30 · 考试日期未核实</p>
+        <p class="notice">
+          本页根据家长提供的四张试卷照片中可辨认的题目、作答和批改痕迹整理。原始试卷照片不公开上传；不展示真实姓名、班级等身份信息。看不清的内容单独标注，不猜测答案或推算分项得分。以下是这次试卷表现的分析，不是孩子长期能力的标签。
+        </p>
+        <div class="section-nav">
+          <a href="#overview">整体发现</a><a href="#evidence">逐类证据</a
+          ><a href="#writing">作文复盘</a><a href="#priorities">三个优先级</a
+          ><a href="#plan">14 天计划</a><a href="#diagnosis">诊断小测</a>
+        </div>
+      </header>
+      <section id="overview">
+        <p class="eyebrow">01 · WHAT THIS PAPER TELLS US</p>
+        <h2>
+          一、先说结论：有理解与表达的基础，下一步要让“知道”稳定变成“写得出、答到点”
+        </h2>
+        <p class="score-number">82<small> / 100 分</small></p>
+        <p class="small">
+          第一、二单元学业质量标准达标检测 ·
+          以首页清楚可辨的红笔总分为依据。部分扣分符号的位置、笔迹不清，不能据此重建各模块准确得分。
+        </p>
+        <p>
+          这份卷子不是“阅读都不懂”或“基础字词都差”。悠悠在<strong>语境写词、部分读音、词义选择、信息定位，以及文章主旨、感情和常见修辞判断</strong>上都有做对的证据；作文也能围绕推荐地点写成篇，按四季组织内容。
+        </p>
+        <p>
+          较集中的困难发生在三个转换处：<strong>从看到拼音能写词，转到凭记忆默写和自主作文；从大致读懂，转到按题目要求逐项作答；从有画面和感受，转到用文本证据或具体细节说清。</strong>这些需要分步练习，不能简单归因于“不认真”。
+        </p>
+        <div
+          class="table-wrap"
+          role="region"
+          aria-label="能力观察表，可横向滚动"
+          tabindex="0"
+        >
+          <table>
+            <thead>
+              <tr>
+                <th>能力</th>
+                <th>本次有利证据</th>
+                <th>下一步观察</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>字词识记与语境理解</td>
+                <td>第 2、4、15 题表现较好</td>
+                <td>没有拼音提示时，能否写出同样熟悉的字词</td>
+              </tr>
+              <tr>
+                <td>阅读整体理解</td>
+                <td>第 14、17、18、19 题判断正确</td>
+                <td>判断后能否指出“文中哪句话支持我”</td>
+              </tr>
+              <tr>
+                <td>信息查找</td>
+                <td>第 11 题楼层匹配正确</td>
+                <td>多选项、否定要求或两项任务时能否逐一核对</td>
+              </tr>
+              <tr>
+                <td>想象与篇章组织</td>
+                <td>第 21 题获勾；作文四季顺序明确</td>
+                <td>想象保留原文主角，推荐理由写具体，成文后自查字句</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="notice">
+          <strong>怎样读下面的状态：</strong
+          ><span class="status right">正确 / 有优势</span
+          >指可辨答案与批改支持；<span class="status partial">部分完成</span
+          >指已做对一部分或表达层次仍可提升；<span class="status wrong"
+            >明确错误</span
+          >指可确认的原答问题；<span class="status unclear">待核实</span
+          >指笔迹或评分依据不足。蓝笔订正不算原考场答案，也不推定是谁写的。
+        </p>
+      </section>
+      <section id="evidence">
+        <p class="eyebrow">02 · ANSWERS AND EVIDENCE</p>
+        <h2>二、逐类看作答：哪里做得好，哪里卡住了？</h2>
+        <h3>1. 基础积累与语用：会认会选，是优势；脱离提示后的字形提取不够稳</h3>
+        <div
+          class="table-wrap"
+          role="region"
+          aria-label="第1至7题证据表，可横向滚动"
+          tabindex="0"
+        >
+          <table>
+            <thead>
+              <tr>
+                <th>题号与任务</th>
+                <th>可辨作答 / 状态</th>
+                <th>判断与改进</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1 · 抄写</td>
+                <td>
+                  <span class="status right">正确</span>抄写完成，见红勾。
+                </td>
+                <td>能完成基本抄写；不由这一题推断整体书写质量。</td>
+              </tr>
+              <tr>
+                <td>2 · 语境写词与读音</td>
+                <td>
+                  <span class="status right">有优势</span
+                  >“繁星、模糊、逐渐、舒服”等词及本题“苇、薄、霎、蛾”的读音选择有勾。
+                </td>
+                <td>
+                  常用词识记、给拼音写词及这组读音表现较好；维持短时复习，不必全部从零重学。
+                </td>
+              </tr>
+              <tr>
+                <td>3 · 课内默写</td>
+                <td>
+                  <span class="status partial">部分完成</span
+                  >《观潮》中“接”“沸腾”等位置用拼音代字；诗句“擎”处字形不规范，“犹”写近似“由”；“慎思之”原空未填。
+                </td>
+                <td>
+                  部分场景或语音记忆还在，但规范汉字提取受阻；另有需要补回的积累。“擎”原误字和另一空“笃行之”的笔迹不够清，不强行判成某个错字。
+                </td>
+              </tr>
+              <tr>
+                <td>4 · 词语使用</td>
+                <td>
+                  <span class="status right">正确</span>选
+                  B，有红勾，能识别“悄无声息地……讲故事”的语境问题。
+                </td>
+                <td>不是只记词语形式，也有联系句意判断词义的能力。</td>
+              </tr>
+              <tr>
+                <td>5(1) · 句式展开</td>
+                <td>
+                  <span class="status right">正确</span
+                  >分别写绿地、鲜花、河水暖和起来，有红勾。
+                </td>
+                <td>能够依照平行结构展开句子，可用作后续写作的支点。</td>
+              </tr>
+              <tr>
+                <td>5(2) · 题面称“仿写反问句”</td>
+                <td>
+                  <span class="status wrong">未完成目标句式</span
+                  >原答落在“一点都不舒服”的陈述，见红叉。
+                </td>
+                <td>
+                  需学会区分陈述、设问、反问；但题面示例本身是自问自答，存在术语不一致，不能把责任全归给孩子。
+                </td>
+              </tr>
+              <tr>
+                <td>6 · 提两条保护海滩措施</td>
+                <td>
+                  <span class="status partial">只完成一条措施</span
+                  >第一条“不乱丢垃圾”及相关说明获勾；第二条主要说乱丢垃圾的危害，见叉。
+                </td>
+                <td>
+                  知道环保目的，但“后果”不等于第二个“行动”。先列两条不同措施，再分别说明，防止答得多却没有完成第二项任务。
+                </td>
+              </tr>
+              <tr>
+                <td>7 · 神话知识</td>
+                <td>
+                  <span class="status wrong">有明确错误</span
+                  >禅让对象原选望帝，应为舜帝；“女娲”后一字写近似“蜗”。<span
+                    class="status unclear"
+                    >另一空待核实</span
+                  >夸父相关原答被覆盖。
+                </td>
+                <td>
+                  分别处理故事关系与字形：人物—事件—关键事物配对；“娲/蜗”结合字义比较。订正里的“手杖”不能当原答正确。
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>必须讲清的例外：第 5 题例句不是规范的反问示范</h3>
+        <p>
+          题面给出“舒服吗？真不舒服！”这一<strong>自问自答</strong>形式，却要求仿写“反问句”。教学上应先澄清：<strong>设问</strong>是提出问题并作答；<strong>反问</strong>用问句强调心中已有的判断，通常不需要作答。蓝笔订正也呈自问自答，不能直接当成反问范例。
+        </p>
+        <p>
+          可用明确的原创对比：“这个办法很好。”（陈述）→“难道这个办法不好吗？”（反问，仍强调好）→“这个办法好在哪里？它能节省时间。”（设问）。先让孩子说出实际意思，再选句式。原答是陈述句这一点可确认；若讨论这道题具体评分，应带着题面向老师核实。
+        </p>
+        <h3>2. 课内片段与材料：能定位事实，需要把问题和答案再推进一层</h3>
+        <div
+          class="table-wrap"
+          role="region"
+          aria-label="第8至14题证据表，可横向滚动"
+          tabindex="0"
+        >
+          <table>
+            <thead>
+              <tr>
+                <th>题号与任务</th>
+                <th>可辨作答 / 状态</th>
+                <th>判断与改进</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>8 · 概括《观潮》描写角度</td>
+                <td>
+                  <span class="status partial">部分正确</span
+                  >“声音”“潮来时”有勾；“动作”被改为“形状”。
+                </td>
+                <td>
+                  知道何时、听到了什么，但概括“从什么方面写”还不够准确。练“看到的形状／听到的声音／变化的动作”分类，区分具体内容与概括维度。
+                </td>
+              </tr>
+              <tr>
+                <td>9 · 依据描写提问并解答</td>
+                <td>
+                  <span class="status partial">有事实基础，解释较浅</span
+                  >原问为何往东望，答因浪潮来了；见扣分记号。
+                </td>
+                <td>
+                  不是毫无依据，但没有充分解释人物反应所传递的兴奋与潮水的壮观。练“写了什么→感受到什么→为何这样写”，不只停在复述事件。
+                </td>
+              </tr>
+              <tr>
+                <td>10 · 想象画面</td>
+                <td>
+                  <span class="status partial">有画面，字词需改</span
+                  >能写动态、声音等；“仿佛”“好像”有不规范写法和圈改。<span
+                    class="status unclear"
+                    >细节不清</span
+                  >具体主体、颜色无法可靠辨认。
+                </td>
+                <td>
+                  不能说孩子没有想象力，也不能把看不清的主体当作确定错误。先圈原句的颜色、动作、声音，再据此展开，写完专项检查“仿佛、好像”。
+                </td>
+              </tr>
+              <tr>
+                <td>11 · 按需求选科技馆楼层</td>
+                <td>
+                  <span class="status right">正确</span
+                  >第一层、第四层两处答案有勾。
+                </td>
+                <td>能把材料信息与实际需求匹配，是信息定位能力的正面证据。</td>
+              </tr>
+              <tr>
+                <td>12 · 探索从哪里开始</td>
+                <td>
+                  <span class="status wrong">明确错误</span
+                  >原选“作出假设”，应为“发现并提出问题”。
+                </td>
+                <td>
+                  回到材料寻找探究顺序：先发现问题，再提出可能解释。不由这一小题评价整体科学能力。
+                </td>
+              </tr>
+              <tr>
+                <td>13 · 选择角度提问并解答</td>
+                <td>
+                  <span class="status partial">能提出并回答直接问题</span
+                  >围绕《嫦娥奔月》的神话类别提问，回答为中国古代神话；红勾伴小额扣分，字形也有圈改。
+                </td>
+                <td>
+                  能找到直接答案。可进一步问古代愿望与今天探月的联系；但扣分是否因字形或其他要求，证据不足，不能断言是“问题浅”导致失分。
+                </td>
+              </tr>
+              <tr>
+                <td>14 · 判断对神话价值的理解</td>
+                <td>
+                  <span class="status right">正确</span
+                  >选出“虚假且没有意义”的不当理解，见红勾。
+                </td>
+                <td>
+                  能够把握材料对神话价值的基本态度，也说明不能仅凭别题出错就认定所有否定题都不会。
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>3. 《五月的田野》：主旨、情感、修辞较稳，细节核对和提问需训练</h3>
+        <div
+          class="table-wrap"
+          role="region"
+          aria-label="第15至21题证据表，可横向滚动"
+          tabindex="0"
+        >
+          <table>
+            <thead>
+              <tr>
+                <th>题号与任务</th>
+                <th>可辨作答 / 状态</th>
+                <th>判断与改进</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>15 · 联系上下文填词</td>
+                <td>
+                  <span class="status right">正确</span
+                  >四个词语的选择都有红勾，与相应语境吻合。
+                </td>
+                <td>能利用句意判断词语搭配，是较好的语言理解基础。</td>
+              </tr>
+              <tr>
+                <td>16 · 趣事“不包括”哪项</td>
+                <td>
+                  <span class="status wrong">明确错误</span>原选文中写到的
+                  C；正确应为文中未写的 B。
+                </td>
+                <td>
+                  圈出“不包括”，将每个选项和原文逐一对应。不能只凭“像童年趣事”判断，也不简单归为粗心。
+                </td>
+              </tr>
+              <tr>
+                <td>17 · 修辞判断</td>
+                <td><span class="status right">正确</span>选拟人，有勾。</td>
+                <td>
+                  能识别赋予事物人的动作或情态；下一步试着解释这种写法带来的感觉。
+                </td>
+              </tr>
+              <tr>
+                <td>18 · 主旨概括</td>
+                <td>
+                  <span class="status right">正确</span
+                  >选项涵盖田野景色、田间趣事和童年美好，有勾。
+                </td>
+                <td>能抓住整体内容，不应将阅读概括能力整体判为薄弱。</td>
+              </tr>
+              <tr>
+                <td>19 · 思想感情</td>
+                <td>
+                  <span class="status right">正确</span
+                  >选出对田野的喜爱与对快乐童年的怀念，有勾。
+                </td>
+                <td>
+                  对文章感情有理解；练习时让孩子再补一句文本依据，而不是重新机械刷同类选择题。
+                </td>
+              </tr>
+              <tr>
+                <td>20 · 围绕指定句结合选文提问</td>
+                <td>
+                  <span class="status wrong">未完成要求</span
+                  >原答被叉；可辨部分没有明确连接“色香味”与选文。<span
+                    class="status unclear"
+                    >原问完整措辞不清</span
+                  >
+                </td>
+                <td>
+                  不虚构孩子问了什么。先圈“色、香、味”，各找相应描写，再提出能由文章回答的问题，例如“哪些描写让田野像一顿丰盛的美餐？”
+                </td>
+              </tr>
+              <tr>
+                <td>21 · 据句子想象画面</td>
+                <td>
+                  <span class="status right">获勾，有色彩想象</span
+                  >能写金黄、碧绿等色彩，也加入水面、荷叶等画面。
+                </td>
+                <td>
+                  保留愿意想象的优势；进一步提醒围绕原句的麦子、豆荚及高矮层次展开。新增景物的贴合度是改进建议，不列为本题已确定扣分原因。
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>把问题归到方法，而不是归到性格</h3>
+        <p>
+          这些失误跨了几种情况：有的<strong>记得声音却写不出汉字</strong>，有的<strong>理解内容却没有按任务输出</strong>，有的<strong>能选对主旨，但用细节解释还需练习</strong>。训练时先辨错因，再给一个小工具：字形提取用“遮住再写”；漏任务用“两问两答”；阅读推理用“观点＋证据＋说明”。
+        </p>
+      </section>
+      <section id="methods">
+        <h2>四个可以马上用的小工具</h2>
+        <h3>① 分一分：原因、危害，还是措施？</h3>
+        <p>
+          把句子放进三栏：“为什么需要保护”“不保护会怎样”“具体怎么做”。措施要能看见行动，例如“游客把垃圾分类投入垃圾桶”“设置清楚的提示牌”。检查“谁＋做什么＋怎样落实”，再确认两条办法不重复。孩子参与清理应有成人陪同，避开尖锐和未知危险物；不把卷上的罚款订正当作真实法规。
+        </p>
+        <h3>② 连一连：人物—事件—事物</h3>
+        <p>
+          神话先用三格故事卡，再撤图用词语连接。例如女娲—补天、夸父—追日—手杖化为邓林。禅让人物关系另作故事线整理。每连一组都说一句完整的话，避免只记选项位置。材料中的探究顺序可以整理为“发现问题→提出猜想→查找、观察或验证→根据证据调整”。
+        </p>
+        <h3>③ 爬一层：事实问题、理解问题、表达作用</h3>
+        <p>
+          同一段话先问“写了什么”，再问“从哪句话看出什么”，最后问“为什么这样写”。用“观点＋证据＋说明”帮助组织回答，但不要求每题都套同一句式。先能回答直接信息，再逐步升级，不把事实问题一概说成没有价值。
+        </p>
+        <h3>④ 画一画：保留主角，再加合理细节</h3>
+        <p>
+          先把原句中的“谁、在哪里、颜色、动作、声音”做成线索卡，再画图或口述，最后撤去图卡写两句话。添加一两项合理细节即可；写完检查有没有换掉原文主角，或与原句矛盾。这样把画面、词语、句子和概括连起来，而不是凭空堆形容词。
+        </p>
+      </section>
+      <section id="writing">
+        <p class="eyebrow">03 · A WRITER IS GROWING</p>
+        <h2>三、作文复盘：已经能成篇，要把优势保留下来</h2>
+        <p>
+          悠悠选择了“推荐一个地方”这一任务。以下不展示具体地点、人物身份或全文，只分析可见的组织与语言特点。
+        </p>
+        <h3>值得肯定的三点</h3>
+        <ol>
+          <li>
+            <strong>题目与内容基本一致，有推荐意识。</strong
+            >开头引入想推荐的地方，结尾邀请读者，能看出面向读者表达的目的。
+          </li>
+          <li>
+            <strong>篇章有顺序。</strong
+            >按春、夏、秋、冬描写，再介绍特色景观，形成可辨的内容组织，不是想到哪里写到哪里。
+          </li>
+          <li>
+            <strong>愿意调动想象和修辞。</strong
+            >例如让柳树“梳头”、把落叶比作小手掌，能尝试使景物生动。这些表达意识应保留，不宜整篇换成成人范文。
+          </li>
+        </ol>
+        <h3>最需要改进的不是“没有内容”，而是以下四件事</h3>
+        <ol>
+          <li>
+            <strong>从识字、字音到自主用字的迁移。</strong
+            >作文中多处用拼音代替汉字，可辨的涉及“嫩、梳、铃、雁、刻、贡献、介绍”等。第
+            2
+            题给拼音写词较好，而自主作文提取字形受阻，这体现的是“有提示时会，自己组织语言时不够稳定”的落差。个别代写拼音本身也不规范，不照抄当读音示范。不能因此说所有基础字词都薄弱。
+          </li>
+          <li>
+            <strong>评价再具体一点。</strong
+            >“好看”等概括性评价可以保留，但后面要跟上“哪里好看、有什么特点、我为什么推荐”。先选一个景观，写形状、动作或感受中的两项，比反复加“很好看”更有效。
+          </li>
+          <li>
+            <strong>句子再分清一点。</strong
+            >较长连续表达、句号偏少，会让读者不易抓重点。读出声，在一件事或一个意思说完的地方检查停顿；再查主语、词语搭配和重复，而不是为每个逗号硬拆一句。
+          </li>
+          <li>
+            <strong>事实与想象分开检查。</strong
+            >涉及人物事迹时，用一个核实过的具体事实支撑，不补造历史细节。涉及冬天大雁及飞行方向的表述，要结合季节、地点核实；不能只凭这一句话就下“观察能力差”的结论。
+          </li>
+        </ol>
+        <h3>给孩子一个可操作的修改流程</h3>
+        <p class="story">
+          <strong>先画：</strong>画出最想推荐的一处景观 →
+          <strong>再说：</strong>“它特别在哪里？读者能看到或体验什么？” →
+          <strong>再写：</strong>用一个具体画面支持一个推荐理由 →
+          <strong>后查：</strong>圈拼音代字、读通句子、核实事实。
+        </p>
+        <p>
+          练习时可以暂时圈出不会写的字，先保住表达的完整性；写完再查字典、在新词句中使用，隔天遮住再写。考场是否允许拼音代字，应遵照老师明确的要求，不能把练习策略当作考试书写标准。
+        </p>
+        <p class="notice">
+          <strong>两项不能擅自下结论：</strong>作文题面标明 32 分（含书写 2
+          分），要求不少于 350
+          字；但页顶红笔符号的范围与含义不明确，不能据此宣称作文得了 30/32
+          或任何具体分数。页面有 300 字网格标记，也不能据网格直接断言达到或不足
+          350 字；标题、标点、空格与拼音占格不同，需另行准确核字并确认评分口径。
+        </p>
+      </section>
+      <section id="priorities">
+        <p class="eyebrow">04 · THREE USEFUL NEXT STEPS</p>
+        <h2>四、优先练三个技能，不用平均加量</h2>
+        <div class="priority">
+          <h3>优先级 1：规范字形提取——从“认识”到“自己写得出”</h3>
+          <p>
+            <strong>依据：</strong
+            >课内默写的拼音代字、错形和空缺，以及作文中的自主写字困难。<strong>方法：</strong>每次只选
+            3～5
+            个已确认的字词，解释词义→比较易混部分→遮住写→放入新句→隔天再回忆。课内积累还要检查“内容是否记住”，不能只纠字形。
+          </p>
+          <p>
+            <strong>看进步：</strong
+            >不是当天抄对十遍，而是隔天没有拼音提示也能写出，并在新句子里用对。
+          </p>
+        </div>
+        <div class="priority">
+          <h3>优先级 2：读清任务、找到证据——把答案交到题目需要的地方</h3>
+          <p>
+            <strong>依据：</strong
+            >两条措施只形成一条行动，“不包括”题核对失误，阅读提问与关键词连接不紧。<strong>方法：</strong>圈任务词（两条／不包括／结合选文）→拆成小项→逐项找依据→逐项回答→回头打钩。已经答对的主旨与感情题可用来练“我为什么这样选”。
+          </p>
+          <p>
+            <strong>看进步：</strong
+            >能独立说清题目要几件事，答案不漏项；判断能指出文中根据，而非只报选项。
+          </p>
+        </div>
+        <div class="priority">
+          <h3>优先级 3：有依据地表达——从画面和感受走向解释与具体细节</h3>
+          <p>
+            <strong>依据：</strong
+            >能想象、能组织篇章，但部分提问停在直接事实，推荐理由和描写还可更具体。<strong>方法：</strong>情境图／线索卡→一句核心意思→一个依据或细节→说明二者关系。阅读练“观点＋证据＋解释”，作文练“推荐理由＋具体画面”。句式辨析作为小练习嵌入，不背万能套话。
+          </p>
+          <p>
+            <strong>看进步：</strong
+            >换一篇短文、换一个推荐对象，也能说出理由；修改后仍保留孩子自己的想法。
+          </p>
+        </div>
+        <p>
+          家长反馈可以具体到动作：“你这次把两个问题分开答了”“你写完会回来核对这个字了”。比“再认真一点”更容易让孩子知道下一步怎么做。
+        </p>
+      </section>
+      <section id="plan">
+        <p class="eyebrow">14 DAYS · SMALL STEPS</p>
+        <h2>五、14 天：每天 20 分钟，少一点抄写，多一点解释</h2>
+        <p>
+          建议分为：3 分钟回忆旧题 → 7 分钟观察与比较 → 7 分钟独立表达 → 3
+          分钟自查。每次只练一个重点；若疲劳就缩短，不用补做堆积的题。勾选表示“完成并说清”，不是只看过答案。
+        </p>
+        <p id="plan-count" aria-live="polite">0/14 天</p>
+        <progress
+          id="plan-progress"
+          max="14"
+          value="0"
+          aria-label="14天学习进度"
+        ></progress>
+        <div class="plan">
+          <label class="day"
+            ><input type="checkbox" data-day="0" /><span
+              ><strong>第 1 天 · 找到自己的三种错因</strong
+              ><small
+                >把已确认的错题分为“音形混淆、没找到依据、表达不完整”。选一道说清当时怎样想，不贴“粗心”标签。</small
+              ></span
+            ></label
+          >
+          <label class="day"
+            ><input type="checkbox" data-day="1" /><span
+              ><strong>第 2 天 · 字音放回词语</strong
+              ><small
+                >选 3
+                个已核准的易混读音：听读→看词解释→放进句子→盖住再读。不能只背孤立拼音。</small
+              ></span
+            ></label
+          >
+          <label class="day"
+            ><input type="checkbox" data-day="2" /><span
+              ><strong>第 3 天 · 字形看偏旁，也看意思</strong
+              ><small
+                >从生活场景挑选易混字，先说句意，再选字、组词、换情境造句。不能仅凭“读起来像”选字。</small
+              ></span
+            ></label
+          >
+          <label class="day"
+            ><input type="checkbox" data-day="3" /><span
+              ><strong>第 4 天 · 从认得走向会写</strong
+              ><small
+                >把前两天的词放进 3
+                句原创小短文。写完圈查易错字；隔一会儿再听写，比较“选择时会”和“作文时会”。</small
+              ></span
+            ></label
+          >
+          <label class="day"
+            ><input type="checkbox" data-day="4" /><span
+              ><strong>第 5 天 · 反问不是只加问号</strong
+              ><small
+                >对比陈述、疑问、反问三种说法，指出说话人心里已有的判断。改写后检查肯定/否定意思是否一致。</small
+              ></span
+            ></label
+          >
+          <label class="day"
+            ><input type="checkbox" data-day="5" /><span
+              ><strong>第 6 天 · 两问拆成两步</strong
+              ><small
+                >圈出题干的两个任务。先用“①……②……”口述，再分别在原文找依据。最后逐项打钩，防止漏答。</small
+              ></span
+            ></label
+          >
+          <label class="day"
+            ><input type="checkbox" data-day="6" /><span
+              ><strong>第 7 天 · 第一次回看</strong
+              ><small
+                >不看旧答案，做 2 道字词、1 道句式、1
+                道阅读变式。记录“能独立解释/要提示/还不会”，不只比较分数。</small
+              ></span
+            ></label
+          >
+          <label class="day"
+            ><input type="checkbox" data-day="7" /><span
+              ><strong>第 8 天 · 事情的先后</strong
+              ><small
+                >读一段短故事，用“起因—经过—结果”三张卡排序，再各用一句话概括。不要把感想当作事件。</small
+              ></span
+            ></label
+          >
+          <label class="day"
+            ><input type="checkbox" data-day="8" /><span
+              ><strong>第 9 天 · 用证据说人物</strong
+              ><small
+                >圈一个动作或一句话，回答“这说明什么，为什么”。练“人物表现＋文中细节”，不用万能赞美词。</small
+              ></span
+            ></label
+          >
+          <label class="day"
+            ><input type="checkbox" data-day="9" /><span
+              ><strong>第 10 天 · 一句一句读通</strong
+              ><small
+                >朗读自己写的 3
+                句话，检查谁做什么、词语搭配和前后重复。每句只做必要修改，不把孩子的语言全部换掉。</small
+              ></span
+            ></label
+          >
+          <label class="day"
+            ><input type="checkbox" data-day="10" /><span
+              ><strong>第 11 天 · 推荐要有理由</strong
+              ><small
+                >先画一个想推荐的小地方：有什么特点？读者能体验什么？我为什么喜欢？看图口述，再写成一个具体片段。</small
+              ></span
+            ></label
+          >
+          <label class="day"
+            ><input type="checkbox" data-day="11" /><span
+              ><strong>第 12 天 · 把一个片段写清楚</strong
+              ><small
+                >从前一天的图选择一个重点，加入动作、语言或感受中的两项。只扩写关键处，不为凑字数重复“很好看”。</small
+              ></span
+            ></label
+          >
+          <label class="day"
+            ><input type="checkbox" data-day="12" /><span
+              ><strong>第 13 天 · 新情境迁移</strong
+              ><small
+                >用没做过的短文和生活场景，独立完成字词选择、找依据、完整回答。家长先不提醒，看方法能否自己用出来。</small
+              ></span
+            ></label
+          >
+          <label class="day"
+            ><input type="checkbox" data-day="13" /><span
+              ><strong>第 14 天 · 第二次检测与小庆祝</strong
+              ><small
+                >重做诊断的变式，回看第一天记录。说出两项进步和一个下阶段目标；奖励愿意解释、认真修改，而非只奖励全对。</small
+              ></span
+            ></label
+          >
+        </div>
+      </section>
+      <section id="diagnosis">
+        <p class="eyebrow">TRY · EXPLAIN · CHECK</p>
+        <h2>六、5 个原创诊断：先独立答，再看思路</h2>
+        <p>
+          这些是针对方法设计的<strong>原创练习，不是原卷原题</strong>。开放题允许不同的合理表达；下方是参考思路，<strong>不是自动评分</strong>。请家长听孩子说理由，分别记录是否需要提示。
+        </p>
+        <article class="quiz">
+          <h3>1. 看懂了，会不会在句子里用？</h3>
+          <p>
+            “小树经过雨水的（滋／姿）润，长出了新叶。”你选哪个字？说明原因，再自己写一句用到这个词的话。
+          </p>
+          <label for="answer-0">我的答案与理由</label
+          ><textarea
+            id="answer-0"
+            data-save="answer-0"
+            maxlength="3000"
+            rows="3"
+          ></textarea>
+          <details>
+            <summary>我答完了，查看参考思路</summary>
+            <p>
+              选“滋”，“滋润”在这里指雨水使小树得到水分；“姿”常见于“姿态”。能选对还不够，观察孩子能否在新句子里正确写出“滋润”，这才是从识别走向运用。
+            </p>
+          </details>
+        </article>
+        <article class="quiz">
+          <h3>2. 换成反问，意思别变</h3>
+          <p>
+            把“我们应该爱护校园里的花草。”改为反问句，并说说它表达的仍是什么态度。
+          </p>
+          <label for="answer-1">我的反问句与说明</label
+          ><textarea
+            id="answer-1"
+            data-save="answer-1"
+            maxlength="3000"
+            rows="3"
+          ></textarea>
+          <details>
+            <summary>我答完了，查看参考思路</summary>
+            <p>
+              例如：“难道我们不应该爱护校园里的花草吗？”仍然强调应该爱护。检验方法：把反问句还原成陈述句，意思应一致。“难道……吗”不是唯一格式，也不是一出现就能保证意思正确。
+            </p>
+          </details>
+        </article>
+        <article class="quiz">
+          <h3>3. 两个问题，一个也不漏</h3>
+          <p class="story">
+            放学时突然下雨，小林发现同桌没带伞。他走回教室，把备用伞借给同桌，自己撑着另一把伞回家。
+          </p>
+          <p>
+            小林为什么走回教室？你从中看出他怎样的特点？请分别回答并指出依据。
+          </p>
+          <label for="answer-2">① 原因　② 特点与依据</label
+          ><textarea
+            id="answer-2"
+            data-save="answer-2"
+            maxlength="3000"
+            rows="3"
+          ></textarea>
+          <details>
+            <summary>我答完了，查看参考思路</summary>
+            <p>
+              ① 为了取备用伞借给没有带伞的同桌。②
+              他关心同伴、愿意帮助别人，依据是他发现同桌没伞后特意返回取伞。只写“他很善良”不算回答了第一个问题；不必照抄参考措辞。
+            </p>
+          </details>
+        </article>
+        <article class="quiz">
+          <h3>4. 推荐理由怎样变成一个画面？</h3>
+          <p>
+            “我想推荐校园里的小花园，因为那里很美。”请补写一个小片段，让读者知道它美在哪里。可以先画图或口述；不必写真实学校名称。
+          </p>
+          <label for="answer-3">我的具体小片段</label
+          ><textarea
+            id="answer-3"
+            data-save="answer-3"
+            maxlength="3000"
+            rows="4"
+          ></textarea>
+          <details>
+            <summary>我答完了，查看自查清单</summary>
+            <p>
+              有没有围绕小花园？有没有具体的景物、颜色或动作？读者能从这些细节看出“美”在哪里吗？可以有不同的观察和合理想象，不要求照着同一范文写；与其重复“真美”，不如描写一处具体画面。
+            </p>
+          </details>
+        </article>
+        <article class="quiz">
+          <h3>5. 最后一步：让句子读得顺</h3>
+          <p>
+            “看了这本书，使我懂得了坚持的重要。”读起来哪里不完整？请作最少的修改，并说出谁懂得了这个道理。
+          </p>
+          <label for="answer-4">我的修改与理由</label
+          ><textarea
+            id="answer-4"
+            data-save="answer-4"
+            maxlength="3000"
+            rows="3"
+          ></textarea>
+          <details>
+            <summary>我答完了，查看参考思路</summary>
+            <p>
+              可以改为“看了这本书，我懂得了坚持的重要。”也可以改为“这本书使我懂得了坚持的重要。”保留一个清楚的句子结构即可，不必把内容全改。关键是让“谁怎样”完整、清楚。
+            </p>
+          </details>
+        </article>
+      </section>
+      <section>
+        <h2>读懂发现之后，开始语文小探险</h2>
+        <p>
+          先看情境、摆线索，再找规律、解释理由，最后换一种情境独立练。游戏里的闯关表现用于练习反馈，不能当作新的考试成绩。
+        </p>
+        <p>
+          点击辨字不能代替纸笔写字，建议关掉提示后在纸上写词，再由家长核对。开放阅读、想象与片段表达没有唯一措辞，使用参考思路和自查清单，不把关键词命中当作真正理解。观察独立完成、需要提示和变式再练的变化，比只看通关更重要。
+        </p>
+        <div class="actions">
+          <a class="button" href="/learning/chinese/practice.html"
+            >进入语文闯关 →</a
+          ><button id="print-report" type="button" class="ghost">
+            打印 / 保存 PDF</button
+          ><button id="export-notes" type="button" class="ghost">
+            导出打卡与作答
+          </button>
+        </div>
+        <p id="save-status" class="small" role="status"></p>
+      </section>
+      <footer>
+        悠悠的学习之旅 · 保留好奇，慢慢说清。<br /><a href="/learning/"
+          >返回学习之旅</a
+        >
+      </footer>
+    </main>
+    <script>
+      (() => {
+        "use strict";
+        const KEY = "yoyo-chinese-report-v1";
+        const NORMAL =
+          "打卡与诊断作答只保存在当前设备的这个浏览器，不上传服务器、不跨设备同步。清理浏览器数据可能丢失；可导出 JSON 留档（本页暂不提供导入恢复）。";
+        const $ = (selector) => document.querySelector(selector);
+        const state = { version: 1, days: [], answers: {} };
+        let storageOK = true;
+        try {
+          const raw = localStorage.getItem(KEY);
+          if (raw !== null) {
+            const saved = JSON.parse(raw);
+            if (
+              !saved ||
+              typeof saved !== "object" ||
+              Array.isArray(saved) ||
+              saved.version !== 1 ||
+              !Array.isArray(saved.days) ||
+              !saved.answers ||
+              typeof saved.answers !== "object" ||
+              Array.isArray(saved.answers)
+            )
+              throw new Error("Invalid record");
+            state.days = [
+              ...new Set(
+                saved.days.filter(
+                  (n) => Number.isInteger(n) && n >= 0 && n < 14,
+                ),
+              ),
+            ];
+            for (const [key, value] of Object.entries(saved.answers)) {
+              if (/^answer-[0-4]$/.test(key) && typeof value === "string")
+                state.answers[key] = value.slice(0, 3000);
+            }
+          }
+        } catch {
+          storageOK = false;
+        }
+        function status() {
+          $("#save-status").textContent = storageOK
+            ? NORMAL
+            : "当前浏览器无法保存或旧记录损坏。你仍可完成本次学习；请用“导出打卡与作答”留档，刷新后可能丢失。本页暂不提供导入恢复。";
+        }
+        function save() {
+          try {
+            localStorage.setItem(KEY, JSON.stringify(state));
+            storageOK = true;
+          } catch {
+            storageOK = false;
+          }
+          status();
+        }
+        function update() {
+          $("#plan-count").textContent = state.days.length + "/14 天";
+          $("#plan-progress").value = state.days.length;
+        }
+        document.querySelectorAll("[data-day]").forEach((el) => {
+          const day = Number(el.dataset.day);
+          el.checked = state.days.includes(day);
+          el.addEventListener("change", () => {
+            state.days = state.days.filter((n) => n !== day);
+            if (el.checked) state.days.push(day);
+            update();
+            save();
+          });
+        });
+        document.querySelectorAll("[data-save]").forEach((el) => {
+          el.value = state.answers[el.dataset.save] || "";
+          el.addEventListener("input", () => {
+            state.answers[el.dataset.save] = el.value.slice(0, 3000);
+            save();
+          });
+        });
+        $("#print-report").addEventListener("click", () => window.print());
+        $("#export-notes").addEventListener("click", () => {
+          const blob = new Blob(
+            [
+              JSON.stringify(
+                {
+                  title: "悠悠语文14天学习记录",
+                  exportedAt: new Date().toISOString(),
+                  ...state,
+                },
+                null,
+                2,
+              ),
+            ],
+            { type: "application/json" },
+          );
+          const url = URL.createObjectURL(blob);
+          const anchor = document.createElement("a");
+          anchor.href = url;
+          anchor.download = "悠悠语文学习记录.json";
+          anchor.click();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        });
+        update();
+        status();
+      })();
+    </script>
+  </body>
+</html>

@@ -161,6 +161,8 @@ export async function verifyLive({
         "/learning/computing/",
         "/learning/math/report.html",
         "/learning/math/practice.html",
+        "/learning/chinese/report.html",
+        "/learning/chinese/practice.html",
       ];
       for (const resource of learningPaths) {
         const html = await get(resource, "text/html");

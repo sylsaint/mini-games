@@ -57,3 +57,8 @@ test('responsive grid constrains horizontally scrolling map instead of expanding
  assert.match(html,/\.panel\{min-width:0/);
  assert.match(html,/\.map\{max-width:100%;min-width:0/);
 });
+
+test('practice footer returns to learning journey rather than the root portal',()=>{
+ const href=html.match(/<a href="([^"]+)">返回学习之旅<\/a>/)?.[1];
+ assert.equal(new URL(href,'https://example.com/learning/math/practice.html').pathname,'/learning/');
+});

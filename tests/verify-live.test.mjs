@@ -45,6 +45,8 @@ for (const resource of [
   "/learning/computing/",
   "/learning/math/report.html",
   "/learning/math/practice.html",
+  "/learning/chinese/report.html",
+  "/learning/chinese/practice.html",
 ])
   files[resource] = [
     "text/html",
@@ -74,8 +76,8 @@ test("live verifier checks revision, lobby, catalog, game, cover and module asse
     expectedCommit: commit,
     fetchImpl,
   });
-  assert.equal(result.resources, 17);
-  assert.equal(result.learningPages, 8);
+  assert.equal(result.resources, 19);
+  assert.equal(result.learningPages, 10);
   assert.equal(result.games, 1);
   assert.ok(
     calls.some(
@@ -260,6 +262,8 @@ test("live verification refuses missing or malformed learning resources", async 
   for (const overrides of [
     { "/learning/math/practice.html": ["text/html", "Not found", 404] },
     { "/learning/math/report.html": ["text/html", "Not valid HTML"] },
+    { "/learning/chinese/practice.html": ["text/html", "Not found", 404] },
+    { "/learning/chinese/report.html": ["text/html", "Not valid HTML"] },
   ]) {
     await assert.rejects(
       verifyLive({
@@ -272,4 +276,33 @@ test("live verification refuses missing or malformed learning resources", async 
       /learning|HTTP/,
     );
   }
+});
+
+test("Chinese report and practice canonical Pages redirects are verified", async () => {
+  const normal = mock();
+  const canonical = ["/learning/chinese/report", "/learning/chinese/practice"];
+  const fetchImpl = async (url, options) => {
+    const pathname = new URL(url).pathname;
+    if (canonical.some((resource) => pathname === resource + ".html"))
+      return {
+        status: 308,
+        headers: new Headers({ location: pathname.slice(0, -5) }),
+      };
+    if (canonical.includes(pathname)) {
+      const [type, body] = files[pathname + ".html"];
+      return {
+        status: 200,
+        headers: new Headers({ "content-type": type }),
+        arrayBuffer: async () => Buffer.from(body),
+      };
+    }
+    return normal.fetchImpl(url, options);
+  };
+  const result = await verifyLive({
+    baseUrl,
+    expectedCommit: commit,
+    fetchImpl,
+  });
+  assert.equal(result.learningPages, 10);
+  assert.equal(result.resources, 19);
 });

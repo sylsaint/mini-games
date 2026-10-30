@@ -36,6 +36,20 @@ const files = {
   "/games/test/engine.js": ["application/javascript", "export const value=24;"],
   "/games/test/cover.svg": ["image/svg+xml", "<svg/>"],
 };
+for (const resource of [
+  "/learning/",
+  "/learning/math/",
+  "/learning/chinese/",
+  "/learning/english/",
+  "/learning/science/",
+  "/learning/computing/",
+  "/learning/math/report.html",
+  "/learning/math/practice.html",
+])
+  files[resource] = [
+    "text/html",
+    '<html lang="zh-CN"><body>Learning resource</body></html>',
+  ];
 function mock(overrides = {}) {
   const calls = [];
   return {
@@ -60,7 +74,8 @@ test("live verifier checks revision, lobby, catalog, game, cover and module asse
     expectedCommit: commit,
     fetchImpl,
   });
-  assert.equal(result.resources, 9);
+  assert.equal(result.resources, 17);
+  assert.equal(result.learningPages, 8);
   assert.equal(result.games, 1);
   assert.ok(
     calls.some(
@@ -239,4 +254,22 @@ test("live verification rejects changed original HTML bytes", async () => {
     }),
     /SHA-256/,
   );
+});
+
+test("live verification refuses missing or malformed learning resources", async () => {
+  for (const overrides of [
+    { "/learning/math/practice.html": ["text/html", "Not found", 404] },
+    { "/learning/math/report.html": ["text/html", "Not valid HTML"] },
+  ]) {
+    await assert.rejects(
+      verifyLive({
+        baseUrl,
+        expectedCommit: commit,
+        fetchImpl: mock(overrides).fetchImpl,
+        timeoutMs: 100,
+        intervalMs: 100,
+      }),
+      /learning|HTTP/,
+    );
+  }
 });

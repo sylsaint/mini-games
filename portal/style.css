@@ -446,3 +446,59 @@ footer {
     transition: none !important;
   }
 }
+
+.learning-entry {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  background: #e4eddf;
+  color: #294f40;
+  border: 1px solid #d1dfc9;
+  border-radius: 24px;
+  padding: 32px;
+  margin: 38px 0;
+}
+.learning-entry .learning-mark {
+  font-size: 70px;
+  color: #6f9771;
+}
+.learning-entry p {
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin: 0 0 9px;
+}
+.learning-entry h2 {
+  font-size: 29px;
+  letter-spacing: -0.6px;
+  margin: 0 0 12px;
+}
+.learning-entry div > span {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #59735d;
+}
+.learning-entry b {
+  margin-left: auto;
+  font-size: 35px;
+}
+.learning-entry:hover {
+  background: #dce8d5;
+}
+@media (max-width: 600px) {
+  .learning-entry {
+    gap: 16px;
+    padding: 24px;
+  }
+  .learning-entry .learning-mark {
+    display: none;
+  }
+  .learning-entry h2 {
+    font-size: 25px;
+  }
+  .learning-entry div > span {
+    font-size: 12px;
+  }
+  .learning-entry b {
+    font-size: 25px;
+  }
+}

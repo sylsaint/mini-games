@@ -151,6 +151,23 @@ export async function verifyLive({
         collect(html, origin + game.url);
         assets.add(game.cover);
       }
+      // These static learning resources are part of the published portal, not games.json.
+      const learningPaths = [
+        "/learning/",
+        "/learning/math/",
+        "/learning/chinese/",
+        "/learning/english/",
+        "/learning/science/",
+        "/learning/computing/",
+        "/learning/math/report.html",
+        "/learning/math/practice.html",
+      ];
+      for (const resource of learningPaths) {
+        const html = await get(resource, "text/html");
+        if (!/<html\b/i.test(html))
+          throw new Error(`Invalid learning HTML: ${resource}`);
+        collect(html, origin + resource);
+      }
       // Follow local static ES-module imports so engine.js is checked as well as game.js.
       for (const asset of assets) {
         if (assets.size > 200)
@@ -176,6 +193,7 @@ export async function verifyLive({
         origin,
         sourceCommit: commit,
         games: catalog.length,
+        learningPages: learningPaths.length,
         gameHashes: catalog.map((game) => ({
           url: game.url,
           sha256: hashes.get(game.url),

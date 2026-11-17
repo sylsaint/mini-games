@@ -14,7 +14,7 @@ test("Hunan guide navigation, passport, translation and quiz work", async ({
       () => document.documentElement.scrollWidth <= innerWidth + 1,
     ),
   ).toBeTruthy();
-  await page.screenshot({path:testInfo.outputPath("hunan-guide.png"),fullPage:true});
+  await page.screenshot({path:testInfo.outputPath("hunan-guide.png"),fullPage:false});
   await page.locator(".station:not([hidden]) [data-stamp]").click();
   await expect(page.locator("#passport-count")).toHaveText("1");
   await page.reload();

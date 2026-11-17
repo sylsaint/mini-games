@@ -49,7 +49,6 @@ export function createSpeechController({ toast, icon }) {
     voices = [],
     active = null,
     generation = 0,
-    timer = null,
     current = null;
   try {
     preference = JSON.parse(localStorage.getItem(key) || "{}") || {};
@@ -76,14 +75,14 @@ export function createSpeechController({ toast, icon }) {
   }
   function stop() {
     generation++;
-    clearTimeout(timer);
+    const shouldCancel = Boolean(active || synth?.speaking || synth?.pending);
     current = null;
     if (active) {
       active.button.innerHTML = active.label;
       active.button.setAttribute("aria-pressed", "false");
       active = null;
     }
-    synth?.cancel();
+    if (shouldCancel) synth?.cancel();
   }
   function speak(text, button) {
     if (active?.button === button) {
@@ -109,32 +108,55 @@ export function createSpeechController({ toast, icon }) {
     active = { button, label: button.innerHTML };
     button.innerHTML = icon("sound") + "停止朗读";
     button.setAttribute("aria-pressed", "true");
-    let index = 0;
-    function next() {
+    let remaining = chunks.length;
+    function fail(code) {
       if (token !== generation) return;
-      if (index === chunks.length) {
-        stop();
-        return;
-      }
-      const u = new SpeechSynthesisUtterance(chunks[index++]);
-      current = u;
+      stop();
+      if (["interrupted", "canceled"].includes(code)) return;
+      const hints = {
+        "not-allowed":
+          "请在 Safari 中直接点一次“试听声音”；内置浏览器可能限制语音。",
+        "voice-unavailable":
+          "这个音色不可用，请选择另一种本机音色，或在系统设置中下载中文声音。",
+        "language-unavailable":
+          "系统没有可用的中文声音，请先在系统辅助功能中下载普通话语音。",
+        "synthesis-unavailable":
+          "浏览器暂时没有可用的语音引擎，请尝试在 Safari 中打开。",
+        "audio-busy": "音频输出正忙，请结束其他音频后重试。",
+        "audio-hardware": "请检查设备音量和音频输出，再试一次。",
+        network: "系统语音引擎报告网络错误，请换一个已下载的本机音色。",
+      };
+      const message = `朗读未成功（${code || "unknown"}，${voice.name}）。${hints[code] || "请换一个本机音色后重试；若仍失败，请把此错误代码告诉我。"}`;
+      status.textContent = message;
+      document.querySelector("#speech-settings").open = true;
+      toast(message);
+    }
+    // Queue within the original click, not a timer/onend callback: preserve iOS activation.
+    // Retain utterances until completion so engines cannot lose them to collection.
+    current = chunks.map((text) => {
+      const u = new SpeechSynthesisUtterance(text);
       u.voice = voice;
       u.lang = voice.lang;
       u.rate = Number(rate.value);
       u.pitch = 1;
       u.onend = () => {
-        if (token === generation) timer = setTimeout(next, 90);
+        if (token === generation && --remaining === 0) stop();
       };
-      u.onerror = (e) => {
-        if (token !== generation) return;
-        stop();
-        if (!["interrupted", "canceled"].includes(e.error))
-          toast("朗读暂时失败，请换一个本机音色后重试。");
-      };
-      synth.speak(u);
+      u.onerror = (e) => fail(e.error);
+      return u;
+    });
+    const queue = current;
+    try {
+      if (synth.paused) synth.resume();
+      for (const u of queue) {
+        if (token !== generation) break;
+        synth.speak(u);
+      }
+    } catch (error) {
+      fail(error.name || "synthesis-failed");
     }
-    next();
   }
+
   function save() {
     stop();
     preference = { voice: select.value, rate: Number(rate.value) };

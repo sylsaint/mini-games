@@ -211,6 +211,7 @@ test("Hunan local speech selection, preference and cancellation are robust", asy
   await page.evaluate(() => window.__readySpeech());
   await expect(page.locator("#speech-voice")).toHaveValue("yushu|zh-CN");
   await expect(page.locator("#speech-voice option")).toHaveCount(2);
+  expect(await page.evaluate(() => window.__speech.cancels)).toBe(0);
   await page.locator("#speech-preview").click();
   expect(await page.evaluate(() => window.__speech.calls[0])).toEqual({
     text: "沿着山水，读一读湖南。",
@@ -220,7 +221,7 @@ test("Hunan local speech selection, preference and cancellation are robust", asy
   await page.locator("#speech-preview").click();
   await page.evaluate(() => window.__speech.last.onend());
   await page.waitForTimeout(180);
-  expect(await page.evaluate(() => window.__speech.calls.length)).toBe(1);
+  expect(await page.evaluate(() => window.__speech.calls.length)).toBe(2);
   await expect(page.locator("#speech-preview")).toHaveText("试听声音");
   await page.locator("#speech-voice").selectOption("eddy|zh-CN");
   await page.locator("#speech-rate").selectOption("1");
@@ -228,4 +229,17 @@ test("Hunan local speech selection, preference and cancellation are robust", asy
   await page.evaluate(() => window.__readySpeech());
   await expect(page.locator("#speech-voice")).toHaveValue("eddy|zh-CN");
   await expect(page.locator("#speech-rate")).toHaveValue("1");
+  await page.locator("#speech-settings summary").click();
+  await page.locator("#speech-preview").click();
+  await page.evaluate(() =>
+    window.__speech.last.onerror({ error: "voice-unavailable" }),
+  );
+  await expect(page.locator("#speech-status")).toContainText(
+    "voice-unavailable",
+  );
+  await expect(page.locator("#speech-status")).toContainText("另一种本机音色");
+  await expect(page.locator("#speech-preview")).toHaveAttribute(
+    "aria-pressed",
+    "false",
+  );
 });

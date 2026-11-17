@@ -57,7 +57,9 @@ jobs:
         env:
           BASE_URL: https://mini-games-a3y.pages.dev
           EXPECTED_COMMIT: ${{ github.sha }}
-        run: node scripts/verify-live.mjs
+        run: |
+          node scripts/verify-live.mjs
+          node scripts/verify-live-svelte.mjs
       - name: Test live production interactions
         id: live_tests
         if: ${{ !(github.event.before == '821f0fcccaf95ca9961c40c0e164c315c4fdc138' && contains(github.event.head_commit.message, '[publish-original-without-tests]')) }}

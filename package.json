@@ -7,18 +7,25 @@
     "node": ">=24 <25"
   },
   "scripts": {
-    "build": "node scripts/build.mjs",
-    "test": "node --test tests/*.test.mjs",
-    "check": "npm test && npm run build",
+    "build": "node scripts/prepare-static.mjs && npm run build --workspace @yoyo/web && node scripts/finalize-build.mjs && node scripts/check-built.mjs",
+    "test": "node --test tests/*.test.mjs packages/*/test/*.test.mjs packages/*/tests/*.test.mjs packages/games/src/*.test.js",
+    "check": "npm test && npm run check:types && npm run build",
     "serve": "node scripts/serve.mjs",
     "test:e2e": "playwright test",
     "deploy": "wrangler pages deploy dist --project-name mini-games --branch main",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "build:legacy": "node scripts/build.mjs",
+    "check:types": "npm run check --workspace @yoyo/web",
+    "dev": "npm run dev --workspace @yoyo/web"
   },
   "devDependencies": {
     "@playwright/test": "1.64.1",
     "prettier": "3.9.10",
     "wrangler": "4.152.0"
-  }
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
 }

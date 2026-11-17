@@ -24,10 +24,10 @@ test("learning journey navigation, five subjects and mobile layouts", async ({
     await expect(page.locator('a[href="/learning/"]').first()).toBeVisible();
   }
   await page.goto("/learning/math/");
-  await page.locator('a[href="report.html"]').click();
+  await page.locator('a[href="/learning/math/report/"]').click();
   await expect(page).toHaveTitle(/数学.*分析/);
   await page.goBack();
-  await page.locator('a[href="practice.html"]').click();
+  await page.locator('a[href="/learning/math/practice/"]').click();
   await expect(page.locator("body")).toBeVisible();
   await fits(page);
   await page.screenshot({
@@ -188,6 +188,7 @@ test("backup import previews before changing local records and rejects cross-sub
 });
 
 async function currentQuestion(page) {
+  await page.waitForFunction(() => !!window.geometryAdventure);
   const stem = await page.locator("#questionTitle").textContent();
   return page.evaluate(
     (stem) =>
@@ -213,7 +214,7 @@ test("geometry mastery checks reasoning, revisits errors and persists a single c
   page.on("pageerror", (error) => errors.push(error.message));
   await test.step("open geometry and verify viewport containment", async () => {
     console.info("QA geometry: opening practice");
-    await page.goto("/learning/math/practice.html");
+    await page.goto("/learning/math/practice/");
     await fits(page);
     console.info("QA geometry: page loaded, viewport containment passed");
   });
@@ -283,7 +284,7 @@ test("geometry mastery checks reasoning, revisits errors and persists a single c
   }
   expect(insertedError).toBeTruthy();
   expect(revisited).toBeTruthy();
-  expect(questionChecks).toBeGreaterThanOrEqual(26);
+  expect(questionChecks).toBe(31);
   expect(
     await page.evaluate(() => window.geometryAdventure.isComplete()),
   ).toBeTruthy();
@@ -347,7 +348,7 @@ test("geometry malformed saved state and unavailable storage remain usable", asy
     localStorage.setItem("yoyo-geometry-v1", "{bad-json");
   });
   console.info("QA malformed storage: opening practice");
-  await page.goto("/learning/math/practice.html");
+  await page.goto("/learning/math/practice/");
   await fits(page);
   console.info("QA malformed storage: clicking initial lab control");
   await expect(page.locator("#labDone")).toBeVisible();
@@ -359,7 +360,7 @@ test("geometry malformed saved state and unavailable storage remain usable", asy
 test("complete report preserves sections and saves all fourteen days and five reasoning responses", async ({
   page,
 }, testInfo) => {
-  await page.goto("/learning/math/report.html");
+  await page.goto("/learning/math/report/");
   for (let section = 1; section <= 5; section++)
     await expect(page.locator(`#section-${section}`)).toBeVisible();
   await expect(page.locator("[data-day]")).toHaveCount(14);
@@ -406,7 +407,7 @@ test("report remains writable when browser storage is disabled and explains back
       },
     });
   });
-  await page.goto("/learning/math/report.html");
+  await page.goto("/learning/math/report/");
   await expect(page.locator("#save-status")).toContainText("无法保存");
   await page.locator('[data-day="0"]').check();
   await page.locator("#answer-0").fill("不是同一条射线");
@@ -428,8 +429,9 @@ test("scratch card responds to real pointer or touch input after a completed-ses
   isMobile,
 }) => {
   console.info("QA scratch: opening practice");
-  await page.goto("/learning/math/practice.html");
+  await page.goto("/learning/math/practice/");
   await fits(page);
+  await page.waitForFunction(() => !!window.geometryAdventure);
   // Fixture isolates scratch mechanics. The previous test earns completion through the actual UI.
   await page.evaluate(() => {
     const app = window.geometryAdventure;
@@ -467,7 +469,7 @@ test("early wrong-question review returns to unfinished challenges without unloc
   page,
 }) => {
   console.info("QA early review: opening practice");
-  await page.goto("/learning/math/practice.html");
+  await page.goto("/learning/math/practice/");
   await fits(page);
   console.info("QA early review: manipulating initial lab");
   await page.locator("[data-mode]").last().click();
@@ -484,4 +486,59 @@ test("early wrong-question review returns to unfinished challenges without unloc
   expect(
     await page.evaluate(() => window.geometryAdventure.isComplete()),
   ).toBeFalsy();
+});
+
+test("Svelte hydration preserves legacy math records, report notes and geometry progress", async ({ page }) => {
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  const records = [{title:"迁移前的数学记录",date:"2026-10-30",score:82,total:100,reflection:"画出垂线再说明理由。"}];
+  const report = {days:[1,5,13],answers:{"answer-0":"两个端点不同","reason-0":"射线的端点决定方向"}};
+  const progress = {v:1,level:1,labs:[true,true,false,false,false,false],solved:[0,1,2,3,4],wrong:[0],revisited:[0],hintsUsed:[0],attempts:{0:3,1:1,2:1,3:1,4:1},current:0};
+  const reward = {choice:2,revealed:true};
+  await page.goto("/learning/");
+  await page.evaluate(({records,report,progress,reward}) => {
+    localStorage.setItem("yoyo.learning.records.v1.math",JSON.stringify(records));
+    localStorage.setItem("yoyo-math-report-v1",JSON.stringify(report));
+    localStorage.setItem("yoyo-geometry-v1",JSON.stringify(progress));
+    localStorage.setItem("yoyo-geometry-reward-v1",JSON.stringify(reward));
+  },{records,report,progress,reward});
+  await page.goto("/learning/math/");
+  await expect(page.locator("#record-list")).toContainText(records[0].title);
+  await expect(page.locator("#record-list")).toContainText(records[0].reflection);
+  await page.locator('a[href="/learning/math/report/"]').click();
+  await expect(page.locator("#plan-count")).toHaveText("3/14 天");
+  await expect(page.locator("#answer-0")).toHaveValue(report.answers["answer-0"]);
+  await expect(page.locator("#reason-0")).toHaveValue(report.answers["reason-0"]);
+  await page.locator('a[href="/learning/math/practice/"]').first().click();
+  await page.waitForFunction(() => !!window.geometryAdventure);
+  await expect(page.locator("#questionTitle")).toBeVisible();
+  const restored = await page.evaluate(() => window.geometryAdventure.getState());
+  expect(restored.solved).toEqual(progress.solved);
+  expect(restored.revisited).toEqual(progress.revisited);
+  expect(restored.labs).toEqual(progress.labs);
+  expect(restored.level).toBe(1);
+  // Hydrating defaults must not overwrite any pre-migration payload.
+  const persisted = await page.evaluate(() => Object.fromEntries([
+    "yoyo.learning.records.v1.math","yoyo-math-report-v1","yoyo-geometry-v1","yoyo-geometry-reward-v1"
+  ].map(key => [key,JSON.parse(localStorage.getItem(key))])));
+  expect(persisted["yoyo.learning.records.v1.math"]).toEqual(records);
+  expect(persisted["yoyo-math-report-v1"]).toEqual(report);
+  expect(persisted["yoyo-geometry-v1"]).toEqual(progress);
+  expect(persisted["yoyo-geometry-reward-v1"]).toEqual(reward);
+  await page.reload();
+  await expect(page.locator("#questionTitle")).toBeVisible();
+  expect(await page.evaluate(() => window.geometryAdventure.getState().solved)).toEqual(progress.solved);
+  expect(errors).toEqual([]);
+});
+
+test("legacy math html URLs remain directly usable and link back to canonical routes", async ({ page }) => {
+  await page.goto("/learning/math/report.html#section-4");
+  await expect(page).toHaveTitle(/数学.*分析/);
+  await expect(page.locator("#section-4")).toBeVisible();
+  await page.locator('a[href="/learning/math/"]').first().click();
+  await expect(page).toHaveURL(/\/learning\/math\/$/);
+  await page.goto("/learning/math/practice.html");
+  await expect(page.locator("#labDone")).toBeVisible();
+  await page.reload();
+  await expect(page.locator("#labDone")).toBeVisible();
 });

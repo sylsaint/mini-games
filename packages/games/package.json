@@ -1,0 +1,13 @@
+{
+  "name": "@yoyo/games",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./twenty-four": "./src/TwentyFour.svelte",
+    "./math": "./src/math.js"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0"
+  }
+}

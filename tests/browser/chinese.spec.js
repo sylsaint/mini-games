@@ -5,8 +5,8 @@ async function fits(page) {
     await page.evaluate(() => document.documentElement.scrollWidth),
   ).toBeLessThanOrEqual(page.viewportSize().width + 1);
 }
-const reportPath = "/learning/chinese/report.html";
-const practicePath = "/learning/chinese/practice.html";
+const reportPath = "/learning/chinese/report/";
+const practicePath = "/learning/chinese/practice/";
 
 test("Chinese subject links reach report, practice and canonical learning home", async ({
   page,
@@ -65,7 +65,7 @@ test("Chinese report preserves all fourteen days and five private notes across r
     scale: "css",
     animations: "disabled",
   });
-  await page.goto("/learning/math/report.html");
+  await page.goto("/learning/math/report/");
   await expect(page.locator("#plan-count")).toHaveText("0/14 天");
   await expect(page.locator("#answer-0")).toHaveValue("");
 });
@@ -114,6 +114,7 @@ test("Chinese report recovers malformed notes without rendering injected markup"
 });
 
 async function solveLab(page) {
+  await page.waitForFunction(() => !!window.chineseAdventure);
   const expected = await page.evaluate(() => {
     const app = window.chineseAdventure;
     return app.topics[app.getState().level].evidence;
@@ -332,6 +333,7 @@ test("Chinese earned scratch card responds to actual pointer or touch input", as
   isMobile,
 }) => {
   await page.goto(practicePath);
+  await page.waitForFunction(() => !!window.chineseAdventure);
   await page.evaluate(() => {
     const app = window.chineseAdventure,
       s = app.getState();
@@ -357,4 +359,61 @@ test("Chinese earned scratch card responds to actual pointer or touch input", as
     }
   await expect(page.locator("#scratch")).toHaveCount(0);
   await expect(page.locator("#prize")).toHaveAttribute("aria-hidden", "false");
+});
+
+test("Svelte hydration preserves pre-migration Chinese report, writing, reward and challenge records", async ({ page }) => {
+  const errors=[];
+  page.on("pageerror", error=>errors.push(error.message));
+  const report={version:1,days:[0,6,13],answers:{"answer-0":"先找到原文的依据。","answer-4":"按题目要求写清楚。"}};
+  const progress={v:1,level:1,labs:[true,true,false,false,false,false],solved:[0,1,2,3,4],wrong:[1],revisited:[1],hintsUsed:[1],attempts:{0:1,1:3,2:1,3:1,4:1},current:0};
+  const reward={choice:1,revealed:true};
+  const writing={text:"迁移前保存的校园小花园。<img src=x onerror=window.injected=true>",checks:[true,false,true,false]};
+  await page.goto("/learning/");
+  await page.evaluate(({report,progress,reward,writing})=>{
+    localStorage.setItem("yoyo-chinese-report-v1",JSON.stringify(report));
+    localStorage.setItem("yoyo-chinese-v1",JSON.stringify(progress));
+    localStorage.setItem("yoyo-chinese-reward-v1",JSON.stringify(reward));
+    localStorage.setItem("yoyo-chinese-writing-v1",JSON.stringify(writing));
+  },{report,progress,reward,writing});
+  await page.goto(reportPath);
+  await expect(page.locator("#plan-count")).toHaveText("3/14 天");
+  await expect(page.locator("#answer-0")).toHaveValue(report.answers["answer-0"]);
+  await expect(page.locator("#answer-4")).toHaveValue(report.answers["answer-4"]);
+  await page.locator(`a[href="${practicePath}"]`).first().click();
+  await page.waitForFunction(()=>!!window.chineseAdventure);
+  await expect(page.locator("#questionTitle")).toBeVisible();
+  const restored=await page.evaluate(()=>window.chineseAdventure.getState());
+  expect(restored.solved).toEqual(progress.solved);
+  expect(restored.revisited).toEqual(progress.revisited);
+  expect(restored.level).toBe(1);
+  await page.locator(".notebook > summary").click();
+  await expect(page.locator("#writing")).toHaveValue(writing.text);
+  await expect(page.locator(".selfcheck").nth(0)).toBeChecked();
+  await expect(page.locator(".selfcheck").nth(1)).not.toBeChecked();
+  await expect(page.locator(".selfcheck").nth(2)).toBeChecked();
+  expect(await page.evaluate(()=>window.injected)).toBeUndefined();
+  const persisted=await page.evaluate(()=>Object.fromEntries([
+    "yoyo-chinese-report-v1","yoyo-chinese-v1","yoyo-chinese-reward-v1","yoyo-chinese-writing-v1"
+  ].map(key=>[key,JSON.parse(localStorage.getItem(key))])));
+  expect(persisted["yoyo-chinese-report-v1"]).toEqual(report);
+  expect(persisted["yoyo-chinese-v1"]).toEqual(progress);
+  expect(persisted["yoyo-chinese-reward-v1"]).toEqual(reward);
+  expect(persisted["yoyo-chinese-writing-v1"]).toEqual(writing);
+  await page.reload();
+  await expect(page.locator("#questionTitle")).toBeVisible();
+  expect(await page.evaluate(()=>window.chineseAdventure.getState().solved)).toEqual(progress.solved);
+  expect(errors).toEqual([]);
+});
+
+test("legacy Chinese html deep links still open and navigate to canonical pages", async ({ page })=>{
+  await page.goto("/learning/chinese/report.html#plan");
+  await expect(page).toHaveTitle(/语文.*分析/);
+  await expect(page.locator("#plan")).toBeVisible();
+  await page.locator(`a[href="${practicePath}"]`).first().click();
+  await expect(page).toHaveURL(/\/learning\/chinese\/practice\/$/);
+  await expect(page.locator("#labCheck")).toBeVisible();
+  await page.goto("/learning/chinese/practice.html");
+  await expect(page.locator("#labCheck")).toBeVisible();
+  await page.reload();
+  await expect(page.locator("#labCheck")).toBeVisible();
 });

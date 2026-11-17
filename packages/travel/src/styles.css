@@ -1,0 +1,2682 @@
+
+.hunan-guide {
+  --paper: #f7f3e9;
+  --card: #fffdf7;
+  --ink: #203a38;
+  --muted: #68756b;
+  --green: #285b50;
+  --green-pale: #e5ede4;
+  --orange: #b95a35;
+  --orange-pale: #faead9;
+  --blue: #326a85;
+  --blue-pale: #e5eef1;
+  --gold: #d6a253;
+  --line: #dddcca;
+  --radius: 20px;
+  --shadow: 0 14px 40px rgba(46, 54, 33, 0.045);
+}
+.hunan-guide * {
+  box-sizing: border-box;
+}
+.hunan-guide {
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+}
+.hunan-guide {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei",
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.8;
+}
+.hunan-guide button,
+.hunan-guide input {
+  font: inherit;
+}
+.hunan-guide button,
+.hunan-guide a {
+  -webkit-tap-highlight-color: transparent;
+}
+.hunan-guide button {
+  cursor: pointer;
+}
+.hunan-guide a {
+  color: inherit;
+}
+.hunan-guide button:focus-visible,
+.hunan-guide a:focus-visible,
+.hunan-guide input:focus-visible,
+.hunan-guide summary:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 4px;
+}
+.hunan-guide button:disabled {
+  cursor: default;
+}
+.hunan-guide svg {
+  vertical-align: middle;
+}
+.hunan-guide button svg,
+.hunan-guide .icon {
+  width: 21px;
+  height: 21px;
+  flex: none;
+}
+.hunan-guide button {
+  touch-action: manipulation;
+}
+.hunan-guide img {
+  max-width: 100%;
+  display: block;
+}
+.hunan-guide p,
+.hunan-guide h1,
+.hunan-guide h2,
+.hunan-guide h3,
+.hunan-guide h4 {
+  margin-top: 0;
+}
+.hunan-guide p {
+  margin-bottom: 14px;
+}
+.hunan-guide h1,
+.hunan-guide h2,
+.hunan-guide h3,
+.hunan-guide h4 {
+  line-height: 1.4;
+}
+.hunan-guide h1,
+.hunan-guide h2,
+.hunan-guide .serif {
+  font-family: "Songti SC", "STSong", "Noto Serif CJK SC", serif;
+}
+.hunan-guide h1 {
+  font-size: clamp(38px, 4.5vw, 64px);
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  margin: 14px 0 20px;
+}
+.hunan-guide h2 {
+  font-size: clamp(27px, 3vw, 38px);
+  margin: 0 0 12px;
+}
+.hunan-guide h3 {
+  font-size: 21px;
+  margin: 0 0 14px;
+}
+.hunan-guide h4 {
+  font-size: 17px;
+  margin: 0 0 8px;
+}
+.hunan-guide .wrap {
+  width: min(1240px, calc(100% - 64px));
+  margin-inline: auto;
+}
+.hunan-guide .eyebrow {
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  color: var(--orange);
+}
+.hunan-guide .muted {
+  color: var(--muted);
+}
+.hunan-guide .small {
+  font-size: 13px;
+}
+.hunan-guide .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 30px;
+  font-size: 12px;
+  line-height: 1.5;
+  background: var(--green-pale);
+  color: var(--green);
+  font-weight: 650;
+}
+.hunan-guide .pill.orange {
+  color: var(--orange);
+  background: var(--orange-pale);
+}
+.hunan-guide .pill.blue {
+  background: var(--blue-pale);
+  color: var(--blue);
+}
+.hunan-guide .btn {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 17px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--card);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition:
+    transform 0.2s,
+    background 0.2s;
+}
+.hunan-guide .btn:hover {
+  background: #f0eadb;
+  transform: translateY(-1px);
+}
+.hunan-guide .btn.primary {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+.hunan-guide .btn.primary:hover {
+  background: #1b443b;
+}
+.hunan-guide .btn.ghost {
+  background: transparent;
+}
+.hunan-guide .btn:disabled {
+  opacity: 0.6;
+  transform: none;
+}
+.hunan-guide .section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 26px;
+}
+.hunan-guide .section-head p {
+  margin: 0;
+  color: var(--muted);
+  max-width: 520px;
+}
+.hunan-guide .section {
+  padding-block: 46px;
+}
+.hunan-guide .section + .section {
+  border-top: 1px solid var(--line);
+}
+.hunan-guide .tag-line {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.hunan-guide .text-link {
+  color: var(--green);
+  text-underline-offset: 4px;
+}
+.hunan-guide .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.hunan-guide [hidden] {
+  display: none !important;
+}
+.hunan-guide .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(247, 243, 233, 0.96);
+  backdrop-filter: blur(15px);
+  border-bottom: 1px solid var(--line);
+}
+.hunan-guide .top-inner {
+  height: 76px;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+.hunan-guide .brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  text-decoration: none;
+  white-space: nowrap;
+  font-weight: 800;
+  font-size: 19px;
+  letter-spacing: 0.04em;
+}
+.hunan-guide .brand-mark {
+  height: 37px;
+  width: 37px;
+  border-radius: 11px;
+  background: var(--green);
+  display: grid;
+  place-items: center;
+  color: #fff5de;
+}
+.hunan-guide .brand-mark svg {
+  height: 26px;
+  width: 26px;
+}
+.hunan-guide .top-nav {
+  margin-left: auto;
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 550;
+}
+.hunan-guide .top-nav a {
+  text-decoration: none;
+  white-space: nowrap;
+}
+.hunan-guide .top-nav a:hover {
+  color: var(--orange);
+}
+.hunan-guide .top-actions {
+  display: flex;
+  gap: 8px;
+}
+.hunan-guide .top-actions .btn {
+  padding: 8px 12px;
+  font-size: 12px;
+}
+.hunan-guide .mobile-label {
+  display: none;
+}
+.hunan-guide .hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: 0.92fr 1.08fr;
+  gap: 36px;
+  align-items: center;
+  padding-block: 43px 50px;
+}
+.hunan-guide .hero-copy {
+  padding: 12px 0;
+}
+.hunan-guide .hero-copy > p {
+  font-size: 17px;
+  color: #5b6b61;
+  max-width: 450px;
+}
+.hunan-guide .hero-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+.hunan-guide .hero-meta {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  margin-top: 30px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.hunan-guide .hero-meta strong {
+  font-size: 20px;
+  font-family: Georgia, serif;
+  color: var(--ink);
+  padding-right: 5px;
+}
+.hunan-guide .hero-art {
+  position: relative;
+  margin: 0;
+  isolation: isolate;
+}
+.hunan-guide .hero-art:before {
+  content: "";
+  position: absolute;
+  inset: 25px -15px -15px 25px;
+  background: #e8e5d4;
+  border-radius: 42% 14% 20% 14%;
+  z-index: -1;
+}
+.hunan-guide .hero-art img {
+  width: 100%;
+  aspect-ratio: 1.25;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 120px 22px 22px 22px;
+}
+.hunan-guide .hero-art figcaption {
+  font-size: 10px;
+  color: var(--muted);
+  text-align: right;
+  padding-top: 7px;
+}
+.hunan-guide .hero-sticker {
+  position: absolute;
+  left: -18px;
+  bottom: 31px;
+  background: var(--card);
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  border-radius: 14px;
+  transform: rotate(-4deg);
+  font-size: 13px;
+  font-weight: 600;
+}
+.hunan-guide .hero-sticker b {
+  color: var(--orange);
+}
+.hunan-guide .howto {
+  background: var(--green);
+  color: #fff8e7;
+  border-radius: 18px;
+  padding: 23px 28px;
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.hunan-guide .howto-title {
+  font-family: "Songti SC", serif;
+  font-size: 20px;
+  white-space: nowrap;
+}
+.hunan-guide .howto-steps {
+  display: flex;
+  gap: 25px;
+  flex: 1;
+  justify-content: space-between;
+}
+.hunan-guide .howto-step {
+  font-size: 13px;
+}
+.hunan-guide .howto-step strong {
+  display: block;
+  font-size: 15px;
+  color: white;
+  margin-bottom: 3px;
+}
+.hunan-guide .howto-step span {
+  opacity: 0.78;
+}
+.hunan-guide .step-no {
+  color: #f3c884;
+  margin-right: 5px;
+  font-family: Georgia, serif;
+}
+.hunan-guide .map-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  padding: 24px;
+}
+.hunan-guide .map-grid {
+  display: grid;
+  grid-template-columns: 1.18fr 0.82fr;
+  gap: 22px;
+}
+.hunan-guide .map-canvas {
+  position: relative;
+  background: #f0f1e6;
+  border: 1px solid #e3e6d8;
+  border-radius: 15px;
+  overflow: hidden;
+  aspect-ratio: 1.5;
+  min-height: 310px;
+}
+.hunan-guide .map-canvas > svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.hunan-guide .map-note {
+  position: absolute;
+  left: 14px;
+  bottom: 10px;
+  font-size: 10px;
+  color: #5d776a;
+  background: rgba(255, 253, 247, 0.85);
+  border-radius: 5px;
+  padding: 3px 7px;
+}
+.hunan-guide .map-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 7px 10px;
+  background: var(--card);
+  border: 1px solid #cbd8ca;
+  border-radius: 9px;
+  box-shadow: 0 5px 12px #25432a0c;
+  white-space: nowrap;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 650;
+  min-height: 40px;
+  transition: all 0.2s;
+}
+.hunan-guide .map-pin:before {
+  content: "";
+  display: inline-block;
+  height: 7px;
+  width: 7px;
+  background: var(--orange);
+  border-radius: 50%;
+  margin-right: 5px;
+}
+.hunan-guide .map-pin:hover,
+.hunan-guide .map-pin.active {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+  z-index: 2;
+}
+.hunan-guide .map-pin.active:before {
+  background: #f7c789;
+}
+.hunan-guide .map-side {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  justify-content: center;
+  padding: 8px 4px 8px 8px;
+}
+.hunan-guide .map-side h3 {
+  font-family: "Songti SC", serif;
+  font-size: 25px;
+  margin-bottom: 2px;
+}
+.hunan-guide .map-side > p {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+}
+.hunan-guide .geo-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  border-top: 1px solid var(--line);
+  padding-top: 13px;
+}
+.hunan-guide .geo-row .geo-icon {
+  width: 35px;
+  height: 35px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: var(--orange-pale);
+  color: var(--orange);
+  flex: none;
+}
+.hunan-guide .geo-row strong {
+  display: block;
+  font-size: 14px;
+}
+.hunan-guide .geo-row p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+}
+.hunan-guide .map-bridge {
+  font-size: 11px;
+  fill: #738a7c;
+}
+.hunan-guide .reader-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.hunan-guide .mode-switch {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--card);
+  gap: 4px;
+}
+.hunan-guide .mode-switch button {
+  border: 0;
+  background: transparent;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  min-height: 40px;
+}
+.hunan-guide .mode-switch button.active {
+  color: white;
+  background: var(--green);
+}
+.hunan-guide .search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 9px 13px;
+  max-width: 300px;
+}
+.hunan-guide .search-box svg {
+  height: 17px;
+  width: 17px;
+  color: var(--muted);
+  flex: none;
+}
+.hunan-guide .search-box input {
+  border: 0;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--ink);
+}
+.hunan-guide .reader-layout {
+  display: grid;
+  grid-template-columns: 252px 1fr;
+  gap: 26px;
+  align-items: start;
+}
+.hunan-guide .station-nav {
+  position: sticky;
+  top: 98px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.hunan-guide .station-button {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 13px;
+  border-radius: 13px;
+  color: var(--ink);
+  min-height: 76px;
+  width: 100%;
+  transition: all 0.2s;
+}
+.hunan-guide .station-button:hover {
+  background: #eeeee1;
+}
+.hunan-guide .station-button.active {
+  background: var(--card);
+  border-color: var(--line);
+  box-shadow: var(--shadow);
+}
+.hunan-guide .station-no {
+  background: var(--green-pale);
+  color: var(--green);
+  height: 36px;
+  width: 36px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  font-family: Georgia, serif;
+  font-size: 15px;
+}
+.hunan-guide .station-button.active .station-no {
+  background: var(--green);
+  color: white;
+}
+.hunan-guide .station-button-text {
+  flex: 1;
+  min-width: 0;
+}
+.hunan-guide .station-button strong {
+  font-size: 14px;
+  display: block;
+}
+.hunan-guide .station-button small {
+  font-size: 11px;
+  color: var(--muted);
+  display: block;
+  margin-top: 2px;
+}
+.hunan-guide .station-done {
+  color: var(--orange);
+  font-size: 14px;
+  display: none;
+}
+.hunan-guide .station-button.done .station-done {
+  display: block;
+}
+.hunan-guide .reader-main {
+  min-width: 0;
+}
+.hunan-guide .station {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 31px;
+  box-shadow: var(--shadow);
+}
+.hunan-guide .station-heading {
+  padding-bottom: 23px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 24px;
+}
+.hunan-guide .station-heading h3 {
+  font-size: 30px;
+  font-family: "Songti SC", serif;
+  margin: 8px 0;
+}
+.hunan-guide .station-heading > p {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0;
+}
+.hunan-guide .location-line {
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-top: 13px;
+}
+.hunan-guide .location-line svg {
+  height: 17px;
+  width: 17px;
+  flex: none;
+  margin-top: 3px;
+}
+.hunan-guide .story-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.hunan-guide .story-title {
+  font-size: 13px;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--green);
+}
+.hunan-guide .story-title svg {
+  width: 18px;
+  height: 18px;
+}
+.hunan-guide .listen-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 5px 11px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  min-height: 36px;
+  color: var(--green);
+}
+.hunan-guide .listen-btn svg {
+  height: 15px;
+  width: 15px;
+}
+.hunan-guide .story {
+  font-size: 17px;
+  line-height: 1.95;
+}
+.hunan-guide .story p {
+  margin-bottom: 17px;
+}
+.hunan-guide .takeaway {
+  background: var(--green-pale);
+  border-left: 3px solid var(--green);
+  padding: 15px 18px;
+  font-size: 14px;
+  border-radius: 0 10px 10px 0;
+  margin: 24px 0;
+}
+.hunan-guide .facts-list {
+  list-style: none;
+  padding: 0;
+  margin: 18px 0 24px;
+  display: grid;
+  gap: 13px;
+}
+.hunan-guide .facts-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+}
+.hunan-guide .fact-number {
+  font-family: Georgia, serif;
+  font-size: 13px;
+  background: var(--orange-pale);
+  color: var(--orange);
+  border-radius: 6px;
+  min-width: 25px;
+  height: 25px;
+  text-align: center;
+  margin-top: 1px;
+}
+.hunan-guide .fact-body strong {
+  display: block;
+  margin-bottom: 2px;
+}
+.hunan-guide .fact-body p {
+  color: #5a6e64;
+  margin: 0;
+  line-height: 1.8;
+}
+.hunan-guide .micro-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 750;
+  font-size: 14px;
+  margin: 26px 0 13px;
+}
+.hunan-guide .micro-title svg {
+  height: 18px;
+  width: 18px;
+  color: var(--orange);
+}
+.hunan-guide .boundary {
+  background: #fcf0df;
+  border: 1px solid #e9d4b2;
+  border-radius: 12px;
+  padding: 15px 17px;
+  font-size: 13px;
+  margin-block: 18px;
+}
+.hunan-guide .boundary strong {
+  color: #91532f;
+  display: block;
+  margin-bottom: 3px;
+}
+.hunan-guide .boundary p {
+  margin: 0;
+  color: #776048;
+}
+.hunan-guide .tasks {
+  background: #f2f4e9;
+  border: 1px dashed #c7d1b9;
+  border-radius: 14px;
+  padding: 18px;
+}
+.hunan-guide .tasks ul {
+  padding-left: 20px;
+  margin: 0;
+  font-size: 14px;
+}
+.hunan-guide .tasks li + li {
+  margin-top: 8px;
+}
+.hunan-guide .people-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.hunan-guide .person-tag {
+  border: 1px solid var(--line);
+  background: #fffaf1;
+  padding: 6px 11px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.7;
+  text-decoration: none;
+}
+.hunan-guide .person-tag b {
+  color: var(--green);
+}
+.hunan-guide details {
+  border-top: 1px solid var(--line);
+  padding-top: 15px;
+  margin-top: 22px;
+}
+.hunan-guide summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 13px;
+  font-weight: 650;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 32px;
+}
+.hunan-guide summary:after {
+  content: "＋";
+  font-size: 17px;
+  color: var(--green);
+}
+.hunan-guide details[open] > summary:after {
+  content: "−";
+}
+.hunan-guide summary::-webkit-details-marker {
+  display: none;
+}
+.hunan-guide .detail-content {
+  padding-top: 15px;
+  font-size: 14px;
+}
+.hunan-guide .detail-content p:last-child {
+  margin-bottom: 0;
+}
+.hunan-guide .history-timeline {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+}
+.hunan-guide .history-timeline li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 15px;
+  padding-bottom: 19px;
+  font-size: 13px;
+}
+.hunan-guide .history-timeline li:before {
+  content: "";
+  position: absolute;
+  left: 105px;
+  top: 9px;
+  bottom: 0;
+  border-left: 1px solid #d0d7c9;
+}
+.hunan-guide .history-timeline li:after {
+  content: "";
+  position: absolute;
+  left: 102px;
+  top: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--orange);
+}
+.hunan-guide .history-timeline li:last-child:before {
+  display: none;
+}
+.hunan-guide .history-timeline b {
+  font-family: Georgia, "Songti SC", serif;
+  color: var(--orange);
+  padding-right: 5px;
+}
+.hunan-guide .history-timeline span {
+  padding-left: 8px;
+}
+.hunan-guide .source-links {
+  display: grid;
+  gap: 8px;
+  font-size: 12px;
+}
+.hunan-guide .source-links a {
+  color: var(--green);
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+.hunan-guide .source-links p {
+  margin: 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+.hunan-guide .parent-only {
+  display: none;
+}
+.hunan-guide.parent-mode .parent-only {
+  display: block;
+}
+.hunan-guide .station-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  margin-top: 28px;
+}
+.hunan-guide .stamp-btn {
+  border: 1px solid var(--orange);
+  color: var(--orange);
+  background: #fff7ec;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+}
+.hunan-guide .stamp-btn.stamped {
+  background: var(--orange);
+  color: white;
+}
+.hunan-guide .station-steps {
+  display: flex;
+  gap: 7px;
+}
+.hunan-guide .station-steps button {
+  min-width: 42px;
+  min-height: 42px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--green);
+}
+.hunan-guide .no-results {
+  padding: 15px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.hunan-guide .related-poem {
+  border-left: 3px solid var(--gold);
+  padding: 10px 0 10px 17px;
+  margin-bottom: 14px;
+}
+.hunan-guide .related-poem h4 {
+  font-size: 15px;
+}
+.hunan-guide .related-poem p {
+  font-family: "Songti SC", serif;
+  color: #8a5b2d;
+  font-size: 17px;
+  line-height: 1.9;
+  margin: 0;
+}
+.hunan-guide .related-poem small {
+  font-size: 12px;
+  color: var(--muted);
+}
+.hunan-guide .seal {
+  padding: 16px;
+  background: #f4f1e5;
+  border-radius: 14px;
+  margin: 23px 0;
+}
+.hunan-guide .seal-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+.hunan-guide .seal-view {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  align-items: center;
+}
+.hunan-guide .seal-diagram {
+  width: 100%;
+  height: auto;
+}
+.hunan-guide .seal-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.hunan-guide .seal-controls button {
+  border: 1px solid #d1cdb8;
+  background: #fffaf0;
+  color: var(--ink);
+  font-size: 11px;
+  border-radius: 7px;
+  min-height: 35px;
+  padding: 5px 8px;
+}
+.hunan-guide .seal-controls button.active {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+.hunan-guide .seal-explain {
+  font-size: 12px;
+  margin: 12px 0 0;
+  min-height: 44px;
+  color: #596855;
+}
+.hunan-guide .seal-rect {
+  transition:
+    stroke 0.2s,
+    stroke-width 0.2s;
+}
+.hunan-guide .seal-rect.active {
+  stroke: #a74927;
+  stroke-width: 5;
+}
+.hunan-guide .lake-demo {
+  position: relative;
+  overflow: hidden;
+  border-radius: 13px;
+  margin: 21px 0;
+  background: linear-gradient(#c9e1e6 0 47%, #94c3c6 48%, #dae9df 100%);
+  min-height: 170px;
+  transition: background 1s;
+}
+.hunan-guide .lake-demo.night {
+  background: linear-gradient(#182c4b 0 47%, #264c66 48%, #769096 100%);
+}
+.hunan-guide .lake-moon {
+  position: absolute;
+  right: 22%;
+  top: 21px;
+  background: #fff8dc;
+  box-shadow: 0 0 25px #fff8dc55;
+  height: 42px;
+  width: 42px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 1s;
+}
+.hunan-guide .lake-demo.night .lake-moon {
+  opacity: 1;
+}
+.hunan-guide .lake-island {
+  position: absolute;
+  bottom: 45px;
+  left: 40%;
+  width: 24%;
+  height: 35px;
+  background: #507768;
+  border-radius: 70% 60% 5% 10%;
+  filter: drop-shadow(0 10px 9px #426c6466);
+}
+.hunan-guide .lake-demo.night .lake-island {
+  background: #223e3c;
+}
+.hunan-guide .lake-shine {
+  position: absolute;
+  width: 44%;
+  height: 30px;
+  bottom: 20px;
+  left: 31%;
+  background: repeating-linear-gradient(
+    transparent 0px,
+    transparent 7px,
+    #f5f0cf70 8px,
+    #f5f0cf70 9px
+  );
+  border-radius: 50%;
+  opacity: 0.4;
+}
+.hunan-guide .lake-demo.night .lake-shine {
+  opacity: 1;
+}
+.hunan-guide .lake-caption {
+  position: absolute;
+  bottom: 10px;
+  left: 13px;
+  right: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #173c42;
+  font-size: 11px;
+}
+.hunan-guide .lake-demo.night .lake-caption {
+  color: #f5f3d7;
+}
+.hunan-guide .lake-toggle {
+  border: 1px solid #ffffff55;
+  background: #ffffffcf;
+  color: var(--ink);
+  padding: 6px 10px;
+  border-radius: 7px;
+  font-size: 11px;
+  min-height: 36px;
+}
+.hunan-guide .people-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+.hunan-guide .person-card {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--card);
+  scroll-margin-top: 100px;
+}
+.hunan-guide .person-head {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.hunan-guide .person-seal {
+  height: 42px;
+  width: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--green-pale);
+  font-family: "Songti SC", serif;
+  font-size: 21px;
+  flex: none;
+}
+.hunan-guide .person-card:nth-child(3n + 2) .person-seal {
+  background: var(--orange-pale);
+  color: var(--orange);
+}
+.hunan-guide .person-card:nth-child(3n) .person-seal {
+  background: var(--blue-pale);
+  color: var(--blue);
+}
+.hunan-guide .person-head h3 {
+  font-size: 17px;
+  margin: 0;
+}
+.hunan-guide .person-head small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+}
+.hunan-guide .person-card p {
+  font-size: 12px;
+  line-height: 1.9;
+  margin: 0;
+  color: #5b6f63;
+}
+.hunan-guide .person-card .person-relation {
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+  margin-top: 13px;
+  font-size: 11px;
+  color: var(--orange);
+}
+.hunan-guide .poem-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+.hunan-guide .poem-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 25px;
+  position: relative;
+  overflow: hidden;
+}
+.hunan-guide .poem-card:before {
+  content: "诗";
+  position: absolute;
+  right: 18px;
+  top: 9px;
+  font-family: "Songti SC", serif;
+  font-size: 100px;
+  line-height: 1;
+  color: #eee9d9;
+  opacity: 0.6;
+  pointer-events: none;
+}
+.hunan-guide .poem-card h3 {
+  font-family: "Songti SC", serif;
+  font-size: 25px;
+  position: relative;
+  margin-bottom: 4px;
+}
+.hunan-guide .poem-author {
+  font-size: 12px;
+  color: var(--muted);
+}
+.hunan-guide .poem-lines {
+  font-family: "Songti SC", serif;
+  font-size: 20px;
+  line-height: 2.05;
+  color: #745437;
+  position: relative;
+  margin: 19px 0;
+}
+.hunan-guide .poem-lines p {
+  margin: 0;
+}
+.hunan-guide .poem-desc {
+  font-size: 13px;
+  color: var(--muted);
+}
+.hunan-guide .poem-translation {
+  padding: 14px;
+  background: var(--green-pale);
+  border-radius: 9px;
+  margin-top: 13px;
+  font-size: 13px;
+}
+.hunan-guide .poem-tools {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.hunan-guide .poem-tools button {
+  font-size: 11px;
+  min-height: 37px;
+  padding: 6px 11px;
+}
+.hunan-guide .poem-context {
+  font-size: 11px;
+  color: var(--orange);
+  margin-top: 15px;
+  margin-bottom: 0;
+}
+.hunan-guide .poem-source {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 12px;
+  margin-bottom: 0;
+}
+.hunan-guide .poem-source a {
+  text-underline-offset: 3px;
+}
+.hunan-guide .challenge-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 22px;
+}
+.hunan-guide .quiz-box {
+  border: 1px solid var(--line);
+  background: var(--card);
+  border-radius: 18px;
+  padding: 28px;
+}
+.hunan-guide .quiz-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+  gap: 12px;
+  margin-bottom: 17px;
+}
+.hunan-guide .quiz-question {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.7;
+  margin-bottom: 20px;
+  min-height: 68px;
+}
+.hunan-guide .quiz-options {
+  display: grid;
+  gap: 10px;
+}
+.hunan-guide .quiz-option {
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  text-align: left;
+  width: 100%;
+  border: 1px solid var(--line);
+  background: #fffdf8;
+  border-radius: 11px;
+  min-height: 52px;
+  padding: 11px 14px;
+  color: var(--ink);
+  font-size: 14px;
+}
+.hunan-guide .quiz-option .option-letter {
+  border-radius: 50%;
+  background: #efeee2;
+  font-size: 11px;
+  width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+.hunan-guide .quiz-option:hover:not(:disabled) {
+  border-color: var(--green);
+}
+.hunan-guide .quiz-option.correct {
+  background: #e8f0e4;
+  border-color: #8ca97c;
+}
+.hunan-guide .quiz-option.wrong {
+  background: #fff0e9;
+  border-color: #ca917b;
+}
+.hunan-guide .quiz-feedback {
+  margin: 17px 0;
+  font-size: 13px;
+  background: var(--green-pale);
+  padding: 13px;
+  border-radius: 9px;
+}
+.hunan-guide .quiz-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-top: 20px;
+}
+.hunan-guide .quiz-footer small {
+  font-size: 11px;
+  color: var(--muted);
+}
+.hunan-guide .passport {
+  background: var(--green);
+  color: #f8f4df;
+  border-radius: 18px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+}
+.hunan-guide .passport h3 {
+  font-family: "Songti SC", serif;
+  font-size: 26px;
+  margin-bottom: 8px;
+}
+.hunan-guide .passport > p {
+  font-size: 13px;
+  opacity: 0.8;
+}
+.hunan-guide .passport-count {
+  font-family: Georgia, serif;
+  font-size: 45px;
+  line-height: 1;
+  margin: 15px 0;
+}
+.hunan-guide .passport-count small {
+  font-size: 19px;
+  color: #d3e1cd;
+}
+.hunan-guide .passport-stamps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 20px 0;
+}
+.hunan-guide .passport-stamp {
+  aspect-ratio: 1;
+  border: 1px dashed #b6cfbb60;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  line-height: 1.5;
+  color: #bed0bb;
+  opacity: 0.65;
+  transform: rotate(-7deg);
+}
+.hunan-guide .passport-stamp svg {
+  height: 23px;
+  width: 23px;
+  margin-bottom: 3px;
+}
+.hunan-guide .passport-stamp.earned {
+  border: 2px double #f0c579;
+  background: #ecc28215;
+  color: #f7dca6;
+  opacity: 1;
+}
+.hunan-guide .passport-stamp:nth-child(even) {
+  transform: rotate(7deg);
+}
+.hunan-guide .passport-help {
+  font-size: 11px;
+  opacity: 0.7;
+  margin-top: auto;
+  border-top: 1px solid #aec6b540;
+  padding-top: 15px;
+}
+.hunan-guide .progress-line {
+  height: 5px;
+  background: #aec6b52e;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.hunan-guide .progress-fill {
+  height: 100%;
+  background: #edc37c;
+  width: 0;
+  transition: width 0.4s;
+}
+.hunan-guide .sources-section {
+  padding-block: 36px 80px;
+}
+.hunan-guide .source-note {
+  background: var(--card);
+  padding: 25px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  font-size: 13px;
+}
+.hunan-guide .source-note h3 {
+  font-size: 18px;
+}
+.hunan-guide .source-note ul {
+  padding-left: 20px;
+  margin: 10px 0;
+}
+.hunan-guide .source-note li {
+  margin-bottom: 8px;
+}
+.hunan-guide .all-sources {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 26px;
+  padding-top: 15px;
+  list-style: none !important;
+  padding-left: 0 !important;
+}
+.hunan-guide .all-sources a {
+  font-size: 12px;
+  color: var(--green);
+  text-underline-offset: 4px;
+}
+.hunan-guide .all-sources li {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  margin: 0;
+}
+.hunan-guide .site-footer {
+  border-top: 1px solid var(--line);
+  padding: 22px 0 95px;
+  color: var(--muted);
+  font-size: 11px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+.hunan-guide .floating-progress {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  background: var(--ink);
+  color: #fff9e5;
+  border: 1px solid #7c948145;
+  border-radius: 30px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  padding: 9px 10px 9px 18px;
+  box-shadow: 0 8px 30px #203a382a;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.hunan-guide .floating-progress a {
+  color: #f9d28d;
+  text-decoration: none;
+  background: #ffffff0f;
+  border-radius: 20px;
+  padding: 5px 10px;
+}
+.hunan-guide .toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #203a38f5;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+  z-index: 30;
+  font-size: 13px;
+  max-width: 90vw;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+.hunan-guide .highlight-pulse {
+  animation: hunan-pulse 1.4s ease-out;
+}
+@keyframes hunan-pulse {
+  0% {
+    box-shadow: 0 0 0 4px #b95a3540;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+.hunan-guide .poem-letter {
+  color: var(--orange);
+}
+.hunan-guide .btn svg {
+  width: 21px;
+  height: 21px;
+  flex: none;
+}
+.hunan-guide .hero > * {
+  min-width: 0;
+}
+.hunan-guide .hero-art img {
+  height: auto;
+}
+@media (min-width: 1500px) {
+.hunan-guide .hero {
+    padding-block: 60px;
+  }
+.hunan-guide .hero-art img {
+    aspect-ratio: 1.3;
+  }
+}
+@media (max-width: 1050px) {
+.hunan-guide .wrap {
+    width: calc(100% - 42px);
+  }
+.hunan-guide .top-nav {
+    gap: 17px;
+  }
+.hunan-guide .top-actions .print-label {
+    display: none;
+  }
+.hunan-guide .hero {
+    gap: 24px;
+  }
+.hunan-guide .hero-art img {
+    aspect-ratio: 1.05;
+  }
+.hunan-guide .hero-copy > p {
+    font-size: 15px;
+  }
+.hunan-guide .hero-meta {
+    gap: 13px;
+  }
+.hunan-guide .howto {
+    gap: 20px;
+  }
+.hunan-guide .howto-steps {
+    gap: 15px;
+  }
+.hunan-guide .reader-layout {
+    grid-template-columns: 210px 1fr;
+    gap: 18px;
+  }
+.hunan-guide .station {
+    padding: 25px;
+  }
+.hunan-guide .people-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+.hunan-guide .map-grid {
+    grid-template-columns: 1.15fr 0.85fr;
+  }
+.hunan-guide .map-pin {
+    font-size: 11px;
+    padding: 6px;
+  }
+.hunan-guide .map-side h3 {
+    font-size: 22px;
+  }
+}
+@media (max-width: 760px) {
+.hunan-guide {
+    scroll-padding-top: 132px;
+  }
+.hunan-guide .wrap {
+    width: calc(100% - 32px);
+  }
+.hunan-guide .top-inner {
+    height: auto;
+    min-height: 68px;
+    gap: 9px;
+    flex-wrap: wrap;
+    padding-top: 12px;
+    padding-bottom: 9px;
+  }
+.hunan-guide .brand {
+    font-size: 17px;
+  }
+.hunan-guide .brand-mark {
+    width: 31px;
+    height: 31px;
+    border-radius: 9px;
+  }
+.hunan-guide .brand-mark svg {
+    width: 22px;
+    height: 22px;
+  }
+.hunan-guide .top-actions {
+    margin-left: auto;
+  }
+.hunan-guide .top-actions .btn {
+    padding: 7px 10px;
+    min-height: 37px;
+  }
+.hunan-guide .top-nav {
+    order: 3;
+    width: 100%;
+    justify-content: space-around;
+    margin: 0;
+    gap: 15px;
+    padding-top: 7px;
+    font-size: 12px;
+  }
+.hunan-guide .top-nav a {
+    padding: 2px 0;
+  }
+.hunan-guide .hero {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding-block: 25px 32px;
+  }
+.hunan-guide .hero-copy {
+    padding: 0;
+  }
+.hunan-guide .hero-copy h1 {
+    font-size: 41px;
+    line-height: 1.35;
+    margin: 10px 0 14px;
+  }
+.hunan-guide .hero-copy > p {
+    font-size: 15px;
+    max-width: none;
+  }
+.hunan-guide .hero-actions {
+    margin-top: 18px;
+  }
+.hunan-guide .hero-meta {
+    margin-top: 20px;
+    gap: 25px;
+  }
+.hunan-guide .hero-art {
+    margin: 0 6px 5px 3px;
+  }
+.hunan-guide .hero-art img {
+    aspect-ratio: 1.7;
+    border-radius: 65px 15px 15px 15px;
+    object-position: center 50%;
+  }
+.hunan-guide .hero-art:before {
+    inset: 10px -6px -9px 14px;
+  }
+.hunan-guide .hero-sticker {
+    left: 7px;
+    bottom: 21px;
+    font-size: 11px;
+    padding: 9px 12px;
+  }
+.hunan-guide .section {
+    padding-block: 31px;
+  }
+.hunan-guide .section-head {
+    display: block;
+    margin-bottom: 20px;
+  }
+.hunan-guide .section-head h2 {
+    font-size: 29px;
+    margin-top: 6px;
+  }
+.hunan-guide .section-head p {
+    font-size: 13px;
+  }
+.hunan-guide .section-head .small {
+    margin-top: 10px;
+  }
+.hunan-guide .howto {
+    display: block;
+    padding: 19px 20px;
+    margin-bottom: 5px;
+  }
+.hunan-guide .howto-title {
+    font-size: 18px;
+    margin-bottom: 13px;
+  }
+.hunan-guide .howto-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+.hunan-guide .howto-step {
+    font-size: 11px;
+  }
+.hunan-guide .howto-step strong {
+    font-size: 12px;
+    line-height: 1.6;
+  }
+.hunan-guide .howto-step span {
+    display: block;
+    font-size: 10px;
+    line-height: 1.6;
+  }
+.hunan-guide .map-card {
+    padding: 13px;
+  }
+.hunan-guide .map-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+.hunan-guide .map-canvas {
+    min-height: 265px;
+    aspect-ratio: 1.4;
+  }
+.hunan-guide .map-side {
+    padding: 9px 5px;
+    gap: 11px;
+  }
+.hunan-guide .map-side h3 {
+    font-size: 21px;
+  }
+.hunan-guide .map-side > p {
+    font-size: 13px;
+  }
+.hunan-guide .geo-row {
+    gap: 9px;
+    padding-top: 9px;
+  }
+.hunan-guide .geo-row .geo-icon {
+    height: 31px;
+    width: 31px;
+  }
+.hunan-guide .geo-row strong {
+    font-size: 12px;
+  }
+.hunan-guide .geo-row p {
+    font-size: 11px;
+  }
+.hunan-guide .map-pin {
+    font-size: 10px;
+    min-height: 36px;
+    padding: 5px 6px;
+  }
+.hunan-guide .map-note {
+    font-size: 9px;
+    left: 8px;
+    bottom: 6px;
+  }
+.hunan-guide .reader-top {
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+.hunan-guide .mode-switch {
+    gap: 1px;
+  }
+.hunan-guide .mode-switch button {
+    padding: 7px 12px;
+    font-size: 12px;
+  }
+.hunan-guide .search-box {
+    max-width: 100%;
+    flex: 1;
+    min-width: 155px;
+    padding: 10px;
+  }
+.hunan-guide .search-box input {
+    font-size: 12px;
+  }
+.hunan-guide .reader-layout {
+    display: block;
+  }
+.hunan-guide .station-nav {
+    position: relative;
+    top: auto;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 2px 1px 13px;
+    gap: 7px;
+    scrollbar-width: thin;
+    margin-bottom: 4px;
+  }
+.hunan-guide .station-button {
+    flex: none;
+    width: auto;
+    max-width: 175px;
+    min-height: 61px;
+    gap: 8px;
+    padding: 9px;
+  }
+.hunan-guide .station-no {
+    height: 29px;
+    width: 29px;
+    border-radius: 8px;
+    font-size: 12px;
+  }
+.hunan-guide .station-button strong {
+    font-size: 12px;
+  }
+.hunan-guide .station-button small {
+    font-size: 9px;
+  }
+.hunan-guide .station-done {
+    font-size: 10px;
+  }
+.hunan-guide .station {
+    padding: 22px 18px;
+    border-radius: 16px;
+  }
+.hunan-guide .station-heading {
+    padding-bottom: 18px;
+    margin-bottom: 20px;
+  }
+.hunan-guide .station-heading h3 {
+    font-size: 26px;
+  }
+.hunan-guide .station-heading > p {
+    font-size: 12px;
+  }
+.hunan-guide .location-line {
+    font-size: 11px;
+    line-height: 1.7;
+  }
+.hunan-guide .story {
+    font-size: 16px;
+    line-height: 1.95;
+  }
+.hunan-guide .story-title {
+    font-size: 12px;
+  }
+.hunan-guide .takeaway {
+    padding: 13px 14px;
+    font-size: 13px;
+    margin-block: 20px;
+  }
+.hunan-guide .facts-list li {
+    font-size: 13px;
+    gap: 8px;
+  }
+.hunan-guide .micro-title {
+    font-size: 13px;
+    margin-top: 22px;
+  }
+.hunan-guide .tasks {
+    padding: 15px;
+  }
+.hunan-guide .tasks li {
+    font-size: 13px;
+  }
+.hunan-guide .boundary {
+    padding: 13px;
+    font-size: 12px;
+  }
+.hunan-guide .people-tags {
+    gap: 6px;
+  }
+.hunan-guide .person-tag {
+    font-size: 11px;
+    padding: 5px 8px;
+  }
+.hunan-guide .history-timeline li {
+    grid-template-columns: 75px 1fr;
+    gap: 10px;
+    font-size: 12px;
+  }
+.hunan-guide .history-timeline li:before {
+    left: 79px;
+  }
+.hunan-guide .history-timeline li:after {
+    left: 76px;
+  }
+.hunan-guide .station-footer {
+    gap: 10px;
+    padding-top: 18px;
+    margin-top: 22px;
+  }
+.hunan-guide .stamp-btn {
+    font-size: 12px;
+    padding: 9px 12px;
+  }
+.hunan-guide .station-steps button {
+    min-width: 38px;
+    min-height: 40px;
+  }
+.hunan-guide .people-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+.hunan-guide .person-card {
+    padding: 15px;
+  }
+.hunan-guide .person-head {
+    gap: 8px;
+    align-items: flex-start;
+  }
+.hunan-guide .person-seal {
+    height: 34px;
+    width: 34px;
+    font-size: 18px;
+  }
+.hunan-guide .person-head h3 {
+    font-size: 15px;
+  }
+.hunan-guide .person-head small {
+    font-size: 9px;
+  }
+.hunan-guide .person-card p {
+    font-size: 11px;
+  }
+.hunan-guide .person-card .person-relation {
+    font-size: 10px;
+  }
+.hunan-guide .poem-grid {
+    grid-template-columns: 1fr;
+    gap: 13px;
+  }
+.hunan-guide .poem-card {
+    padding: 21px;
+  }
+.hunan-guide .poem-card h3 {
+    font-size: 24px;
+  }
+.hunan-guide .poem-lines {
+    font-size: 20px;
+  }
+.hunan-guide .challenge-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+.hunan-guide .quiz-box {
+    padding: 21px;
+  }
+.hunan-guide .quiz-question {
+    font-size: 18px;
+    min-height: 0;
+  }
+.hunan-guide .quiz-option {
+    font-size: 13px;
+  }
+.hunan-guide .passport {
+    padding: 23px;
+  }
+.hunan-guide .passport-stamps {
+    gap: 14px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+.hunan-guide .passport-stamp {
+    font-size: 11px;
+  }
+.hunan-guide .seal {
+    padding: 13px;
+  }
+.hunan-guide .seal-view {
+    grid-template-columns: 1fr;
+  }
+.hunan-guide .seal-diagram {
+    max-height: 180px;
+  }
+.hunan-guide .seal-controls {
+    gap: 6px;
+  }
+.hunan-guide .seal-explain {
+    font-size: 11px;
+  }
+.hunan-guide .all-sources {
+    grid-template-columns: 1fr;
+  }
+.hunan-guide .source-note {
+    padding: 19px;
+  }
+.hunan-guide .source-note p,
+.hunan-guide .source-note li {
+    font-size: 12px;
+  }
+.hunan-guide .site-footer {
+    display: block;
+    padding-bottom: 100px;
+  }
+.hunan-guide .floating-progress {
+    bottom: max(14px, env(safe-area-inset-bottom));
+    gap: 10px;
+    font-size: 11px;
+    padding-left: 14px;
+  }
+.hunan-guide .floating-progress a {
+    padding: 5px 8px;
+  }
+.hunan-guide .toast {
+    font-size: 12px;
+  }
+.hunan-guide .no-results {
+    min-width: 180px;
+    font-size: 12px;
+  }
+}
+.hunan-guide .map-canvas {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+.hunan-guide .map-grid > * {
+  min-width: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+.hunan-guide {
+    scroll-behavior: auto;
+  }
+.hunan-guide *,
+.hunan-guide *:before,
+.hunan-guide *:after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+@media print {
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+.hunan-guide {
+    scroll-behavior: auto;
+  }
+.hunan-guide {
+    background: white;
+    color: #172d28;
+    font-size: 11pt;
+    line-height: 1.7;
+  }
+.hunan-guide .wrap {
+    width: 100%;
+  }
+.hunan-guide .topbar,
+.hunan-guide .hero-art,
+.hunan-guide .hero-actions,
+.hunan-guide .top-actions,
+.hunan-guide .reader-top,
+.hunan-guide .station-nav,
+.hunan-guide .listen-btn,
+.hunan-guide .stamp-btn,
+.hunan-guide .station-steps,
+.hunan-guide .floating-progress,
+.hunan-guide .quiz-options,
+.hunan-guide .quiz-footer,
+.hunan-guide .search-box,
+.hunan-guide .seal-controls,
+.hunan-guide .lake-toggle,
+.hunan-guide .passport,
+.hunan-guide .toast,
+.hunan-guide .download-btn,
+.hunan-guide .poem-tools {
+    display: none !important;
+  }
+.hunan-guide .hero {
+    display: block;
+    padding: 0 0 15px;
+  }
+.hunan-guide .hero h1 {
+    font-size: 30pt;
+  }
+.hunan-guide .hero-meta {
+    margin-top: 10px;
+  }
+.hunan-guide .hero-copy > p {
+    font-size: 11pt;
+  }
+.hunan-guide .section {
+    padding-block: 18px;
+  }
+.hunan-guide .section-head p {
+    font-size: 10pt;
+  }
+.hunan-guide .howto {
+    background: #f1f3ec;
+    color: #203a38;
+    padding: 12px;
+  }
+.hunan-guide .howto-step strong,
+.hunan-guide .step-no {
+    color: #203a38;
+  }
+.hunan-guide .map-card {
+    break-inside: avoid;
+  }
+.hunan-guide .map-grid {
+    grid-template-columns: 1.2fr 0.8fr;
+  }
+.hunan-guide .map-canvas {
+    min-height: 250px;
+  }
+.hunan-guide .reader-layout {
+    display: block;
+  }
+.hunan-guide .station[hidden] {
+    display: block !important;
+  }
+.hunan-guide .station {
+    box-shadow: none;
+    border: 0;
+    border-top: 1px solid #aaa;
+    padding: 22px 0;
+    break-before: page;
+  }
+.hunan-guide .station-heading h3 {
+    font-size: 23pt;
+  }
+.hunan-guide .story {
+    font-size: 11pt;
+  }
+.hunan-guide .parent-only {
+    display: block !important;
+  }
+.hunan-guide details > .detail-content {
+    display: block !important;
+  }
+.hunan-guide details > summary {
+    font-size: 11pt;
+  }
+.hunan-guide details > summary:after {
+    display: none;
+  }
+.hunan-guide .facts-list li {
+    font-size: 10pt;
+  }
+.hunan-guide .tasks {
+    background: #f5f5ec;
+  }
+.hunan-guide .people-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+.hunan-guide .person-card,
+.hunan-guide .poem-card {
+    break-inside: avoid;
+  }
+.hunan-guide .poem-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+.hunan-guide .poem-lines {
+    font-size: 13pt;
+  }
+.hunan-guide .poem-translation[hidden] {
+    display: block !important;
+  }
+.hunan-guide .challenge-grid {
+    display: block;
+  }
+.hunan-guide .quiz-box {
+    break-inside: avoid;
+  }
+.hunan-guide .all-sources {
+    grid-template-columns: 1fr;
+  }
+.hunan-guide .site-footer {
+    padding-bottom: 10px;
+  }
+.hunan-guide a {
+    text-decoration: none;
+  }
+.hunan-guide #sources a {
+    font-size: 9pt;
+  }
+.hunan-guide .seal-view {
+    grid-template-columns: 1fr 1fr;
+  }
+.hunan-guide .seal-diagram {
+    max-height: 200px;
+  }
+.hunan-guide .hero-sticker {
+    display: none;
+  }
+.hunan-guide.parent-mode .parent-only {
+    display: block;
+  }
+}
+.hunan-guide .photo-section {
+  margin: 0 0 27px;
+}
+.hunan-guide .photo-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 13px;
+}
+.hunan-guide .photo-intro h4 {
+  font-size: 15px;
+  margin: 0;
+}
+.hunan-guide .photo-intro span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.hunan-guide .photo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
+.hunan-guide .photo-card {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: #fffdf8;
+  overflow: hidden;
+  min-width: 0;
+}
+.hunan-guide .photo-open {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  position: relative;
+  background: #e8e8dc;
+  color: var(--ink);
+  text-align: left;
+}
+.hunan-guide .photo-open img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+.hunan-guide .photo-open.contain img {
+  object-fit: contain;
+  background: #eee9da;
+}
+.hunan-guide .photo-open:hover img {
+  transform: scale(1.025);
+}
+.hunan-guide .photo-open:after {
+  content: "查看大图 ↗";
+  position: absolute;
+  right: 9px;
+  bottom: 9px;
+  font-size: 10px;
+  background: rgba(255, 253, 247, 0.94);
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+.hunan-guide .photo-card figcaption {
+  padding: 13px 14px 14px;
+}
+.hunan-guide .photo-meta {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 7px;
+}
+.hunan-guide .photo-type {
+  font-size: 10px;
+  line-height: 1.5;
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: var(--green-pale);
+  color: var(--green);
+  font-weight: 700;
+}
+.hunan-guide .photo-type.historic {
+  background: #f1e3ca;
+  color: #82572e;
+}
+.hunan-guide .photo-year {
+  font-size: 11px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.hunan-guide .photo-card h5 {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 7px;
+}
+.hunan-guide .photo-card p {
+  font-size: 12px;
+  color: #617167;
+  line-height: 1.75;
+  margin: 0 0 8px;
+}
+.hunan-guide .photo-look {
+  border-top: 1px dashed var(--line);
+  padding-top: 8px;
+}
+.hunan-guide .photo-look b {
+  color: var(--orange);
+}
+.hunan-guide .photo-credit {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.hunan-guide .photo-credit a {
+  text-underline-offset: 3px;
+}
+.hunan-guide .photo-section-note {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 10px 0 0;
+  line-height: 1.7;
+}
+.hunan-guide .photo-grid > .photo-card:only-child {
+  grid-column: 1/-1;
+}
+.hunan-guide .photo-grid > .photo-card:only-child .photo-open img {
+  aspect-ratio: 16/9;
+  object-fit: contain;
+}
+.hunan-guide .archive-section {
+  padding-top: 35px;
+}
+.hunan-guide .archive-layout {
+  display: grid;
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: 36px;
+  align-items: start;
+}
+.hunan-guide .archive-copy h2 {
+  font-size: 31px;
+  margin-bottom: 15px;
+}
+.hunan-guide .archive-copy > p {
+  font-size: 14px;
+  color: var(--muted);
+}
+.hunan-guide .archive-question {
+  border-left: 3px solid var(--gold);
+  padding: 2px 0 2px 16px;
+  font-size: 14px;
+  margin-top: 22px;
+  line-height: 1.9;
+}
+.hunan-guide .archive-question b {
+  color: var(--orange);
+}
+.hunan-guide .archive-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+.hunan-guide .archive-pair .photo-open img {
+  object-fit: contain;
+  aspect-ratio: 4/3;
+  background: #ebe8de;
+}
+.hunan-guide .archive-pair .photo-card {
+  box-shadow: var(--shadow);
+}
+.hunan-guide .archive-pair .photo-card h5 {
+  font-size: 15px;
+}
+.hunan-guide .archive-footer {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 12px 0 0;
+}
+.hunan-guide .hero-art figcaption a {
+  text-underline-offset: 3px;
+}
+.hunan-guide .hero-art .hero-photo-button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  display: block;
+  width: 100%;
+  border-radius: 120px 22px 22px 22px;
+  overflow: hidden;
+}
+.hunan-guide .hero-art .hero-photo-button img {
+  border-radius: 0;
+  aspect-ratio: 4/3;
+  object-fit: contain;
+  object-position: center;
+  background: #dfe4da;
+}
+.hunan-guide .hero-art .hero-sticker {
+  pointer-events: none;
+}
+.hunan-guide .image-source-list {
+  display: grid;
+  gap: 12px;
+  padding-top: 15px;
+}
+.hunan-guide .image-source-item {
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+  font-size: 12px;
+}
+.hunan-guide .image-source-item b {
+  display: block;
+  font-size: 13px;
+}
+.hunan-guide .image-source-item a {
+  overflow-wrap: anywhere;
+  color: var(--green);
+}
+.hunan-guide .image-source-item p {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 3px 0 0;
+}
+.hunan-guide .photo-dialog {
+  border: 1px solid #516a60;
+  border-radius: 18px;
+  padding: 0;
+  width: min(1000px, calc(100% - 32px));
+  max-width: 1000px;
+  max-height: 92dvh;
+  background: var(--card);
+  color: var(--ink);
+  overflow: auto;
+  box-shadow: 0 30px 100px #0008;
+}
+.hunan-guide .photo-dialog::backdrop {
+  background: rgba(15, 30, 27, 0.85);
+  backdrop-filter: blur(4px);
+}
+.hunan-guide:has(.photo-dialog[open]) {
+  overflow: hidden;
+}
+.hunan-guide .photo-dialog-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  gap: 10px;
+}
+.hunan-guide .photo-dialog-top strong {
+  font-size: 13px;
+}
+.hunan-guide .photo-dialog-close {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  border-radius: 9px;
+  min-height: 40px;
+  padding: 5px 12px;
+  color: var(--ink);
+  font-size: 13px;
+}
+.hunan-guide .photo-dialog figure {
+  margin: 0;
+}
+.hunan-guide .photo-dialog-image {
+  width: 100%;
+  height: auto;
+  max-height: 63dvh;
+  object-fit: contain;
+  background: #1b2925;
+}
+.hunan-guide .photo-dialog-caption {
+  padding: 18px 22px 22px;
+}
+.hunan-guide .photo-dialog-caption h3 {
+  font-size: 20px;
+  margin: 0 0 9px;
+}
+.hunan-guide .photo-dialog-caption > p {
+  font-size: 14px;
+  margin: 0 0 10px;
+  color: var(--muted);
+}
+.hunan-guide .photo-dialog-caption .photo-look {
+  font-size: 13px;
+  margin-top: 10px;
+}
+.hunan-guide .photo-dialog-caption .photo-credit {
+  font-size: 11px;
+}
+.hunan-guide .photo-dialog-count {
+  font-size: 11px;
+  color: var(--muted);
+}
+@media (max-width: 900px) {
+.hunan-guide .archive-layout {
+    grid-template-columns: 1fr;
+    gap: 21px;
+  }
+.hunan-guide .archive-copy {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 30px;
+  }
+.hunan-guide .archive-copy > .eyebrow,
+.hunan-guide .archive-copy > h2 {
+    grid-column: 1/-1;
+  }
+.hunan-guide .archive-copy > p {
+    margin-bottom: 0;
+  }
+.hunan-guide .archive-question {
+    margin-top: 0;
+  }
+}
+@media (max-width: 760px) {
+.hunan-guide .top-nav {
+    gap: 8px;
+    overflow-x: auto;
+    min-width: 0;
+    scrollbar-width: none;
+  }
+.hunan-guide .top-nav::-webkit-scrollbar {
+    display: none;
+  }
+}
+@media (max-width: 620px) {
+.hunan-guide .archive-section {
+    padding-top: 28px;
+  }
+.hunan-guide .archive-copy {
+    display: block;
+  }
+.hunan-guide .archive-copy h2 {
+    font-size: 27px;
+  }
+.hunan-guide .archive-question {
+    margin-top: 15px;
+  }
+.hunan-guide .archive-pair {
+    gap: 10px;
+  }
+.hunan-guide .archive-pair .photo-card figcaption {
+    padding: 10px;
+  }
+.hunan-guide .archive-pair .photo-card h5 {
+    font-size: 12px;
+  }
+.hunan-guide .archive-pair .photo-card p {
+    font-size: 11px;
+  }
+.hunan-guide .archive-pair .photo-credit {
+    font-size: 9px;
+  }
+.hunan-guide .photo-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+.hunan-guide .photo-open img {
+    aspect-ratio: 4/3;
+    object-fit: contain;
+    background: #eee9da;
+  }
+.hunan-guide .photo-intro {
+    align-items: flex-start;
+  }
+.hunan-guide .photo-intro span {
+    max-width: 110px;
+    text-align: right;
+  }
+.hunan-guide .photo-dialog {
+    width: calc(100% - 20px);
+    max-height: 94dvh;
+  }
+.hunan-guide .photo-dialog-top {
+    padding: 10px 12px;
+  }
+.hunan-guide .photo-dialog-caption {
+    padding: 15px;
+  }
+.hunan-guide .photo-dialog-image {
+    max-height: 52dvh;
+  }
+.hunan-guide .hero-art .hero-photo-button {
+    border-radius: 65px 20px 20px 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+.hunan-guide .photo-open img {
+    transition: none;
+  }
+}
+@media print {
+.hunan-guide .photo-dialog {
+    display: none !important;
+  }
+.hunan-guide .photo-open:after {
+    display: none;
+  }
+.hunan-guide .photo-card {
+    break-inside: avoid;
+  }
+.hunan-guide .photo-open img {
+    height: auto;
+    max-height: 240px;
+    object-fit: contain;
+  }
+.hunan-guide .archive-layout {
+    display: block;
+  }
+.hunan-guide .archive-copy {
+    display: block;
+  }
+.hunan-guide .archive-pair {
+    margin-top: 15px;
+  }
+.hunan-guide .photo-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+.hunan-guide .photo-intro span {
+    display: none;
+  }
+}
+.hunan-guide .speech-settings {
+  margin: 0 0 20px;
+  padding: 16px;
+  background: var(--paper, #fffaf0);
+  border: 1px solid #d8d6c8;
+  border-radius: 16px;
+}
+.hunan-guide .speech-settings summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.hunan-guide .speech-settings p {
+  font-size: 13px;
+  color: #53645b;
+  line-height: 1.7;
+}
+.hunan-guide .speech-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: end;
+  margin-top: 14px;
+}
+.hunan-guide .speech-controls label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+  font-size: 14px;
+}
+.hunan-guide .speech-controls select {
+  max-width: 100%;
+  min-height: 44px;
+  border: 1px solid #aeb8ac;
+  border-radius: 9px;
+  padding: 8px;
+  background: #fff;
+  font: inherit;
+}
+.hunan-guide .speech-controls label:first-child {
+  flex: 1 1 230px;
+}
+@media print {
+.hunan-guide .speech-settings {
+    display: none;
+  }
+}

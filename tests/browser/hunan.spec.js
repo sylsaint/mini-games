@@ -94,7 +94,7 @@ test("Hunan loads a small shell and defers unseen photos and offline code", asyn
   );
   const later = data.photos.find((p) => p.id === "yuelu-pavilion-2008");
   expect(requests.some((url) => url.endsWith(later.src.slice(1)))).toBeFalsy();
-  expect(requests.some((url) => url.endsWith("/offline.js"))).toBeFalsy();
+  expect(requests.some((url) => /\/offline(?:[.-][^/]*)?\.js(?:\?|$)/.test(url))).toBeFalsy();
   await page.locator('[data-select="yuelu"]').click();
   const image = page.locator("#station-yuelu img").first();
   await image.scrollIntoViewIfNeeded();
@@ -186,6 +186,7 @@ test("Hunan local speech selection, preference and cancellation are robust", asy
       value: {
         getVoices: () => (window.__speech.ready ? voices : []),
         addEventListener: (...args) => events.addEventListener(...args),
+        removeEventListener: (...args) => events.removeEventListener(...args),
         cancel: () => {
           window.__speech.cancels++;
         },

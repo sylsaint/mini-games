@@ -1,0 +1,1 @@
+{"name":"@yoyo/travel","version":"1.0.0","private":true,"type":"module","exports":{".":"./src/HunanGuide.svelte","./HunanGuide.svelte":"./src/HunanGuide.svelte","./styles.css":"./src/styles.css"},"peerDependencies":{"svelte":"^5.0.0"},"dependencies":{"@yoyo/speech":"*"}}

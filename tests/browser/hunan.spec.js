@@ -24,3 +24,18 @@ test('Hunan guide navigation, passport, translation and quiz work', async ({page
   await expect(page.locator('#quiz-counter')).toContainText('2 /');
   expect(errors).toEqual([]);
 });
+
+test('Hunan real photos load and enlarged photo closes', async ({page}) => {
+  await page.goto('/travel/hunan/');
+  const photos = await page.evaluate(() => JSON.parse(document.querySelector('#guide-data').textContent).photos);
+  expect(photos).toHaveLength(9);
+  for (const photo of photos) {
+    expect(photo.src).toMatch(/^data:image\//);
+    expect(await page.evaluate(src => new Promise(resolve => { const i = new Image(); i.onload=()=>resolve(i.naturalWidth>0); i.onerror=()=>resolve(false); i.src=src; }), photo.src)).toBeTruthy();
+  }
+  await page.locator('[data-photo]').first().click();
+  await expect(page.locator('#photo-dialog')).toBeVisible();
+  await page.locator('#photo-dialog-close').click();
+  await expect(page.locator('#photo-dialog')).not.toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBeTruthy();
+});

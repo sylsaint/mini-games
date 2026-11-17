@@ -1,1 +1,22 @@
-{"name":"@yoyo/education","version":"1.0.0","private":true,"type":"module","exports":{"./LearningHome":"./src/LearningHome.svelte","./SubjectPage":"./src/SubjectPage.svelte","./ChineseReport":"./src/ChineseReport.svelte","./MathReport":"./src/MathReport.svelte","./ChinesePractice":"./src/ChinesePractice.svelte","./GeometryPractice":"./src/GeometryPractice.svelte","./records":"./src/records.js"},"peerDependencies":{"svelte":"^5.0.0"}}
+{
+  "name": "@yoyo/education",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./LearningHome": "./src/LearningHome.svelte",
+    "./SubjectPage": "./src/SubjectPage.svelte",
+    "./ChineseReport": "./src/ChineseReport.svelte",
+    "./MathReport": "./src/MathReport.svelte",
+    "./ChinesePractice": "./src/ChinesePractice.svelte",
+    "./GeometryPractice": "./src/GeometryPractice.svelte",
+    "./records": "./src/records.js"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0"
+  },
+  "dependencies": {
+    "@yoyo/storage": "1.0.0",
+    "@yoyo/ui": "1.0.0"
+  }
+}

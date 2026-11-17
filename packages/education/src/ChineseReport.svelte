@@ -1,20 +1,22 @@
 <script>
 import { onMount } from 'svelte';
+import { readLocal, writeLocal } from '@yoyo/storage';
 import { downloadJson } from './downloads.js';
 const KEY = 'yoyo-chinese-report-v1';
 let state = $state({version: 1, days: [], answers: {}});
 let storageOK = $state(true);
 onMount(() => {
- try {
-  const saved = JSON.parse(localStorage.getItem(KEY) || 'null');
-  if(saved) {
-   if(typeof saved !== 'object' || Array.isArray(saved) || !Array.isArray(saved.days) || !saved.answers || typeof saved.answers !== 'object' || Array.isArray(saved.answers) || saved.version !== 1) throw Error('Invalid record');
-   state.days = [...new Set(saved.days.filter(n => Number.isInteger(n) && n >= 0 && n < 14))];
-   for(const [k,v] of Object.entries(saved.answers)) if(/^(answer|reason)-[0-4]$/.test(k) && typeof v === 'string') state.answers[k] = v.slice(0,3000);
-  }
- } catch { storageOK = false; }
+ const result = readLocal(KEY, null, saved => saved === null || (
+  typeof saved === 'object' && !Array.isArray(saved) && Array.isArray(saved.days) &&
+  !!saved.answers && typeof saved.answers === 'object' && !Array.isArray(saved.answers) && saved.version === 1
+ ));
+ storageOK = result.available;
+ const saved = result.value;
+ if (!saved) return;
+ state.days = [...new Set(saved.days.filter(n => Number.isInteger(n) && n >= 0 && n < 14))];
+ for(const [k,v] of Object.entries(saved.answers)) if(/^(answer|reason)-[0-4]$/.test(k) && typeof v === 'string') state.answers[k] = v.slice(0,3000);
 });
-function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); storageOK = true; } catch { storageOK = false; } }
+function save() { storageOK = writeLocal(KEY, state); }
 function toggleDay(day, checked) { state.days = state.days.filter(n => n !== day); if(checked) state.days.push(day); save(); }
 function answer(key, value) { state.answers[key] = value.slice(0,3000); save(); }
 function exportNotes() { downloadJson({title:'悠悠语文14天学习记录',exportedAt:new Date().toISOString(),...state},'悠悠语文学习记录.json'); }

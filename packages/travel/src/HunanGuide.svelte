@@ -1,41 +1,145 @@
 <script>
-import {onMount,tick} from 'svelte';
-import Station from './Station.svelte'; import PhotoCard from './PhotoCard.svelte'; import Icon from './Icon.svelte';
-import {createSpeechController} from '@yoyo/speech';
-import './styles.css';
-let printing=$state(false);
-let data=$state(null),error=$state(false),selected=$state('city'),query=$state(''),learned=$state([]),parentMode=$state(false),translations=$state([]),quizIndex=$state(0),answered=$state([]),wrong=$state([]),correct=$state(false),feedback=$state(''),toastMessage=$state(''),photo=$state(null),dialog=$state();
-let controller,toastTimer,disposed=false,request,printDetails=[];
-const quizzes=$derived(data?.stations.flatMap(s=>(s.quiz||[]).map(q=>({...q,stationName:s.name})))||[]);
-const question=$derived(quizzes[quizIndex]);
-const sources=$derived(data ? [...new Map([...data.stations.flatMap(s=>s.sources),...data.poems.map(p=>p.source)].map(s=>[s.url,s])).values()] : []);
-function toast(message){toastMessage=message;clearTimeout(toastTimer);toastTimer=setTimeout(()=>toastMessage='',3100);}
-async function load(){error=false;request?.abort();request=new AbortController();try{const response=await fetch('./data/guide.json',{signal:request.signal});if(!response.ok)throw Error(response.status);const content=await response.json();if(disposed)return;data=content;try{const saved=JSON.parse(localStorage.getItem('xiangxing-passport-v1')||'[]');learned=Array.isArray(saved)?[...new Set(saved.filter(id=>data.stations.some(s=>s.id===id)))]:[];}catch{learned=[];}readHash();await tick();if(disposed)return;controller?.destroy();controller=createSpeechController({toast,icon:()=>'<svg aria-hidden="true"><use href="#i-sound"/></svg>'});}catch(e){if(e.name!=='AbortError')error=true;}}
-function readHash(){const id=location.hash.startsWith('#station-')?location.hash.slice(9):selected;if(data?.stations.some(s=>s.id===id))select(id);}
-function select(id,scroll=false){if(!data.stations.some(s=>s.id===id))return;controller?.stop();selected=id;if(scroll)document.getElementById('guide')?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});}
-async function click(e){
- const opener=e.target.closest('[data-photo]');if(opener && data){photo=data.photos.find(p=>p.id===opener.dataset.photo);await tick();dialog?.showModal();return;}
- if(e.target===dialog||e.target.closest('#photo-dialog-close')){dialog?.close();return;}
- const b=e.target.closest('button');if(!b||!data)return;
- if(b.dataset.select){select(b.dataset.select);return;}if(b.dataset.station){query='';select(b.dataset.station,true);return;}
- if(b.dataset.mode){parentMode=b.dataset.mode==='parent';return;}
- if(b.dataset.speak){const s=data.stations.find(s=>s.id===b.dataset.speak);controller?.speak(s.name+'。'+s.story.join('\n\n'),b);return;}
- if(b.dataset.poemSpeak){const p=data.poems.find(p=>p.id===b.dataset.poemSpeak);controller?.speak(p.title+'。'+p.author+'。'+p.lines.join('\n'),b);return;}
- if(b.dataset.stamp){const id=b.dataset.stamp;if(learned.includes(id)){toast('这一站已经盖过章啦，换一站继续发现。');return;}learned=[...learned,id];try{localStorage.setItem('xiangxing-passport-v1',JSON.stringify(learned));toast('收获一枚「'+data.stations.find(s=>s.id===id).stampLabel+'」学习印记！');}catch{toast('已盖章，但当前浏览器无法保存。请保持页面打开。');}return;}
- if(b.dataset.step){query='';select(data.stations[(data.stations.findIndex(s=>s.id===b.dataset.from)+Number(b.dataset.step)+data.stations.length)%data.stations.length].id,true);return;}
- if(b.dataset.translate){const id=b.dataset.translate;translations=translations.includes(id)?translations.filter(x=>x!==id):[...translations,id];return;}
- if(b.dataset.option!==undefined){if(correct)return;const index=Number(b.dataset.option);if(index===question.answer){correct=true;answered=[...new Set([...answered,quizIndex])];feedback='答对啦！'+question.explanation;}else{wrong=[...wrong,index];feedback='再想一想：'+(question.hint||'回到这站的讲解卡，找找证据。');}return;}
- if(b.id==='next-quiz'){quizIndex=(quizIndex+1)%quizzes.length;correct=false;wrong=[];feedback='';return;}
- if(b.hasAttribute('data-print')){controller?.stop();printing=true;await tick();document.querySelectorAll('img[data-src]').forEach(img=>img.src=img.dataset.src);await Promise.allSettled(Array.from(document.images).map(img=>img.decode()));window.print();return;}
- if(b.hasAttribute('data-download')){if(b.disabled)return;const label=b.innerHTML;b.disabled=true;b.textContent='正在准备完整离线版…';try{const {createOfflineHTML}=await import('./offline.js');const html=await createOfflineHTML($state.snapshot(data));const url=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='湘行小课堂-长沙岳阳亲子讲解手册.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);toast('完整离线HTML已准备好，保存后无需联网查看。');}catch{toast('离线保存未完成，请检查网络后重试。');}finally{b.disabled=false;b.innerHTML=label;}}
-}
-function beforePrint(){controller?.stop();printDetails=Array.from(document.querySelectorAll('details')).map(el=>({el,open:el.open}));printDetails.forEach(x=>x.el.open=true);}
-function afterPrint(){printDetails.forEach(x=>x.el.open=x.open);printing=false;}
-onMount(()=>{load();const stop=()=>controller?.stop();document.addEventListener('click',click);window.addEventListener('hashchange',readHash);window.addEventListener('pagehide',stop);window.addEventListener('beforeprint',beforePrint);window.addEventListener('afterprint',afterPrint);return()=>{disposed=true;request?.abort();controller?.destroy();clearTimeout(toastTimer);document.removeEventListener('click',click);window.removeEventListener('hashchange',readHash);window.removeEventListener('pagehide',stop);window.removeEventListener('beforeprint',beforePrint);window.removeEventListener('afterprint',afterPrint);};});
+  import { onMount, tick } from 'svelte';
+  import Station from './Station.svelte';
+  import PhotoCard from './PhotoCard.svelte';
+  import Icon from './Icon.svelte';
+  import { createSpeechController } from '@yoyo/speech';
+  import { readLocal, writeLocal } from '@yoyo/storage';
+  import './styles.css';
+
+  let printing = $state(false), downloading = $state(false);
+  let data = $state(null), error = $state(false), selected = $state('city');
+  let query = $state(''), learned = $state([]), parentMode = $state(false);
+  let translations = $state([]), quizIndex = $state(0), answered = $state([]);
+  let wrong = $state([]), correct = $state(false), feedback = $state('');
+  let toastMessage = $state(''), photo = $state(null);
+  let dialog = $state(), guideSection = $state(), guideRoot = $state();
+  let controller, toastTimer, disposed = false, request, printDetails = [];
+  const passportKey = 'xiangxing-passport-v1';
+  const quizzes = $derived(data?.stations.flatMap(s => (s.quiz || []).map(q => ({ ...q, stationName: s.name }))) || []);
+  const question = $derived(quizzes[quizIndex]);
+  const sources = $derived(data ? [...new Map([...data.stations.flatMap(s => s.sources), ...data.poems.map(p => p.source)].map(s => [s.url, s])).values()] : []);
+
+  function toast(message) {
+    if (disposed) return;
+    toastMessage = message;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastMessage = '', 3100);
+  }
+  async function load() {
+    error = false;
+    request?.abort();
+    request = new AbortController();
+    try {
+      const response = await fetch('./data/guide.json', { signal: request.signal });
+      if (!response.ok) throw Error(response.status);
+      const content = await response.json();
+      if (disposed) return;
+      data = content;
+      const saved = readLocal(passportKey, [], Array.isArray);
+      learned = [...new Set(saved.value.filter(id => data.stations.some(s => s.id === id)))];
+      if (!saved.available) toast('当前浏览器无法读取学习印记，仍可继续阅读。');
+      readHash();
+      await tick();
+      if (disposed) return;
+      controller?.destroy();
+      // The speech adapter retains the tested synchronous iOS queue and local-voice controls.
+      controller = createSpeechController({ toast, icon: () => '<svg aria-hidden="true"><use href="#i-sound"/></svg>' });
+    } catch (cause) {
+      if (cause.name !== 'AbortError' && !disposed) error = true;
+    }
+  }
+  function stopSpeech() { controller?.stop(); }
+  function readHash() {
+    const id = location.hash.startsWith('#station-') ? location.hash.slice(9) : selected;
+    if (data?.stations.some(s => s.id === id)) select(id);
+  }
+  function select(id, scroll = false) {
+    if (!data?.stations.some(s => s.id === id)) return;
+    stopSpeech();
+    selected = id;
+    if (scroll) guideSection?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  }
+  function selectFromMap(id) { query = ''; select(id, true); }
+  function step(from, direction) {
+    query = '';
+    const index = data.stations.findIndex(s => s.id === from);
+    select(data.stations[(index + direction + data.stations.length) % data.stations.length].id, true);
+  }
+  async function openPhoto(id) {
+    const next = data?.photos.find(p => p.id === id);
+    if (!next) return;
+    photo = next;
+    await tick();
+    if (!disposed && !dialog?.open) dialog?.showModal();
+  }
+  function closePhoto() { dialog?.close(); }
+  function speakStation(station, button) { controller?.speak(station.name + '。' + station.story.join('\n\n'), button); }
+  function speakPoem(poem, button) { controller?.speak(poem.title + '。' + poem.author + '。' + poem.lines.join('\n'), button); }
+  function stamp(id) {
+    if (learned.includes(id)) { toast('这一站已经盖过章啦，换一站继续发现。'); return; }
+    learned = [...learned, id];
+    if (writeLocal(passportKey, $state.snapshot(learned))) toast('收获一枚「' + data.stations.find(s => s.id === id).stampLabel + '」学习印记！');
+    else toast('已盖章，但当前浏览器无法保存。请保持页面打开。');
+  }
+  function translate(id) { translations = translations.includes(id) ? translations.filter(x => x !== id) : [...translations, id]; }
+  function answer(index) {
+    if (correct || wrong.includes(index)) return;
+    if (index === question.answer) {
+      correct = true;
+      answered = [...new Set([...answered, quizIndex])];
+      feedback = '答对啦！' + question.explanation;
+    } else {
+      wrong = [...wrong, index];
+      feedback = '再想一想：' + (question.hint || '回到这站的讲解卡，找找证据。');
+    }
+  }
+  function nextQuiz() { quizIndex = (quizIndex + 1) % quizzes.length; correct = false; wrong = []; feedback = ''; }
+  async function printGuide() {
+    if (!data || printing) return;
+    stopSpeech();
+    printing = true;
+    await tick();
+    if (disposed) return;
+    // Browser print needs decoded images, including previously hidden stations.
+    guideRoot.querySelectorAll('img[data-src]').forEach(img => img.src = img.dataset.src);
+    await Promise.allSettled(Array.from(guideRoot.querySelectorAll('img')).map(img => img.decode()));
+    if (!disposed) window.print();
+  }
+  async function downloadGuide() {
+    if (!data || downloading) return;
+    downloading = true;
+    try {
+      const { createOfflineHTML } = await import('./offline.js');
+      const html = await createOfflineHTML($state.snapshot(data));
+      if (disposed) return;
+      const url = URL.createObjectURL(new Blob([html], { type: 'text/html;charset=utf-8' }));
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = '湘行小课堂-长沙岳阳亲子讲解手册.html';
+      anchor.click();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      toast('完整离线HTML已准备好，保存后无需联网查看。');
+    } catch { toast('离线保存未完成，请检查网络后重试。'); }
+    finally { downloading = false; }
+  }
+  function beforePrint() {
+    stopSpeech();
+    // Preserve manually expanded details across the browser's print lifecycle.
+    printDetails = Array.from(guideRoot.querySelectorAll('details')).map(el => ({ el, open: el.open }));
+    printDetails.forEach(x => x.el.open = true);
+  }
+  function afterPrint() { printDetails.forEach(x => x.el.open = x.open); printing = false; }
+  onMount(() => {
+    load();
+    return () => { disposed = true; request?.abort(); controller?.destroy(); clearTimeout(toastTimer); };
+  });
 </script>
+<svelte:window onhashchange={readHash} onpagehide={stopSpeech} onbeforeprint={beforePrint} onafterprint={afterPrint}/>
+
 <svelte:head><title>湘行小课堂｜长沙·岳阳亲子讲解手册</title><meta name="description" content="长沙与岳阳亲子讲解手册：故事、历史人物、诗词和小游戏。"/></svelte:head>
 
-<div class="hunan-guide" class:parent-mode={parentMode}>
+<div bind:this={guideRoot} class="hunan-guide" class:parent-mode={parentMode}>
   <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true"><defs>
     <symbol id="i-mountain" viewBox="0 0 24 24"><path d="m2 19 7-12 5 8 3-5 5 9H2Z"/><circle cx="18" cy="5" r="2"/></symbol>
     <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 5c-3-2-6-2-10-1v15c4-1 7-1 10 1 3-2 6-2 10-1V4c-4-1-7-1-10 1Z"/><path d="M12 5v15M5 8h4M15 8h4M5 12h4M15 12h4"/></symbol>
@@ -56,27 +160,27 @@ onMount(()=>{load();const stop=()=>controller?.stop();document.addEventListener(
   <header class="topbar"><div class="wrap top-inner">
     <a class="brand" href="#top" aria-label="湘行小课堂首页"><span class="brand-mark"><svg fill="none" stroke="currentColor" stroke-width="1.6"><use href="#i-mountain"/></svg></span>湘行小课堂</a>
     <nav class="top-nav" aria-label="主导航"><a href="#archive">古今相册</a><a href="#map">山水地图</a><a href="#guide">景点故事</a><a href="#people">认识古人</a><a href="#poems">带着诗走</a><a href="#challenge">小小挑战</a></nav>
-    <div class="top-actions"><button class="btn ghost download-btn" data-download aria-label="保存离线HTML"><svg fill="none" stroke="currentColor" stroke-width="1.6"><use href="#i-download"/></svg><span>离线保存</span></button><button class="btn ghost" data-print aria-label="打印全册"><svg fill="none" stroke="currentColor" stroke-width="1.6"><use href="#i-print"/></svg><span class="print-label">打印</span></button></div>
+    <div class="top-actions"><button class="btn ghost download-btn" data-download onclick={downloadGuide} disabled={!data || downloading} aria-busy={downloading} aria-label="保存离线HTML"><svg fill="none" stroke="currentColor" stroke-width="1.6"><use href="#i-download"/></svg><span>{downloading ? "正在准备完整离线版…" : "离线保存"}</span></button><button class="btn ghost" data-print onclick={printGuide} disabled={!data || printing} aria-label="打印全册"><svg fill="none" stroke="currentColor" stroke-width="1.6"><use href="#i-print"/></svg><span class="print-label">打印</span></button></div>
   </div></header>
   <div id="load-status" role="status" class="wrap" hidden={!!data}>{error ? "讲解内容加载失败，请检查网络后重试。" : "正在加载讲解内容…"}{#if error}<button onclick={load}>重新加载</button>{/if}</div><noscript>请启用 JavaScript 查看互动讲解；离线版也需要 JavaScript。</noscript>
 <main id="top" class="wrap">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-copy"><div class="eyebrow">亲子行走手册 · 长沙 / 岳阳</div><h1 id="hero-title">沿着山水，<br>读一读湖南。</h1><p>把一座山、一处古墓、一座楼，讲成孩子听得懂的故事。每到一站，读两分钟，再一起找一条历史线索。</p><div class="tag-line"><span class="pill">适合约9岁孩子</span><span class="pill orange">故事 · 诗词 · 观察</span></div><div class="hero-actions"><a class="btn primary" href="#guide"><svg fill="none" stroke="currentColor" stroke-width="1.5"><use href="#i-book"/></svg>选一站，开始讲</a><a class="btn ghost" href="#map">先看位置地图 ↗</a></div><div class="hero-meta"><span><strong id="stat-stations">{data?.stations.length||7}</strong>个讲解点</span><span><strong id="stat-poems">{data?.poems.length||7}</strong>篇诗文</span><span><strong>2</strong>分钟一个故事</span></div></div>
-      <figure class="hero-art"><button class="hero-photo-button" data-photo="yueyang-front-2018" aria-label="放大查看首页实景照片"><img src="./assets/38ea90e261eb0306.jpg" width="853" height="640" alt="三重黄色屋檐的岳阳楼立在红色城台上，前方为石铺广场。"></button><div class="hero-sticker">把“来过这里”<br>变成 <b>“读懂一点”</b>。</div><figcaption>岳阳楼正面 · 2018年4月18日 · Huangdan2060 / <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer">CC0 1.0</a> · <a href="https://commons.wikimedia.org/wiki/File:Frontal_view_of_Yueyang_Tower,_Hunan,_China1.jpg" target="_blank" rel="noopener noreferrer">来源 ↗</a></figcaption></figure>
+      <figure class="hero-art"><button class="hero-photo-button" data-photo="yueyang-front-2018" onclick={()=>openPhoto("yueyang-front-2018")} aria-label="放大查看首页实景照片"><img src="./assets/38ea90e261eb0306.jpg" width="853" height="640" alt="三重黄色屋檐的岳阳楼立在红色城台上，前方为石铺广场。"></button><div class="hero-sticker">把“来过这里”<br>变成 <b>“读懂一点”</b>。</div><figcaption>岳阳楼正面 · 2018年4月18日 · Huangdan2060 / <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer">CC0 1.0</a> · <a href="https://commons.wikimedia.org/wiki/File:Frontal_view_of_Yueyang_Tower,_Hunan,_China1.jpg" target="_blank" rel="noopener noreferrer">来源 ↗</a></figcaption></figure>
     </section>
     <aside class="howto" aria-label="家长使用方法"><div class="howto-title">家长这样讲，刚刚好。</div><div class="howto-steps"><div class="howto-step"><strong><b class="step-no">01</b> 先抛一个问题</strong><span>让好奇心先出发</span></div><div class="howto-step"><strong><b class="step-no">02</b> 讲一个短故事</strong><span>不用把知识一次讲完</span></div><div class="howto-step"><strong><b class="step-no">03</b> 找一条现场线索</strong><span>把答案交给眼睛发现</span></div></div></aside>
-    {#if data}<section id="archive" class="section archive-section" aria-labelledby="archive-title"><div class="archive-layout"><div class="archive-copy"><div class="eyebrow">真实图像 · 时间的线索</div><h2 id="archive-title">同一座城，<br>走过不同的年代。</h2><p>从历史影像到现代实景，看看风景里哪些变了，哪些仍能辨认。全册收录 <b id="photo-count">{data.photos.length}</b> 张实景、文物与历史图像，每一张都能点开放大。</p><div class="archive-question"><b>先问孩子：</b><br>屋顶有几层？城台在哪里？老照片里的船和湖岸，和今天有什么不同？</div></div><div><div id="archive-pair" class="archive-pair">{#each data.archivePair as id}{@const p=data.photos.find(p=>p.id===id)}{#if p}<PhotoCard photo={p} compact/>{/if}{/each}</div><p class="archive-footer">不同年代、不同视角的风景对照。照片标明拍摄日期或馆藏估年；各站还有更多实景与文物细节。</p></div></div></section>
+    {#if data}<section id="archive" class="section archive-section" aria-labelledby="archive-title"><div class="archive-layout"><div class="archive-copy"><div class="eyebrow">真实图像 · 时间的线索</div><h2 id="archive-title">同一座城，<br>走过不同的年代。</h2><p>从历史影像到现代实景，看看风景里哪些变了，哪些仍能辨认。全册收录 <b id="photo-count">{data.photos.length}</b> 张实景、文物与历史图像，每一张都能点开放大。</p><div class="archive-question"><b>先问孩子：</b><br>屋顶有几层？城台在哪里？老照片里的船和湖岸，和今天有什么不同？</div></div><div><div id="archive-pair" class="archive-pair">{#each data.archivePair as id}{@const p=data.photos.find(p=>p.id===id)}{#if p}<PhotoCard photo={p} compact onopen={openPhoto}/>{/if}{/each}</div><p class="archive-footer">不同年代、不同视角的风景对照。照片标明拍摄日期或馆藏估年；各站还有更多实景与文物细节。</p></div></div></section>
     <section id="map" class="section" aria-labelledby="map-title"><div class="section-head"><div><div class="eyebrow">第一步 · 认识方向</div><h2 id="map-title">山在哪里，水往哪边？</h2></div><p>先把位置装进脑海，再把故事放回现场。点一下地标，就能打开对应的讲解卡。</p></div><div class="map-card"><div class="map-grid"><div class="map-canvas" aria-label="长沙与岳阳景点方位示意图">
       <svg viewBox="0 0 660 440" aria-hidden="true"><defs><pattern id="mapdots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#dce3d5"/></pattern><linearGradient id="river" x2="1" y2="0"><stop stop-color="#c4e1df"/><stop offset="1" stop-color="#a4cbc9"/></linearGradient></defs><rect width="660" height="440" fill="url(#mapdots)"/><path d="M270 440c-33-91 40-119 10-198S250 126 293 5" stroke="url(#river)" stroke-width="65" fill="none"/><path d="M272 411c-22-61 29-109 15-165s-22-117 5-214" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="6 9" fill="none" opacity=".6"/><path d="M75 297 120 218 156 273 182 240 224 309H59" fill="#c7d5b4"/><path d="m102 296 31-52 35 52" stroke="#a4b698" fill="none" stroke-width="2"/><text x="65" y="338" font-size="13" fill="#5e775f">河西 · 岳麓山</text><text x="306" y="342" font-size="13" fill="#487d85">湘江向北 ↑</text><path d="M238 259h90M243 270h86" stroke="#b4b6a0" stroke-width="4"/><text x="365" y="375" font-size="13" fill="#6d8372">河东 · 长沙城区</text><path d="M452 204v-72q0-19 26-19h31" stroke="#d4a169" fill="none" stroke-dasharray="6 7" stroke-width="2"/><text x="467" y="161" font-size="11" fill="#a37a49">向北到岳阳</text><path d="M417 15c22 25 42 17 52 36s-11 45 12 51 85-1 91-29-16-53-41-58Z" fill="#c6dee0"/><path d="M459 36c30-10 54 10 88 4M457 73c25-8 46 7 84 0" fill="none" stroke="#9abfc5" stroke-width="1.3"/><text x="477" y="60" font-size="13" fill="#497a82">洞庭湖</text><path d="M601 364v-41m0 0-6 10m6-10 6 10" stroke="#637e6d" fill="none" stroke-width="2"/><text x="595" y="388" font-size="13" fill="#637e6d">北</text></svg>
-      <button class="map-pin" class:active={selected==='city'} data-station="city" style="left:61%;top:64%">五一商圈</button><button class="map-pin" class:active={selected==='mawangdui'} data-station="mawangdui" style="left:85%;top:50%">马王堆遗址</button><button class="map-pin" class:active={selected==='yuelu'} data-station="yuelu" style="left:21%;top:61%">岳麓山·爱晚亭</button><button class="map-pin" class:active={selected==='museum'} data-station="museum" style="left:62%;top:42%">省博（备选）</button><button class="map-pin" class:active={selected==='yueyang'} data-station="yueyang" style="left:87%;top:15%">岳阳楼</button><button class="map-pin" class:active={selected==='baling'} data-station="baling" style="left:85%;top:28%">汴河街·巴陵广场</button><button class="map-pin" class:active={selected==='dongting'} data-station="dongting" style="left:58%;top:13%">洞庭湖</button><span class="map-note">方位示意，不按比例；不作导航使用</span>
+      <button class="map-pin" class:active={selected==='city'} data-station="city" onclick={()=>selectFromMap("city")} style="left:61%;top:64%">五一商圈</button><button class="map-pin" class:active={selected==='mawangdui'} data-station="mawangdui" onclick={()=>selectFromMap("mawangdui")} style="left:85%;top:50%">马王堆遗址</button><button class="map-pin" class:active={selected==='yuelu'} data-station="yuelu" onclick={()=>selectFromMap("yuelu")} style="left:21%;top:61%">岳麓山·爱晚亭</button><button class="map-pin" class:active={selected==='museum'} data-station="museum" onclick={()=>selectFromMap("museum")} style="left:62%;top:42%">省博（备选）</button><button class="map-pin" class:active={selected==='yueyang'} data-station="yueyang" onclick={()=>selectFromMap("yueyang")} style="left:87%;top:15%">岳阳楼</button><button class="map-pin" class:active={selected==='baling'} data-station="baling" onclick={()=>selectFromMap("baling")} style="left:85%;top:28%">汴河街·巴陵广场</button><button class="map-pin" class:active={selected==='dongting'} data-station="dongting" onclick={()=>selectFromMap("dongting")} style="left:58%;top:13%">洞庭湖</button><span class="map-note">方位示意，不按比例；不作导航使用</span>
     </div><div class="map-side"><h3>两座城，一条山水线。</h3><p>长沙在南，岳阳在北。湘江流经长沙，向北汇入洞庭湖水系；岳阳楼就在洞庭湖畔。</p><div class="geo-row"><span class="geo-icon"><svg class="icon" fill="none" stroke="currentColor" stroke-width="1.5"><use href="#i-mountain"/></svg></span><div><strong>长沙：一江两岸，看古今相遇</strong><p>西岸赏岳麓山，东岸逛城区、读汉代往事。</p></div></div><div class="geo-row"><span class="geo-icon"><svg class="icon" fill="none" stroke="currentColor" stroke-width="1.5"><use href="#i-wave"/></svg></span><div><strong>岳阳：一楼一湖，读诗文里的世界</strong><p>名楼、老街、湖边集中游览，把脚步放慢。</p></div></div><div class="geo-row"><span class="geo-icon"><svg class="icon" fill="none" stroke="currentColor" stroke-width="1.5"><use href="#i-compass"/></svg></span><div><strong>小问题：岳麓山和岳阳楼是同一个地方吗？</strong><p>不是。前者是长沙的山，后者是岳阳的楼。</p></div></div></div></div></div></section>
-    <section id="guide" class="section" aria-labelledby="guide-title"><div class="section-head"><div><div class="eyebrow">第二步 · 让风景开口</div><h2 id="guide-title">一站一张，口袋讲解卡。</h2></div><p>“现场讲”可以直接读给孩子听；切到“家长备课”，再看历史时间线、故事边界和资料。</p></div><details id="speech-settings" class="speech-settings"><summary>朗读音色与语速</summary><div class="speech-controls"><label>普通话音色 <select id="speech-voice" aria-describedby="speech-status"></select></label><label>语速 <select id="speech-rate"><option value="0.85">稍慢</option><option value="0.95">舒缓</option><option value="1">正常</option><option value="1.1">稍快</option></select></label><button id="speech-preview" class="btn" aria-pressed="false">试听声音</button></div><p id="speech-status" role="status"></p><p>只调用浏览器标为本机的中文声音，不调用云端配音；音质取决于本机已安装的语音。Mac 可到“系统设置 → 辅助功能 → 朗读与语音（或朗读内容）”下载更多中文音色，然后刷新本页。默认优先普通话专用音色，可自行试听选择。</p></details><div class="reader-top"><div class="mode-switch" role="group" aria-label="讲解模式"><button class:active={!parentMode} data-mode="story" aria-pressed={!parentMode}>现场讲</button><button class:active={parentMode} data-mode="parent" aria-pressed={parentMode}>家长备课</button></div><label class="search-box"><svg fill="none" stroke="currentColor" stroke-width="1.6"><use href="#i-search"/></svg><span class="sr-only">搜索景点、人物和关键词</span><input id="station-search" bind:value={query} placeholder="找景点、人物或关键词…" type="search" autocomplete="off"></label></div><div class="reader-layout"><nav id="station-nav" class="station-nav" aria-label="选择景点">{#each data.stations as s,i}{#if !query.trim() || JSON.stringify(s).toLowerCase().includes(query.trim().toLowerCase())}<button class="station-button" class:active={selected===s.id} class:done={learned.includes(s.id)} data-select={s.id} aria-current={selected===s.id?'true':'false'}><span class="station-no">{String(i+1).padStart(2,'0')}</span><span class="station-button-text"><strong>{s.navTitle||s.name}</strong><small>{s.tagline}</small></span><span class="station-done" aria-label="已学习">✓</span></button>{/if}{/each}{#if !data.stations.some(s=>JSON.stringify(s).toLowerCase().includes(query.trim().toLowerCase()))}<p class="no-results">没找到这个关键词，试试“爱晚亭”“帛书”或“范仲淹”。</p>{/if}</nav><div id="station-content" class="reader-main" aria-live="polite">{#each data.stations as s,i}<Station station={s} index={i} {data} {selected} {learned} {parentMode} {printing}/>{/each}</div></div><noscript><p>请在支持 JavaScript 的浏览器中打开本手册，以使用景点讲解卡和亲子互动功能。</p></noscript></section>
+    <section bind:this={guideSection} id="guide" class="section" aria-labelledby="guide-title"><div class="section-head"><div><div class="eyebrow">第二步 · 让风景开口</div><h2 id="guide-title">一站一张，口袋讲解卡。</h2></div><p>“现场讲”可以直接读给孩子听；切到“家长备课”，再看历史时间线、故事边界和资料。</p></div><details id="speech-settings" class="speech-settings"><summary>朗读音色与语速</summary><div class="speech-controls"><label>普通话音色 <select id="speech-voice" aria-describedby="speech-status"></select></label><label>语速 <select id="speech-rate"><option value="0.85">稍慢</option><option value="0.95">舒缓</option><option value="1">正常</option><option value="1.1">稍快</option></select></label><button id="speech-preview" class="btn" aria-pressed="false">试听声音</button></div><p id="speech-status" role="status"></p><p>只调用浏览器标为本机的中文声音，不调用云端配音；音质取决于本机已安装的语音。Mac 可到“系统设置 → 辅助功能 → 朗读与语音（或朗读内容）”下载更多中文音色，然后刷新本页。默认优先普通话专用音色，可自行试听选择。</p></details><div class="reader-top"><div class="mode-switch" role="group" aria-label="讲解模式"><button class:active={!parentMode} data-mode="story" onclick={()=>parentMode=false} aria-pressed={!parentMode}>现场讲</button><button class:active={parentMode} data-mode="parent" onclick={()=>parentMode=true} aria-pressed={parentMode}>家长备课</button></div><label class="search-box"><svg fill="none" stroke="currentColor" stroke-width="1.6"><use href="#i-search"/></svg><span class="sr-only">搜索景点、人物和关键词</span><input id="station-search" bind:value={query} placeholder="找景点、人物或关键词…" type="search" autocomplete="off"></label></div><div class="reader-layout"><nav id="station-nav" class="station-nav" aria-label="选择景点">{#each data.stations as s,i}{#if !query.trim() || JSON.stringify(s).toLowerCase().includes(query.trim().toLowerCase())}<button class="station-button" class:active={selected===s.id} class:done={learned.includes(s.id)} data-select={s.id} onclick={()=>select(s.id)} aria-current={selected===s.id?'true':'false'}><span class="station-no">{String(i+1).padStart(2,'0')}</span><span class="station-button-text"><strong>{s.navTitle||s.name}</strong><small>{s.tagline}</small></span><span class="station-done" aria-label="已学习">✓</span></button>{/if}{/each}{#if !data.stations.some(s=>JSON.stringify(s).toLowerCase().includes(query.trim().toLowerCase()))}<p class="no-results">没找到这个关键词，试试“爱晚亭”“帛书”或“范仲淹”。</p>{/if}</nav><div id="station-content" class="reader-main" aria-live="polite">{#each data.stations as s,i}<Station station={s} index={i} {data} {selected} {learned} {parentMode} {printing} onopen={openPhoto} onspeak={speakStation} onstamp={stamp} onstep={step}/>{/each}</div></div><noscript><p>请在支持 JavaScript 的浏览器中打开本手册，以使用景点讲解卡和亲子互动功能。</p></noscript></section>
     <section id="people" class="section" aria-labelledby="people-title"><div class="section-head"><div><div class="eyebrow">第三步 · 认识故事里的人</div><h2 id="people-title">记住一个人，就有了一个故事。</h2></div><p>谁建亭，谁写诗，谁重修名楼？把人物放回各自的年代，孩子就不容易张冠李戴。</p></div><div id="people-grid" class="people-grid">{#each data.people as p}<article class="person-card" id={'person-'+p.id}><div class="person-head"><span class="person-seal" aria-hidden="true">{p.name[0]}</span><div><h3>{p.name}</h3><small>{p.era} · {p.shortRole}</small></div></div><p>{p.bio}</p><div class="person-relation">{p.relation}</div></article>{/each}</div></section>
-    <section id="poems" class="section" aria-labelledby="poems-title"><div class="section-head"><div><div class="eyebrow">第四步 · 带着诗去看</div><h2 id="poems-title">把一句诗，读进眼前的风景。</h2></div><p>先读原文，再用自己的话说一遍。诗里的月夜、远望和想象，不一定是白天现场看到的样子。</p></div><p><a class="text-link" href="#speech-settings">调整朗读音色与语速 ↗</a></p><div id="poem-grid" class="poem-grid">{#each data.poems as p}<article class="poem-card" id={'poem-'+p.id}><h3>《{p.title}》{p.excerpt?'（节选）':''}</h3><div class="poem-author">{p.era} · {p.author}</div><div class="poem-lines">{#each p.lines as line}<p>{line}</p>{/each}</div><p class="poem-desc">{p.prompt}</p><div class="poem-tools"><button class="btn ghost" data-translate={p.id} aria-expanded={translations.includes(p.id)} aria-controls={'translation-'+p.id}>{translations.includes(p.id)?'收起儿童译意 −':'用孩子的话说一遍 ＋'}</button><button class="btn ghost poem-listen" data-poem-speak={p.id} aria-pressed="false"><Icon name="sound"/>听一遍</button></div><div class="poem-translation" id={'translation-'+p.id} hidden={!translations.includes(p.id)}>{p.translation}</div><p class="poem-context">{p.context}</p><p class="poem-source">原文核对：<a href={p.source.url} target="_blank" rel="noopener noreferrer">{p.source.title}</a></p></article>{/each}</div></section>
-    <section id="challenge" class="section" aria-labelledby="challenge-title"><div class="section-head"><div><div class="eyebrow">第五步 · 把发现留下来</div><h2 id="challenge-title">今天，你是小小讲解员。</h2></div><p>答题不计时。说出理由，比记住正确选项更重要。每读懂一站，就给自己的旅行护照盖个章。</p></div><div class="challenge-grid"><div class="quiz-box"><div class="quiz-meta"><span id="quiz-location">{question?.stationName}</span><span id="quiz-counter">{quizIndex+1} / {quizzes.length}</span></div><div id="quiz-question" class="quiz-question">{question?.question}</div><div id="quiz-options" class="quiz-options">{#each question?.options||[] as option,i}<button class="quiz-option" class:correct={correct && i===question.answer} class:wrong={wrong.includes(i)} data-option={i} disabled={correct||wrong.includes(i)}><span class="option-letter">{String.fromCharCode(65+i)}</span><span>{option}</span></button>{/each}</div><div id="quiz-feedback" class="quiz-feedback" role="status" hidden={!feedback}>{feedback}</div><div class="quiz-footer"><small id="quiz-score">{answered.length ? `你已经读懂 ${answered.length} 道题。` : "慢慢想，也可以回讲解卡找线索。"}</small><button class="btn" id="next-quiz">换一道题 →</button></div></div><aside class="passport"><div class="eyebrow" style="color:#eac687">我的山水护照</div><h3>把好奇，变成收获。</h3><p>在景点讲解卡底部点击“这站学会啦”，留下一个小小的学习印记。</p><div class="passport-count"><span id="passport-count">{learned.length}</span><small> / <span id="passport-total">{data.stations.length}</span> 站</small></div><div class="progress-line"><div class="progress-fill" id="passport-progress" style:width={(learned.length/data.stations.length*100)+"%"}></div></div><div id="passport-stamps" class="passport-stamps">{#each data.stations as s}<div class="passport-stamp" class:earned={learned.includes(s.id)} title={s.name+'：'+(learned.includes(s.id)?'已盖章':'未盖章')}><Icon name={s.icon||'star'}/><span>{s.stampLabel||s.navTitle||s.name}</span></div>{/each}</div><div class="passport-help">印记保存在当前浏览器内，不需要登录。备选景点也能在出发前先读一读，不必为了集章赶行程。</div></aside></div></section>
+    <section id="poems" class="section" aria-labelledby="poems-title"><div class="section-head"><div><div class="eyebrow">第四步 · 带着诗去看</div><h2 id="poems-title">把一句诗，读进眼前的风景。</h2></div><p>先读原文，再用自己的话说一遍。诗里的月夜、远望和想象，不一定是白天现场看到的样子。</p></div><p><a class="text-link" href="#speech-settings">调整朗读音色与语速 ↗</a></p><div id="poem-grid" class="poem-grid">{#each data.poems as p}<article class="poem-card" id={'poem-'+p.id}><h3>《{p.title}》{p.excerpt?'（节选）':''}</h3><div class="poem-author">{p.era} · {p.author}</div><div class="poem-lines">{#each p.lines as line}<p>{line}</p>{/each}</div><p class="poem-desc">{p.prompt}</p><div class="poem-tools"><button class="btn ghost" data-translate={p.id} onclick={()=>translate(p.id)} aria-expanded={translations.includes(p.id)} aria-controls={'translation-'+p.id}>{translations.includes(p.id)?'收起儿童译意 −':'用孩子的话说一遍 ＋'}</button><button class="btn ghost poem-listen" data-poem-speak={p.id} onclick={(event)=>speakPoem(p,event.currentTarget)} aria-pressed="false"><Icon name="sound"/>听一遍</button></div><div class="poem-translation" id={'translation-'+p.id} hidden={!translations.includes(p.id)}>{p.translation}</div><p class="poem-context">{p.context}</p><p class="poem-source">原文核对：<a href={p.source.url} target="_blank" rel="noopener noreferrer">{p.source.title}</a></p></article>{/each}</div></section>
+    <section id="challenge" class="section" aria-labelledby="challenge-title"><div class="section-head"><div><div class="eyebrow">第五步 · 把发现留下来</div><h2 id="challenge-title">今天，你是小小讲解员。</h2></div><p>答题不计时。说出理由，比记住正确选项更重要。每读懂一站，就给自己的旅行护照盖个章。</p></div><div class="challenge-grid"><div class="quiz-box"><div class="quiz-meta"><span id="quiz-location">{question?.stationName}</span><span id="quiz-counter">{quizIndex+1} / {quizzes.length}</span></div><div id="quiz-question" class="quiz-question">{question?.question}</div><div id="quiz-options" class="quiz-options">{#each question?.options||[] as option,i}<button class="quiz-option" class:correct={correct && i===question.answer} class:wrong={wrong.includes(i)} data-option={i} onclick={()=>answer(i)} disabled={correct||wrong.includes(i)}><span class="option-letter">{String.fromCharCode(65+i)}</span><span>{option}</span></button>{/each}</div><div id="quiz-feedback" class="quiz-feedback" role="status" hidden={!feedback}>{feedback}</div><div class="quiz-footer"><small id="quiz-score">{answered.length ? `你已经读懂 ${answered.length} 道题。` : "慢慢想，也可以回讲解卡找线索。"}</small><button class="btn" id="next-quiz" onclick={nextQuiz}>换一道题 →</button></div></div><aside class="passport"><div class="eyebrow" style="color:#eac687">我的山水护照</div><h3>把好奇，变成收获。</h3><p>在景点讲解卡底部点击“这站学会啦”，留下一个小小的学习印记。</p><div class="passport-count"><span id="passport-count">{learned.length}</span><small> / <span id="passport-total">{data.stations.length}</span> 站</small></div><div class="progress-line"><div class="progress-fill" id="passport-progress" style:width={(learned.length/data.stations.length*100)+"%"}></div></div><div id="passport-stamps" class="passport-stamps">{#each data.stations as s}<div class="passport-stamp" class:earned={learned.includes(s.id)} title={s.name+'：'+(learned.includes(s.id)?'已盖章':'未盖章')}><Icon name={s.icon||'star'}/><span>{s.stampLabel||s.navTitle||s.name}</span></div>{/each}</div><div class="passport-help">印记保存在当前浏览器内，不需要登录。备选景点也能在出发前先读一读，不必为了集章赶行程。</div></aside></div></section>
     <section id="sources" class="section sources-section" aria-labelledby="sources-title"><div class="source-note"><h3 id="sources-title">讲得有趣，也讲得有依据。</h3><p>本手册把史实、传说与文学想象分别说明。儿童口述和诗词译意为重新编写；古典诗文保留原文。每站讲解卡都附有对应资料入口，方便家长继续查阅。</p><ul><li>墓坑遗址与博物馆陈列、原物与复原展示，按现场展签继续核对。</li><li>亭楼多有重修：人物活动的年代、建筑创建年代与今天所见实物的年代，需要分别理解。</li><li>诗词是理解风景的另一扇窗；不把诗中描写直接当成作者亲历或当日景象的证明。</li></ul><p class="muted small">资料整理于 2026 年 11 月 16 日，真实图像增补于 11 月 17 日。页面不提供实时门票、预约名额或交通班次。</p><details><summary>图片来源与使用许可（<span id="photo-source-count">{data.photos.length}</span>张）</summary><div id="photo-sources" class="image-source-list">{#each data.photos as p}<div class="image-source-item"><b>{p.title} · {p.yearLabel}</b><div>{p.author} · <a href={p.licenseUrl} target="_blank" rel="noopener noreferrer">{p.license}</a> · <a href={p.sourceUrl} target="_blank" rel="noopener noreferrer">图片来源 ↗</a></div><p>{p.changeNote||'图片按原图比例展示。'}</p></div>{/each}</div></details><details><summary>查看全册资料来源</summary><ul id="all-sources" class="all-sources">{#each sources as source}<li><a href={source.url} target="_blank" rel="noopener noreferrer">↗ {source.title}</a></li>{/each}</ul></details></div></section>
     <footer class="site-footer"><span>湘行小课堂 · 给亲子旅行的一份口袋讲解手册</span><span>读一段，停一停，再一起发现。</span></footer>
   {/if}</main>
 {#if data}
   <div class="floating-progress"><span>我的山水护照 <b id="floating-count">{learned.length} / {data.stations.length}</b></span><a href="#challenge">看看收获 ↗</a></div><div id="toast" class="toast" role="status" hidden={!toastMessage}>{toastMessage}</div>
-<dialog bind:this={dialog} id="photo-dialog" class="photo-dialog" aria-labelledby="photo-dialog-title" onclose={()=>photo=null}><div class="photo-dialog-top"><strong id="photo-dialog-meta">{photo?.kindLabel} · {photo?.yearLabel}</strong><button id="photo-dialog-close" class="photo-dialog-close" aria-label="关闭大图">关闭 ✕</button></div><figure><img id="photo-dialog-image" class="photo-dialog-image" src={photo?.src} alt={photo?.alt||''}><figcaption class="photo-dialog-caption"><h3 id="photo-dialog-title">{photo?.title}</h3><p id="photo-dialog-desc">{photo?.caption}</p><p class="photo-look"><b>一起找一找：</b><span id="photo-dialog-look">{photo?.lookFor||'看看画面里有哪些细节，再回到现场寻找。'}</span></p><div id="photo-dialog-credit" class="photo-credit">{#if photo}{photo.author} · <a href={photo.licenseUrl} target="_blank" rel="noopener noreferrer">{photo.license}</a> · <a href={photo.sourceUrl} target="_blank" rel="noopener noreferrer">图片来源 ↗</a>{/if}</div><div id="photo-dialog-changes" class="photo-credit">{photo?.changeNote||''}</div></figcaption></figure></dialog>{/if}</div>
+<dialog bind:this={dialog} id="photo-dialog" class="photo-dialog" aria-labelledby="photo-dialog-title" onclose={()=>photo=null} onclick={(event)=>{if(event.target===dialog)closePhoto();}}><div class="photo-dialog-top"><strong id="photo-dialog-meta">{photo?.kindLabel} · {photo?.yearLabel}</strong><button id="photo-dialog-close" onclick={closePhoto} class="photo-dialog-close" aria-label="关闭大图">关闭 ✕</button></div><figure><img id="photo-dialog-image" class="photo-dialog-image" src={photo?.src} alt={photo?.alt||''}><figcaption class="photo-dialog-caption"><h3 id="photo-dialog-title">{photo?.title}</h3><p id="photo-dialog-desc">{photo?.caption}</p><p class="photo-look"><b>一起找一找：</b><span id="photo-dialog-look">{photo?.lookFor||'看看画面里有哪些细节，再回到现场寻找。'}</span></p><div id="photo-dialog-credit" class="photo-credit">{#if photo}{photo.author} · <a href={photo.licenseUrl} target="_blank" rel="noopener noreferrer">{photo.license}</a> · <a href={photo.sourceUrl} target="_blank" rel="noopener noreferrer">图片来源 ↗</a>{/if}</div><div id="photo-dialog-changes" class="photo-credit">{photo?.changeNote||''}</div></figcaption></figure></dialog>{/if}</div>

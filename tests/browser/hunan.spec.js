@@ -245,3 +245,55 @@ test("Hunan local speech selection, preference and cancellation are robust", asy
     "false",
   );
 });
+
+test('Hunan component callbacks keep filtering, map, parent mode and repeated actions isolated', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/travel/hunan/#station-mawangdui');
+  await expect(page.locator('.station:not([hidden])')).toHaveAttribute('id', 'station-mawangdui');
+  // A foreign control must not be interpreted by a document-level travel dispatcher.
+  await page.evaluate(() => {
+    const unrelated = document.createElement('button');
+    unrelated.dataset.stamp = 'city';
+    document.body.append(unrelated);
+    unrelated.click();
+    unrelated.remove();
+  });
+  await expect(page.locator('#passport-count')).toHaveText('0');
+  await page.locator('[data-mode="parent"]').click();
+  await expect(page.locator('#station-mawangdui .parent-details')).toHaveAttribute('open', '');
+  await page.locator('[data-mode="story"]').click();
+  await expect(page.locator('#station-mawangdui .parent-details')).not.toHaveAttribute('open');
+  await page.locator('#station-mawangdui [data-layer="3"]').click();
+  await expect(page.locator('#station-mawangdui .seal-explain')).toContainText('木椁');
+  await page.locator('#station-search').fill('不存在的景点');
+  await expect(page.locator('.no-results')).toBeVisible();
+  await page.locator('[data-station="dongting"]').click();
+  await expect(page.locator('#station-search')).toHaveValue('');
+  await expect(page.locator('.station:not([hidden])')).toHaveAttribute('id', 'station-dongting');
+  await page.locator('#station-dongting .lake-toggle').click();
+  await expect(page.locator('#station-dongting .lake-demo')).toHaveClass(/night/);
+  await page.locator('#station-dongting .lake-toggle').click();
+  await expect(page.locator('#station-dongting .lake-demo')).not.toHaveClass(/night/);
+  await page.locator('#station-dongting [data-stamp] svg').click();
+  await page.locator('#station-dongting [data-stamp]').click();
+  await expect(page.locator('#passport-count')).toHaveText('1');
+  const answer = await page.evaluate(async () => (await (await fetch('./data/guide.json')).json()).stations.flatMap(s => s.quiz)[0].answer);
+  const wrong = (answer + 1) % await page.locator('[data-option]').count();
+  await page.locator(`[data-option="${wrong}"]`).click();
+  await expect(page.locator(`[data-option="${wrong}"]`)).toBeDisabled();
+  await expect(page.locator('#quiz-feedback')).toContainText('再想一想');
+  await page.locator(`[data-option="${answer}"]`).click();
+  await expect(page.locator('#quiz-feedback')).toContainText('答对');
+  await page.locator('#next-quiz').click();
+  await expect(page.locator('#quiz-feedback')).toBeHidden();
+  await expect(page.locator('[data-option]').first()).toBeEnabled();
+  await page.locator('[data-photo]').first().click();
+  await expect(page.locator('#photo-dialog')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#photo-dialog')).not.toBeVisible();
+  await page.locator('[data-photo]').first().click();
+  await page.locator('#photo-dialog-close').click();
+  await expect(page.locator('#photo-dialog-image')).not.toHaveAttribute('src');
+  expect(errors).toEqual([]);
+});

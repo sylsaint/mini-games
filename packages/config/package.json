@@ -1,1 +1,1 @@
-{"name":"@yoyo/config","version":"1.0.0","private":true,"type":"module"}
+{"name":"@yoyo/config","version":"1.0.0","private":true,"type":"module","exports":{"./site":"./src/site.js"}}

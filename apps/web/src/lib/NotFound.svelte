@@ -1,0 +1,3 @@
+<svelte:head><title>迷路啦 · Mini Games</title><meta name="robots" content="noindex"/></svelte:head>
+<main class="lost-page"><h1>这个角落还没放游戏。</h1><p>回大厅，再挑一份快乐。</p><a href="/">返回游戏大厅 ↗</a></main>
+<style>.lost-page{box-sizing:border-box;min-height:100vh;background:#f7f6f2;color:#252828;font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;padding:clamp(32px,8vw,96px) max(24px,calc((100vw - 1080px)/2))}.lost-page h1{font-size:clamp(26px,5vw,42px)}.lost-page p{color:#747972;line-height:1.9}.lost-page a{display:inline-flex;align-items:center;min-height:44px;padding:0 21px;background:#2e3c32;color:white;border-radius:10px;text-decoration:none}.lost-page a:focus-visible{outline:3px solid #714fc0;outline-offset:5px}</style>

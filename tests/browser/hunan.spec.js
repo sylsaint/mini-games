@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 test("Hunan guide navigation, passport, translation and quiz work", async ({
   page,
-}) => {
+}, testInfo) => {
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/travel/hunan/");
@@ -14,6 +14,7 @@ test("Hunan guide navigation, passport, translation and quiz work", async ({
       () => document.documentElement.scrollWidth <= innerWidth + 1,
     ),
   ).toBeTruthy();
+  await page.screenshot({path:testInfo.outputPath("hunan-guide.png"),fullPage:true});
   await page.locator(".station:not([hidden]) [data-stamp]").click();
   await expect(page.locator("#passport-count")).toHaveText("1");
   await page.reload();

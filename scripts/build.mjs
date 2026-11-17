@@ -7,6 +7,7 @@ import {
   rm,
   stat,
   writeFile,
+  access,
 } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -107,6 +108,19 @@ export async function build(base = root) {
   await rm(out, { recursive: true, force: true });
   await mkdir(out, { recursive: true });
   await cp(path.join(base, "portal"), out, { recursive: true });
+  const hunan = path.join(base, "portal/travel/hunan/index.html");
+  const hasHunan = await access(hunan).then(() => true, () => false);
+  if (hasHunan) {
+    const source = path.join(base, "assets-source/hunan");
+    const manifest = JSON.parse(await readFile(path.join(source, "manifest.json"), "utf8"));
+    if (!Array.isArray(manifest.parts) || manifest.parts.some(p => !/^illustration\.\d{3}\.part$/.test(p)))
+      throw new Error("Invalid Hunan illustration manifest");
+    const image = Buffer.concat(await Promise.all(manifest.parts.map(p => readFile(path.join(source, p)))));
+    if (image.length !== manifest.size || createHash("sha256").update(image).digest("hex") !== manifest.sha256)
+      throw new Error("Hunan illustration integrity check failed");
+    const html = await readFile(hunan, "utf8");
+    await writeFile(path.join(out, "travel/hunan/index.html"), html.replace("./illustration.png", `data:image/png;base64,${image.toString("base64")}`));
+  }
   for (const game of games)
     await cp(
       path.join(base, "games", game.id),

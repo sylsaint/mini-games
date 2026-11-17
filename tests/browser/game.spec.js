@@ -204,3 +204,36 @@ test("capture lobby and original game for visual review", async ({
     animations: "disabled",
   });
 });
+
+test("declarative method controls reset feedback and keep dialog pause behavior", async ({ page }) => {
+  await start(page);
+  await page.locator("#hintBtn").click();
+  await expect(page.locator("#hint")).toBeVisible();
+  await expect(page.locator("#hintBtn")).toHaveText("💡 再提示");
+  await page.locator("#methodsBtn").click();
+  await expect(page.locator("#methodsDialog")).toBeVisible();
+  await expect(page.locator("#timerState")).toHaveText("已暂停");
+  await page.locator('#methodTabs [data-method="factor"]').click();
+  await page.locator('[data-drill-choice="3/1"]').click();
+  await expect(page.locator("#drillFeedback")).toContainText("正是这个目标");
+  await page.locator('#methodTabs [data-method="fraction"]').click();
+  await expect(page.locator("#drillFeedback")).toBeEmpty();
+  await page.getByRole("button", { name: "关闭方法手册", exact: true }).click();
+  await expect(page.locator("#timerState")).toHaveText("倒计时");
+  await expect(page.locator("#hint")).toBeVisible();
+});
+
+test("Svelte game restores a partial board and sound preference after reload", async ({ page }) => {
+  await start(page);
+  await page.locator("#soundBtn").click();
+  await expect(page.locator("#soundBtn")).toHaveAttribute("aria-pressed", "false");
+  await combine(page, 0, "+", 1);
+  await page.reload();
+  await expect(page.locator("#roundGate")).toBeVisible();
+  await expect(tiles(page)).toHaveCount(3);
+  await expect(page.locator("#soundBtn")).toHaveAttribute("aria-pressed", "false");
+  await page.locator("#startRoundBtn").click();
+  await page.locator("#undoMergeBtn").click();
+  await expect(tiles(page)).toHaveCount(4);
+  await expect(page.locator("#moveDetails")).toBeHidden();
+});

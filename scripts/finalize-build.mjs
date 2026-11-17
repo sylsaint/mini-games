@@ -1,9 +1,11 @@
+import {legacyAliases} from '@yoyo/config/site';
 import { createHash } from 'node:crypto';
 import { copyFile, writeFile, readFile } from 'node:fs/promises';
 import { root } from './build.mjs';
 import path from 'node:path';
-for(const subject of ['math','chinese'])for(const page of ['report','practice'])await copyFile(path.join(root,`dist/learning/${subject}/${page}/index.html`),path.join(root,`dist/learning/${subject}/${page}.html`));
-await writeFile(path.join(root,'dist/_redirects'),'/learning/chinese/report.html /learning/chinese/report/ 301\n/learning/chinese/practice.html /learning/chinese/practice/ 301\n/learning/math/report.html /learning/math/report/ 301\n/learning/math/practice.html /learning/math/practice/ 301\n');
+for(const {from,to} of legacyAliases) await copyFile(path.join(root,'dist',to,'index.html'),path.join(root,'dist',from));
+await copyFile(path.join(root,'dist/404/index.html'),path.join(root,'dist/404.html'));
+await writeFile(path.join(root,'dist/_redirects'),legacyAliases.map(({from,to})=>`${from} ${to} 301\n`).join(''));
 console.log('Svelte site finalized with legacy URL aliases.');
 
 const catalogPath=path.join(root,'dist/games.json'); const games=JSON.parse(await readFile(catalogPath,'utf8')); for(const game of games)game.entrySha256=createHash('sha256').update(await readFile(path.join(root,'dist',game.url))).digest('hex');await writeFile(catalogPath,JSON.stringify(games,null,2)+'\n');

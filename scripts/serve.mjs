@@ -29,8 +29,8 @@ http
       });
       res.end(await readFile(target));
     } catch {
-      res.writeHead(404);
-      res.end("Not found");
+      res.writeHead(404, {"Content-Type":"text/html; charset=utf-8"});
+      res.end(await readFile(path.join(base,"404.html")).catch(()=>"Not found"));
     }
   })
   .listen(Number(process.env.PORT || 4173), "127.0.0.1", () =>

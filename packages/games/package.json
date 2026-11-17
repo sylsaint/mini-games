@@ -9,5 +9,8 @@
   },
   "peerDependencies": {
     "svelte": "^5.0.0"
+  },
+  "dependencies": {
+    "@yoyo/storage": "1.0.0"
   }
 }

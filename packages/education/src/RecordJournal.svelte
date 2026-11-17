@@ -1,5 +1,6 @@
 <script>
  import {onMount} from 'svelte';
+ import {readLocal,writeLocal} from '@yoyo/storage';
  import Button from '@yoyo/ui/button';
  import {SUBJECTS,validateRecord,validateBackup} from './records.js';
  import {downloadJson} from './downloads.js';
@@ -8,11 +9,23 @@
  let sequence=0;
  const key=() => `yoyo.learning.records.v1.${subject}`;
  onMount(() => {
-  try { const raw=localStorage.getItem(key()); if(raw) { const parsed=JSON.parse(raw); if(!Array.isArray(parsed)||parsed.length>500)throw Error(); records=parsed.map(x=>validateRecord(x).record).filter(Boolean); if(records.length!==parsed.length)warning='部分本机记录格式异常，已跳过。新记录仍可保存，请及时导出有效记录。'; } }
-  catch {canStore=false;warning='当前浏览器无法读取或保存记录。本次仍可临时记录，请在离开页面前导出；刷新后可能丢失。';}
+  const result = readLocal(key(), [], value => Array.isArray(value) && value.length <= 500);
+  if(result.available) {
+   records = result.value.map(item => validateRecord(item).record).filter(Boolean);
+   if(records.length !== result.value.length) warning='部分本机记录格式异常，已跳过。新记录仍可保存，请及时导出有效记录。';
+  } else {
+   canStore=false;
+   warning='当前浏览器无法读取或保存记录。本次仍可临时记录，请在离开页面前导出；刷新后可能丢失。';
+  }
   return ()=>{sequence++;};
  });
- function save(){if(!canStore)return;try{localStorage.setItem(key(),JSON.stringify(records));}catch{canStore=false;warning='浏览器存储不可用或空间不足。本次记录仅临时保留，请立即导出备份，刷新后可能丢失。';}}
+ function save(){
+  if(!canStore)return;
+  if(!writeLocal(key(),records)){
+   canStore=false;
+   warning='浏览器存储不可用或空间不足。本次记录仅临时保留，请立即导出备份，刷新后可能丢失。';
+  }
+ }
  function submit(event){event.preventDefault();const form=event.currentTarget;const result=validateRecord(Object.fromEntries(new FormData(form)));error=!!result.error;if(result.error){feedback=result.error;return;}if(records.length>=500){error=true;feedback='本机记录已达 500 条，请先导出备份。';return;}records.push(result.record);save();form.reset();feedback=canStore?'已保存到当前浏览器。给愿意复盘的自己一个赞！':'已临时记录，请导出备份后再离开。';}
  function exportRecords(){downloadJson({format:'yoyo-learning-records',version:1,subject,exportedAt:new Date().toISOString(),records},`悠悠-${SUBJECTS[subject].name}-考试记录.json`);}
  async function importFile(event){const seq=++sequence;pending=null;importStatus='';const input=event.currentTarget,file=input.files[0];input.value='';if(!file)return;if(file.size>1024*1024){importStatus='备份文件不能超过 1 MB。';return;}try{const data=JSON.parse(await file.text());if(seq!==sequence)return;const result=validateBackup(data,subject,records);if(result.error){importStatus=result.error;return;}if(!result.additions.length){importStatus=`没有新记录可导入，已跳过 ${result.duplicates} 条重复记录。`;return;}pending=data;summary=`将新增 ${result.additions.length} 条记录，跳过 ${result.duplicates} 条重复记录。现有记录与公开报告不会被替换。确认后仅保存在当前浏览器。`;}catch{if(seq===sequence)importStatus='无法读取备份，请选择有效的 JSON 文件。没有修改现有记录。';}}
@@ -20,10 +33,10 @@
  function confirmImport(){if(!pending)return;const result=validateBackup(pending,subject,records);pending=null;if(result.error){importStatus=result.error;return;}records.push(...result.additions);save();importStatus=`已合并 ${result.additions.length} 条记录，跳过 ${result.duplicates} 条重复记录。`+(canStore?'已保存到当前浏览器。':'仅临时保留，请导出备份后再离开。');}
 </script>
 <section class="records-section">
- <div class="section-title"><div><p class="eyebrow">MY LEARNING JOURNAL</p><h2>我的考试记录</h2></div><div class="record-tools"><button type="button" id="export-records" class="quiet-button" disabled={!records.length} onclick={exportRecords}>导出本机记录 ↓</button><label class="quiet-button import-label">导入备份 ↑<input id="import-records" type="file" accept="application/json,.json" onchange={importFile}/></label></div></div>
+ <div class="section-title"><div><p class="eyebrow">MY LEARNING JOURNAL</p><h2>我的考试记录</h2></div><div class="record-tools"><Button type="button" id="export-records" class="quiet-button" variant="outline" disabled={!records.length} onclick={exportRecords}>导出本机记录 ↓</Button><label class="quiet-button import-label">导入备份 ↑<input id="import-records" type="file" accept="application/json,.json" onchange={importFile}/></label></div></div>
  <p class="storage-note">新增记录只保存在当前浏览器，不会上传或跨设备同步。它们是私人记录，不会自动出现在公开报告中。</p>
  <p id="storage-status" role="status" class="notice" hidden={!warning}>{warning}</p>
- <div id="import-preview" class="notice" hidden={!pending}><p id="import-summary">{summary}</p><button id="confirm-import" type="button" class="quiet-button" onclick={confirmImport}>确认合并记录</button><button id="cancel-import" type="button" class="quiet-button" onclick={cancelImport}>取消导入</button></div>
+ <div id="import-preview" class="notice" hidden={!pending}><p id="import-summary">{summary}</p><Button id="confirm-import" type="button" class="quiet-button" variant="outline" onclick={confirmImport}>确认合并记录</Button><Button id="cancel-import" type="button" class="quiet-button" variant="outline" onclick={cancelImport}>取消导入</Button></div>
  <p id="import-status" role="status">{importStatus}</p>
  <div id="record-list" class="record-list" aria-live="polite">
   {#if subject==='math'}<article class="record"><div><h3>第二单元学业质量测评 · 已收录分析</h3><p class="record-date">报告生成：2026-10-30 · 考试日期未提供</p></div><div class="record-score">82<small> / 100</small></div><p class="record-reflection">成绩来自提供的分析报告。单次成绩只是一条观察记录，不能代表固定能力。</p></article>{/if}

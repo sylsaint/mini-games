@@ -2,3 +2,11 @@ import test from 'node:test';import assert from 'node:assert/strict';import {rea
 test('travel package preserves every original content byte and image checksum',async()=>{const raw=await readFile(new URL('../data/guide.json',import.meta.url));assert.deepEqual(raw,await readFile(new URL('../../../portal/travel/hunan/data/guide.json',import.meta.url)));const data=JSON.parse(raw);assert.deepEqual([data.stations.length,data.people.length,data.poems.length,data.photos.length,data.stations.flatMap(s=>s.quiz).length],[7,16,7,9,14]);for(const p of data.photos){const bytes=await readFile(new URL('../'+p.src,import.meta.url));assert.ok(p.src.includes(createHash('sha256').update(bytes).digest('hex').slice(0,16)));}});
 test('shared speech keeps local Mandarin priority and punctuation',()=>{const make=(name,localService=true)=>({name,voiceURI:name,lang:'zh-CN',localService});assert.deepEqual(localMandarinVoices([make('Eddy'),make('Google',false),make('Yu-shu')]).map(v=>v.name),['Yu-shu','Eddy']);assert.deepEqual(speechChunks('山在哪里？\n水往哪边！'),['山在哪里？','水往哪边！']);});
 test('offline export snapshots reactive data before structured cloning',async()=>{const source=await readFile(new URL('../src/HunanGuide.svelte',import.meta.url),'utf8');assert.match(source,/createOfflineHTML\(\$state\.snapshot\(data\)\)/);});
+test('online travel uses component handlers rather than document delegation or HTML mutation',async()=>{
+ const source=await readFile(new URL('../src/HunanGuide.svelte',import.meta.url),'utf8');
+ assert.doesNotMatch(source,/document\.(?:add|remove)EventListener\(['"]click/);
+ assert.doesNotMatch(source,/\.innerHTML\s*=/);
+ const station=await readFile(new URL('../src/Station.svelte',import.meta.url),'utf8');
+ const photo=await readFile(new URL('../src/PhotoCard.svelte',import.meta.url),'utf8');
+ assert.match(station,/onstamp/);assert.match(station,/onspeak/);assert.match(photo,/onopen/);
+});

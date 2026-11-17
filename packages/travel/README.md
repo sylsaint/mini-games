@@ -12,3 +12,9 @@
 - 离线导出是明确的独立交付格式：用户点击后才动态导入 `src/offline.js`，读取全部图片，并基于 `offline/` 中归档静态模板和原生运行时生成无需网络的单 HTML。此导出运行时不会初始化网络版，也不进首屏依赖。
 
 本包内容与语音契约：`node --test packages/travel/test/*.test.mjs`。整站浏览器回归继续使用 `tests/browser/hunan.spec.js`，覆盖真实网络版及无网络离线导出。
+
+## 在线事件与原生浏览器边界
+
+在线页面不再安装 `document.click` 委托，也不通过 `innerHTML` 改写操作按钮。`Station` 与 `PhotoCard` 通过显式回调通信，问答、诗词译文、地图、盖章、下载中的禁用状态由 Svelte 状态驱动。护照持久化使用 `@yoyo/storage` 的安全读取/写入边界，读取不会写默认值。
+
+保留必要的原生能力：照片 `dialog.showModal/close` 及焦点行为、IntersectionObserver 图片懒加载、打印时图片解码与展开/还原原生 details、Blob/下载链接、URL hash、页面离开清理。共享 speech 仍保留已经验证的 DOM 适配器（音色控件与朗读按钮更新），其同步 iOS 队列没有重写。独立离线 HTML 继续使用导出专用原生运行时，不代表在线组件仍依赖该运行时。

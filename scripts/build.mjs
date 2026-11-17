@@ -110,7 +110,7 @@ export async function build(base = root) {
   await cp(path.join(base, "portal"), out, { recursive: true });
   const hunan = path.join(base, "portal/travel/hunan/index.html");
   const hasHunan = await access(hunan).then(() => true, () => false);
-  if (hasHunan) {
+  if (hasHunan && (await readFile(hunan, "utf8")).includes("./illustration.png")) {
     const source = path.join(base, "assets-source/hunan");
     const manifest = JSON.parse(await readFile(path.join(source, "manifest.json"), "utf8"));
     if (!Array.isArray(manifest.parts) || manifest.parts.some(p => !/^illustration\.\d{3}\.part$/.test(p)))

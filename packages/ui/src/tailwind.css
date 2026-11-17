@@ -1,0 +1,4 @@
+@import 'tailwindcss/theme' layer(theme);
+@import 'tailwindcss/utilities' layer(utilities);
+@source './**/*.svelte';
+@theme { --color-primary:#245b4a; --color-primary-foreground:#ffffff; --color-background:#fffdf8; --color-foreground:#263f3a; --color-ring:#cb8848; --color-border:#b8c8b0; --color-muted:#edf2e9; --color-secondary:#f4e9d5; --color-secondary-foreground:#263f3a; --color-destructive:#ab3030; }

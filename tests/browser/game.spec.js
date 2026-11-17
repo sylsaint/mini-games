@@ -51,6 +51,19 @@ test("portal opens the exact original game and browser Back returns to lobby", a
 test("original modes, sound toggle and native AudioContext activate on interaction", async ({
   page,
 }) => {
+  // Observe actual browser audio contexts without requiring production globals.
+  await page.addInitScript(() => {
+    const NativeAudioContext = window.AudioContext || window.webkitAudioContext;
+    window.__gameAudioContexts = [];
+    if (NativeAudioContext) {
+      window.AudioContext = class extends NativeAudioContext {
+        constructor(...args) {
+          super(...args);
+          window.__gameAudioContexts.push(this);
+        }
+      };
+    }
+  });
   await page.goto(GAME);
   for (const [mode, seconds] of [
     ["fast", 10],
@@ -76,7 +89,7 @@ test("original modes, sound toggle and native AudioContext activate on interacti
     "true",
   );
   await page.locator("#startRoundBtn").click();
-  await expect.poll(() => page.evaluate(() => audioCtx?.state)).toBe("running");
+  await expect.poll(() => page.evaluate(() => window.__gameAudioContexts.at(-1)?.state)).toBe("running");
   await expect(page.locator("#timerState")).toHaveText("倒计时");
 });
 test("original solve shows success, explanation and next question", async ({

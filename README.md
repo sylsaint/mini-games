@@ -123,3 +123,16 @@ Official references:
 - https://developers.cloudflare.com/pages/get-started/direct-upload/
 - https://developers.cloudflare.com/fundamentals/api/get-started/create-token/
 - https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions
+
+## Svelte monorepo（2026-11 迁移）
+
+当前网络站点由 `apps/web` 的 SvelteKit 静态应用构建。领域在 `packages/education`、`packages/travel`、`packages/games`，共享基础组件在 `packages/ui`，朗读在 `packages/speech`。原 `portal/` 与 `games/` 保留为内容基线/离线原件，不作为网络入口直接复制。
+
+```sh
+npm ci
+npm run dev
+npm run check       # 所有单测 + Svelte/TS + 静态构建及产物契约
+npm run test:e2e    # Chromium / WebKit，需先安装Playwright浏览器
+```
+
+设计、迁移步骤、路由数据契约与验收说明见 `docs/`。`npm run build:legacy` 仅用于归档基线校验，不能用于当前部署。CI/CD 继续发布同一个 Cloudflare Pages 项目与域名。

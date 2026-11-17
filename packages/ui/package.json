@@ -1,0 +1,19 @@
+{
+  "name": "@yoyo/ui",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./button": "./src/Button.svelte",
+    "./dialog": "./src/Dialog.svelte"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0"
+  },
+  "dependencies": {
+    "bits-ui": "2.21.0",
+    "tailwindcss": "4.3.5",
+    "tailwind-variants": "3.3.0",
+    "clsx": "2.1.1"
+  }
+}

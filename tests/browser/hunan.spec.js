@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 test("Hunan guide navigation, passport, translation and quiz work", async ({
   page,
-}) => {
+}, testInfo) => {
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/travel/hunan/");
@@ -14,6 +14,7 @@ test("Hunan guide navigation, passport, translation and quiz work", async ({
       () => document.documentElement.scrollWidth <= innerWidth + 1,
     ),
   ).toBeTruthy();
+  await page.screenshot({path:testInfo.outputPath("hunan-guide.png"),fullPage:false});
   await page.locator(".station:not([hidden]) [data-stamp]").click();
   await expect(page.locator("#passport-count")).toHaveText("1");
   await page.reload();
@@ -94,7 +95,7 @@ test("Hunan loads a small shell and defers unseen photos and offline code", asyn
   );
   const later = data.photos.find((p) => p.id === "yuelu-pavilion-2008");
   expect(requests.some((url) => url.endsWith(later.src.slice(1)))).toBeFalsy();
-  expect(requests.some((url) => url.endsWith("/offline.js"))).toBeFalsy();
+  expect(requests.some((url) => /\/offline(?:[.-][^/]*)?\.js(?:\?|$)/.test(url))).toBeFalsy();
   await page.locator('[data-select="yuelu"]').click();
   const image = page.locator("#station-yuelu img").first();
   await image.scrollIntoViewIfNeeded();
@@ -186,6 +187,7 @@ test("Hunan local speech selection, preference and cancellation are robust", asy
       value: {
         getVoices: () => (window.__speech.ready ? voices : []),
         addEventListener: (...args) => events.addEventListener(...args),
+        removeEventListener: (...args) => events.removeEventListener(...args),
         cancel: () => {
           window.__speech.cancels++;
         },

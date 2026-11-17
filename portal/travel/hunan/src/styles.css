@@ -2632,3 +2632,51 @@ body:has(.photo-dialog[open]) {
     display: none;
   }
 }
+
+.speech-settings {
+  margin: 0 0 20px;
+  padding: 16px;
+  background: var(--paper, #fffaf0);
+  border: 1px solid #d8d6c8;
+  border-radius: 16px;
+}
+.speech-settings summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.speech-settings p {
+  font-size: 13px;
+  color: #53645b;
+  line-height: 1.7;
+}
+.speech-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: end;
+  margin-top: 14px;
+}
+.speech-controls label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+  font-size: 14px;
+}
+.speech-controls select {
+  max-width: 100%;
+  min-height: 44px;
+  border: 1px solid #aeb8ac;
+  border-radius: 9px;
+  padding: 8px;
+  background: #fff;
+  font: inherit;
+}
+.speech-controls label:first-child {
+  flex: 1 1 230px;
+}
+@media print {
+  .speech-settings {
+    display: none;
+  }
+}

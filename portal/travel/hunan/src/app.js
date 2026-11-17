@@ -1,3 +1,4 @@
+import { createSpeechController } from "./speech.js";
 export function initGuide(DATA) {
   "use strict";
 
@@ -32,8 +33,7 @@ export function initGuide(DATA) {
     if (Array.isArray(saved))
       learned = new Set(saved.filter((id) => getStation(id)));
   } catch {}
-  let speakingButton = null,
-    toastTimer = null;
+  let toastTimer = null;
   function toast(t) {
     const el = $("#toast");
     el.textContent = t;
@@ -43,53 +43,7 @@ export function initGuide(DATA) {
       el.hidden = true;
     }, 3100);
   }
-  function stopSpeech() {
-    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-    if (speakingButton) {
-      speakingButton.innerHTML = icon("sound") + "听一遍";
-      speakingButton.setAttribute("aria-pressed", "false");
-      speakingButton = null;
-    }
-  }
-  function speak(text, button) {
-    if (
-      !("speechSynthesis" in window) ||
-      typeof SpeechSynthesisUtterance === "undefined"
-    ) {
-      toast("这个浏览器暂不支持朗读，可以直接读给孩子听。");
-      return;
-    }
-    if (speakingButton === button) {
-      stopSpeech();
-      return;
-    }
-    stopSpeech();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = "zh-CN";
-    u.rate = 0.9;
-    const voices = window.speechSynthesis.getVoices();
-    const zh =
-      voices.find((v) => /^zh[-_]CN/i.test(v.lang)) ||
-      voices.find((v) => /^zh/i.test(v.lang));
-    if (zh) u.voice = zh;
-    speakingButton = button;
-    button.innerHTML = icon("sound") + "停止朗读";
-    button.setAttribute("aria-pressed", "true");
-    u.onend = () => {
-      if (speakingButton === button) {
-        button.innerHTML = icon("sound") + "听一遍";
-        button.setAttribute("aria-pressed", "false");
-        speakingButton = null;
-      }
-    };
-    u.onerror = () => {
-      if (speakingButton === button) {
-        stopSpeech();
-        toast("暂时无法播放中文语音，可以直接阅读讲解稿。");
-      }
-    };
-    window.speechSynthesis.speak(u);
-  }
+  const { speak, stop: stopSpeech } = createSpeechController({ toast, icon });
   function sourceList(sources) {
     return (sources || [])
       .map(
@@ -381,12 +335,12 @@ export function initGuide(DATA) {
     }
     if (b.dataset.speak) {
       const s = getStation(b.dataset.speak);
-      speak(s.name + "。" + s.story.join("。"), b);
+      speak(s.name + "。" + s.story.join("\n\n"), b);
       return;
     }
     if (b.dataset.poemSpeak) {
       const p = getPoem(b.dataset.poemSpeak);
-      speak(p.title + "。" + p.author + "。" + p.lines.join("。"), b);
+      speak(p.title + "。" + p.author + "。" + p.lines.join("\n"), b);
       return;
     }
     if (b.dataset.stamp) {

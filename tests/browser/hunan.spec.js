@@ -158,3 +158,74 @@ test("Hunan content failure offers a recoverable retry", async ({ page }) => {
   await page.getByRole("button", { name: "重新加载", exact: true }).click();
   await expect(page.locator(".station")).toHaveCount(7);
 });
+
+test("Hunan local speech selection, preference and cancellation are robust", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const events = new EventTarget();
+    const voices = [
+      { name: "Eddy", voiceURI: "eddy", lang: "zh-CN", localService: true },
+      { name: "Yu-shu", voiceURI: "yushu", lang: "zh-CN", localService: true },
+      {
+        name: "Google 普通话",
+        voiceURI: "google",
+        lang: "zh-CN",
+        localService: false,
+      },
+    ];
+    window.__speech = { ready: false, calls: [], last: null, cancels: 0 };
+    Object.defineProperty(window, "SpeechSynthesisUtterance", {
+      value: class {
+        constructor(text) {
+          this.text = text;
+        }
+      },
+    });
+    Object.defineProperty(window, "speechSynthesis", {
+      value: {
+        getVoices: () => (window.__speech.ready ? voices : []),
+        addEventListener: (...args) => events.addEventListener(...args),
+        cancel: () => {
+          window.__speech.cancels++;
+        },
+        speak: (u) => {
+          window.__speech.last = u;
+          window.__speech.calls.push({
+            text: u.text,
+            voice: u.voice.name,
+            rate: u.rate,
+          });
+        },
+      },
+    });
+    window.__readySpeech = () => {
+      window.__speech.ready = true;
+      events.dispatchEvent(new Event("voiceschanged"));
+    };
+  });
+  await page.goto("/travel/hunan/");
+  await expect(page.locator(".station")).toHaveCount(7);
+  await page.locator("#speech-settings summary").click();
+  await expect(page.locator("#speech-status")).toContainText("还没有");
+  await page.evaluate(() => window.__readySpeech());
+  await expect(page.locator("#speech-voice")).toHaveValue("yushu|zh-CN");
+  await expect(page.locator("#speech-voice option")).toHaveCount(2);
+  await page.locator("#speech-preview").click();
+  expect(await page.evaluate(() => window.__speech.calls[0])).toEqual({
+    text: "沿着山水，读一读湖南。",
+    voice: "Yu-shu",
+    rate: 0.95,
+  });
+  await page.locator("#speech-preview").click();
+  await page.evaluate(() => window.__speech.last.onend());
+  await page.waitForTimeout(180);
+  expect(await page.evaluate(() => window.__speech.calls.length)).toBe(1);
+  await expect(page.locator("#speech-preview")).toHaveText("试听声音");
+  await page.locator("#speech-voice").selectOption("eddy|zh-CN");
+  await page.locator("#speech-rate").selectOption("1");
+  await page.reload();
+  await page.evaluate(() => window.__readySpeech());
+  await expect(page.locator("#speech-voice")).toHaveValue("eddy|zh-CN");
+  await expect(page.locator("#speech-rate")).toHaveValue("1");
+});

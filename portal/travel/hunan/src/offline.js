@@ -14,9 +14,10 @@ const toDataURL = (blob) =>
   });
 export async function createOfflineHTML(data) {
   const base = new URL("../", import.meta.url);
-  const [css, app, ...images] = await Promise.all([
+  const [css, app, speech, ...images] = await Promise.all([
     read(new URL("src/styles.css", base)),
     read(new URL("src/app.js", base)),
+    read(new URL("src/speech.js", base)),
     ...data.photos.map((p) =>
       read(new URL(p.src, base), "blob").then(toDataURL),
     ),
@@ -53,7 +54,14 @@ export async function createOfflineHTML(data) {
   clone.querySelector("body").append(content);
   const runtime = document.createElement("script");
   runtime.textContent =
-    app.replace("export function initGuide", "function initGuide") +
+    speech.replaceAll("export function ", "function ") +
+    "\n" +
+    app
+      .replace(
+        /import \{ createSpeechController \} from "\.\/speech\.js";\s*/,
+        "",
+      )
+      .replace("export function initGuide", "function initGuide") +
     '\ninitGuide(JSON.parse(document.getElementById("guide-data").textContent));';
   clone.querySelector("body").append(runtime);
   return "<!doctype html>\n" + clone.outerHTML;

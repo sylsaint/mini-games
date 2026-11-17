@@ -9,6 +9,8 @@ const types = {
   ".json": "application/json",
   ".css": "text/css",
   ".svg": "image/svg+xml",
+  ".jpg": "image/jpeg",
+  ".png": "image/png",
 };
 http
   .createServer(async (req, res) => {

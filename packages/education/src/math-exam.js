@@ -2,7 +2,7 @@ export const examKey = 'yoyo-math-grade4-fall-v1';
 export const normalize = value => String(value ?? '').normalize('NFKC').replace(/[,，\s]/g, '').trim();
 export function isCorrect(question, value) {
   if (normalize(value) === '') return false;
-  return question.type === 'number' ? Number(normalize(value)) === Number(question.answer) : normalize(value) === normalize(question.answer);
+  return question.type === 'number' ? /^[+-]?\d+(?:\.\d+)?$/.test(normalize(value)) && Number(normalize(value)) === Number(question.answer) : normalize(value) === normalize(question.answer);
 }
 export function summarize(questions, answers) {
   const core = questions.filter(q => !q.bonus);

@@ -23,7 +23,7 @@
   function answer(value) { if (submitted) return; answers = {...answers, [question.id]: value}; save(); }
   async function go(next) { index = Math.max(0, Math.min(questions.length - 1, next)); confirmSubmit = false; save(); await tick(); document.getElementById('question-title')?.focus(); }
   function start() { started = true; save(); }
-  function submit() { submitted = true; confirmSubmit = false; save(); }
+  async function submit() { submitted = true; confirmSubmit = false; save(); await tick(); document.getElementById('result-title')?.focus(); }
   function reset() { answers = {}; index = 0; started = false; submitted = false; extension = false; confirmReset = false; save(); }
 </script>
 
@@ -34,9 +34,9 @@
     <div class="intro"><p class="eyebrow">GRADE 4 · 数学探索</p><h1>慢慢想，认真答。</h1><p>四年级上册综合练习 · 每一道题，都是一次发现。</p><div class="tags"><span>不计时</span><span>可以跳题</span><span>进度仅存本机</span></div></div>
     {#if storageNotice}<p class="notice" role="status">{storageNotice}</p>{/if}
     {#if !started}
-      <section class="welcome"><div class="orb" aria-hidden="true">＋<small>×</small>÷</div><h2>准备好，开启你的数学小旅程</h2><p>共 {bank.filter(q => !q.bonus).length} 道正卷题。准备纸和笔，想不出来可以先跳过，回来再想。</p><p>交卷前不展示答案。交卷后一起看思路，不用和别人比。</p><label class="extension"><input type="checkbox" bind:checked={extension} onchange={save} /> 加入选做拓展题（不计入正卷分数）</label><button class="primary" disabled={!ready} onclick={start}>开始练习 →</button></section>
+      <section class="welcome"><div class="orb" aria-hidden="true">＋<small>×</small>÷</div><h2>准备好，开启你的数学小旅程</h2><p>共 {bank.filter(q => !q.bonus).length} 道正卷题。准备纸和笔，想不出来可以先跳过，回来再想。</p><p>交卷前不展示答案。交卷后一起看思路，不用和别人比。</p><label class="extension"><input type="checkbox" disabled={!ready} bind:checked={extension} onchange={save} /> 加入选做拓展题（不计入正卷分数）</label><button class="primary" disabled={!ready} onclick={start}>开始练习 →</button></section>
     {:else}
-      {#if submitted}<section class="result" aria-live="polite"><p class="eyebrow">这一次的发现</p><h2>{result.score}<small> / {result.maximum} 分</small></h2><p>正卷答对 {result.correct} / {result.total} 题。分数只是线索，下面的思路更重要。</p><p>点击题号逐题回看。未作答也会展示讲解；选做拓展不计分。</p></section>{/if}
+      {#if submitted}<section class="result" aria-live="polite"><p class="eyebrow">这一次的发现</p><h2 id="result-title" tabindex="-1">{result.score}<small> / {result.maximum} 分</small></h2><p>正卷答对 {result.correct} / {result.total} 题。分数只是线索，下面的思路更重要。</p><p>点击题号逐题回看。未作答也会展示讲解；选做拓展不计分。</p></section>{/if}
       <div class="workspace">
         <aside aria-label="答题进度"><div class="progress-title"><strong>{submitted ? '逐题回看' : '答题地图'}</strong><span>正卷已答 {result.answered}/{result.total}</span></div><progress max={result.total} value={result.answered} aria-label="正卷完成进度"></progress><nav class="numbers" aria-label="选择题目">{#each questions as q,i}<button class:current={index===i} class:answered={!!answers[q.id]} class:correct={submitted && isCorrect(q,answers[q.id])} class:incorrect={submitted && !isCorrect(q,answers[q.id])} aria-current={index===i?'step':undefined} aria-label={`第${i+1}题${q.bonus?'，选做':''}${answers[q.id]?'，已作答':'，未作答'}`} onclick={()=>go(i)}>{i+1}{#if q.bonus}<sup>选</sup>{/if}</button>{/each}</nav><small>实色表示已答，描边表示当前题。</small></aside>
         {#if question}<section class="question" aria-label="当前题目"><div class="meta"><span>{question.topic}</span><span>{question.bonus ? '选做 · 不计分' : `${question.points} 分`} · {index+1}/{questions.length}</span></div><h2 id="question-title" tabindex="-1">{question.prompt}</h2>

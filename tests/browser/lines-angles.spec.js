@@ -94,14 +94,14 @@ test('full core scores 100, extensions do not count, submission and reset requir
   await page.getByRole('button', { name: '继续检查', exact: true }).click(); await noAnswers(page);
   await page.getByRole('button', { name: '完成检查，准备交卷' }).click();
   await page.getByRole('button', { name: '确认交卷，查看讲解' }).click();
-  await expect(page.locator('#result-title')).toHaveText('100 / 100 分');
+  await expect(page.locator('#result-title')).toHaveText(/^100\s*\/\s*100 分$/);
   await expect(page.getByText('正卷答对 20 / 20 题。', { exact: false })).toBeVisible();
   await expect(question(page).getByText('参考答案：195度')).toBeVisible();
   await jump(page, 1); await expect(page.getByRole('radio').first()).toBeDisabled();
   await jump(page, 16); await expect(page.getByLabel('我画的角', { exact: true })).toBeDisabled();
   const slider = page.getByRole('slider', { name: '调整所画角的角度', exact: true });
   await expect(slider).toHaveAttribute('aria-disabled', 'true');
-  await page.reload(); await expect(page.locator('#result-title')).toHaveText('100 / 100 分');
+  await page.reload(); await expect(page.locator('#result-title')).toHaveText(/^100\s*\/\s*100 分$/);
   await page.getByRole('button', { name: '重新开始这套练习' }).click();
   await page.getByRole('button', { name: '保留进度' }).click(); await expect(page.locator('#result-title')).toBeVisible();
   await page.getByRole('button', { name: '重新开始这套练习' }).click();

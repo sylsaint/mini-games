@@ -19,6 +19,7 @@ import RecordJournal from './RecordJournal.svelte';</script>
             <p>从一条线出发，找到推理的乐趣。</p>
           </div>
         </section>
+        <section class="featured"><div><p class="eyebrow">新练习 · 四年级上册综合</p><h2>慢慢想，认真答</h2><p>15 道正卷题，另有 3 道选做拓展。不计时，可跳题，本机保存进度，交卷后逐题讲解。</p><a class="button" href="/learning/math/grade-four-fall/">开始数学综合练习 →</a></div></section>
         <section class="featured">
           <div>
             <p class="eyebrow">已收录 · 第二单元学业质量测评</p>

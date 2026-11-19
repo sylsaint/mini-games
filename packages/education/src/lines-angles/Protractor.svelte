@@ -6,7 +6,7 @@
    * measure: angle is the fixed diagram, value is the child's reading (empty string means unanswered).
    * draw: value is the ray direction; angle is deliberately ignored.
    */
-  let { mode = 'measure', base = 'right', startAngle = 0, angle = 60, value = null, onchange = () => {}, disabled = false } = $props();
+  let { description = '', mode = 'measure', base = 'right', startAngle = 0, angle = 60, value = null, onchange = () => {}, disabled = false } = $props();
   const uid = $props.id();
   const origin = { x: 220, y: 208 };
   const ticks = Array.from({ length: 37 }, (_, index) => index * 5);
@@ -93,8 +93,9 @@
     {/if}
   </p>
   {#snippet diagramSvg()}
-    <svg bind:this={svg} viewBox="0 0 440 270" role="img" aria-labelledby={`${uid}-title`}>
+    <svg bind:this={svg} viewBox="0 0 440 270" role="img" aria-labelledby={`${uid}-title`} aria-describedby={description ? `${uid}-description` : undefined}>
       <title id={`${uid}-title`}>{drawing ? '半圆量角器上的可调整射线' : '半圆量角器上的待测角'}</title>
+      <desc id={`${uid}-description`}>{description}</desc>
       <defs>
         <marker id={`${uid}-baseline-arrow`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#bd7638" /></marker>
         <marker id={`${uid}-ray-arrow`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#246954" /></marker>

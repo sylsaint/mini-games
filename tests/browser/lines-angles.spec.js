@@ -52,7 +52,7 @@ test('choice and numeric answers survive skipping, returning and reload without 
 
 test('measurements, actual left-base drawing, keyboard and touch-sized controls persist without auto-answering', async ({ page, isMobile }) => {
   await begin(page);
-  await jump(page, 14); await expect(page.getByLabel('我的读数', { exact: true })).toHaveValue('');
+  await jump(page, 14); await expect(question(page).getByRole('img')).toHaveAccessibleDescription(/55.*125/); await expect(page.getByLabel('我的读数', { exact: true })).toHaveValue('');
   await page.getByLabel('我的读数', { exact: true }).fill('55');
   await jump(page, 15); await page.getByLabel('我的读数', { exact: true }).fill('75');
   await jump(page, 16);
@@ -77,7 +77,7 @@ test('measurements, actual left-base drawing, keyboard and touch-sized controls 
   await noAnswers(page);
   await number.fill(''); await expect(page.getByRole('button', { name: '第16题，未作答', exact: true })).toBeVisible();
   expect(await page.evaluate(k => JSON.parse(localStorage.getItem(k)).answers.la16, key)).toBe('');
-  await jump(page, 14); await expect(page.getByLabel('我的读数', { exact: true })).toHaveValue('55');
+  await jump(page, 14); await expect(question(page).getByRole('img')).toHaveAccessibleDescription(/55.*125/); await expect(page.getByLabel('我的读数', { exact: true })).toHaveValue('55');
   await jump(page, 15); await expect(page.getByLabel('我的读数', { exact: true })).toHaveValue('75');
 });
 

@@ -15,3 +15,9 @@ test('math exam supports skip, save, reload, submit and reset without early answ
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
 });
 test('optional questions and accessible data table are available',async({page})=>{await page.goto(path);await page.getByRole('checkbox').check();await page.getByRole('button',{name:'开始练习 →'}).click();await expect(page.getByRole('button',{name:'第18题，选做，未作答'})).toBeVisible();await page.getByRole('button',{name:'第14题，未作答'}).click();await expect(page.getByRole('table')).toBeVisible();await page.getByLabel('你的答案').fill('19');await page.screenshot({path:`test-results/math-exam-${test.info().project.name}.png`,fullPage:true});});
+test('optional question 17 shows five shared-edge squares before and after submission',async({page})=>{
+ await page.goto(path);await page.getByRole('checkbox').check();await page.getByRole('button',{name:'开始练习 →'}).click();await page.getByRole('button',{name:'第17题，选做，未作答'}).click();
+ const diagram=page.getByRole('img',{name:/五个等大的正方形/});await expect(diagram).toBeVisible();await expect(diagram.locator('rect')).toHaveCount(1);await expect(diagram.locator('line')).toHaveCount(4);await expect(page.getByText('参考答案：',{exact:false})).toHaveCount(0);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();await page.getByLabel('你的答案').fill('15');await page.reload();await expect(diagram).toBeVisible();await expect(page.getByLabel('你的答案')).toHaveValue('15');
+ await page.getByRole('button',{name:'完成检查，准备交卷'}).click();await page.getByRole('button',{name:'确认交卷，查看讲解'}).click();await expect(diagram).toBeVisible();await expect(page.getByText('参考答案：15')).toBeVisible();await page.screenshot({path:`test-results/math-exam-squares-${test.info().project.name}.png`,fullPage:true});
+});

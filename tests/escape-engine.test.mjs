@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { CELL_COUNT, DEADLINE_MS, LEVEL_MS, MAX_ACTIVE, MAX_WORKERS, createGame, tick, recruit, merge, buyFood, rescueAndFeed, buyTool, getDuration } from '../packages/games/src/escape-engine.js';
+import { CELL_COUNT, DEADLINE_MS, LEVEL_MS, MAX_ACTIVE, MAX_WORKERS, createGame, tick, recruit, merge, buyFood, rescueAndFeed, buyTool, getDuration, beginRescue } from '../packages/games/src/escape-engine.js';
 
 test('starts with four distinct cells and each L1 cell gives exactly one coin after ten seconds', () => {
   const s = createGame(1000);
@@ -141,3 +141,5 @@ test('tool purchases and feeding apply to workers, reject repeats and consume ac
   assert.equal(rescueAndFeed(s), 0);
   assert.equal(s.workers.filter(w => w.energy === 60).length, 3);
 });
+
+test('rope passengers stop digging and eat only on surface',()=>{const s=createGame(0);tick(s,10000);buyFood(s);const ids=beginRescue(s);assert.equal(ids.length,3);for(const id of ids)assert.equal(s.workers.find(w=>w.id===id).cell,null);tick(s,12000);assert.equal(s.food,3);assert.equal(rescueAndFeed(s,ids),3);assert.equal(s.food,0);for(const id of ids){const w=s.workers.find(w=>w.id===id);assert.equal(w.energy,60);assert.equal(w.onRope,false);}});

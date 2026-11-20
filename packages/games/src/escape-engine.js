@@ -15,14 +15,14 @@ export function getDuration(worker) {
 const rate = worker => Math.round(CELL_WORK / getDuration(worker));
 
 function assign(state) {
-  state.workers.sort((a, b) => Number(b.energy > 0) - Number(a.energy > 0) || getDuration(a) - getDuration(b) || a.id - b.id);
+  state.workers.sort((a, b) => Number(b.energy > 0 && !b.onRope) - Number(a.energy > 0 && !a.onRope) || getDuration(a) - getDuration(b) || a.id - b.id);
   const occupied = new Set();
   state.workers.forEach((worker, index) => {
-    if (index >= MAX_ACTIVE || worker.energy === 0 || (worker.cell !== null && state.cells[worker.cell] === 1)) worker.cell = null;
+    if (index >= MAX_ACTIVE || worker.energy === 0 || worker.onRope || (worker.cell !== null && state.cells[worker.cell] === 1)) worker.cell = null;
     if (worker.cell !== null) occupied.add(worker.cell);
   });
   for (const worker of state.workers.slice(0, MAX_ACTIVE)) {
-    if (worker.cell !== null || worker.energy === 0) continue;
+    if (worker.cell !== null || worker.energy === 0 || worker.onRope) continue;
     const cell = state.cells.findIndex((work, index) => work < 1 && !occupied.has(index));
     if (cell !== -1) {
       worker.cell = cell;
@@ -125,12 +125,20 @@ export function buyFood(state) {
   return true;
 }
 
-export function rescueAndFeed(state) {
+export function beginRescue(state) {
+  if(state.status !== "running" || state.food <= 0) return [];
+  const workers=state.workers.filter(w=>w.energy<MAX_ENERGY && !w.onRope).sort((a,b)=>a.energy-b.energy||a.id-b.id).slice(0,Math.min(FOOD_PER_PACK,state.food));
+  for(const worker of workers) worker.onRope=true;
+  assign(state);
+  return workers.map(w=>w.id);
+}
+
+export function rescueAndFeed(state, ids = null) {
   if (state.status !== 'running' || state.food <= 0) return 0;
-  const workers = state.workers.filter(worker => worker.energy < MAX_ENERGY)
+  const workers = state.workers.filter(worker => worker.energy < MAX_ENERGY && (ids === null || ids.includes(worker.id)))
     .sort((a, b) => a.energy - b.energy || a.id - b.id).slice(0, Math.min(FOOD_PER_PACK, state.food));
   state.food -= workers.length;
-  for (const worker of workers) worker.energy = MAX_ENERGY;
+  for (const worker of workers) { worker.energy = MAX_ENERGY; worker.onRope=false; }
   assign(state);
   return workers.length;
 }

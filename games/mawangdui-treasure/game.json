@@ -1,10 +1,10 @@
 {
   "id": "mawangdui-treasure",
   "name": "马王堆寻宝：文物侦探局",
-  "description": "拿起灯，查布纹，亲手称出一件西汉长衣的重量。完成第一案，把发现布置成你的展品。",
+  "description": "四个布包，只有一个该进展柜。查封签、试天平、接织纹，用证据破案。",
   "entry": "index.html",
   "cover": "cover.svg",
   "published": true,
-  "tags": ["文物解谜", "沉浸寻宝"],
+  "tags": ["文物解谜", "分章推理"],
   "order": 3
 }

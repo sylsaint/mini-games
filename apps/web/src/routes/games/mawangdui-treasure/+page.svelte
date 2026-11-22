@@ -1,5 +1,5 @@
 <script>
-  import Game from "../../../../../../packages/games/src/MawangduiTreasure.svelte";
+  import Game from "../../../../../../packages/games/src/MawangduiCasework.svelte";
 </script>
 
 <Game />

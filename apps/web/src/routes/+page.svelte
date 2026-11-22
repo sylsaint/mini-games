@@ -50,7 +50,7 @@ onMount(load);
             </div>
             <span id="game-count" class="count">{error ? "加载遇到一点问题" : games.length + " 款小游戏 · 持续上新"}</span>
           </div>
-          <div id="game-list" class="grid" aria-live="polite">{#each games as game}<a class="game-card" href={game.url}><img src={game.cover} alt={game.name + ' 游戏封面'} width="640" height="400"/><div class="card-body"><div class="tags">{#each game.tags as tag}<span>{tag}</span>{/each}</div><h3>{game.name}</h3><p>{game.description}</p><div class="card-bottom">即刻开玩<span>↗</span></div></div></a>{/each}</div>
+          <div id="game-list" class="grid" aria-live="polite">{#each games as game}<a class="game-card" href={game.id === "mawangdui-treasure" ? "/games/mawangdui-treasure/" : game.url}><img src={game.cover} alt={game.name + ' 游戏封面'} width="640" height="400"/><div class="card-body"><div class="tags">{#each game.tags as tag}<span>{tag}</span>{/each}</div><h3>{game.name}</h3><p>{game.description}</p><div class="card-bottom">即刻开玩<span>↗</span></div></div></a>{/each}</div>
           <p id="load-error" hidden={!error}>
             游戏列表暂时没有加载成功。<button id="retry" class="text-button" onclick={load}>
               再试一次

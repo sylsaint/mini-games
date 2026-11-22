@@ -37,7 +37,7 @@ test("portal opens the exact original game and browser Back returns to lobby", a
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/");
-  await expect(page.locator(".game-card")).toHaveCount(2);
+  await expect(page.locator(".game-card")).toHaveCount(3);
   await fits(page);
   await page.getByRole("link", { name: /数字探险家/ }).click();
   await expect(page).toHaveTitle("24点 · 数字探险家");
@@ -45,7 +45,7 @@ test("portal opens the exact original game and browser Back returns to lobby", a
   await expect(page.locator("#roundGate")).toBeVisible();
   await fits(page);
   await page.goBack();
-  await expect(page.locator(".game-card")).toHaveCount(2);
+  await expect(page.locator(".game-card")).toHaveCount(3);
   expect(errors).toEqual([]);
 });
 test("original modes, sound toggle and native AudioContext activate on interaction", async ({
@@ -186,7 +186,7 @@ test("capture lobby and original game for visual review", async ({
   page,
 }, testInfo) => {
   await page.goto("/");
-  await expect(page.locator(".game-card")).toHaveCount(2);
+  await expect(page.locator(".game-card")).toHaveCount(3);
   await page
     .locator(".game-card img").first()
     .evaluate(async (image) => image.decode());

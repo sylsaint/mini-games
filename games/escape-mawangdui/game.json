@@ -1,1 +1,10 @@
-{"id":"escape-mawangdui","name":"逃出马王堆","description":"在奇想地下城里招募、合成和挖掘。20分钟清空土方，带队找到出口！","entry":"index.html","cover":"cover.svg","published":true,"tags":["策略经营","挖掘合成"],"order":2}
+{
+  "id": "escape-mawangdui",
+  "name": "逃出马王堆",
+  "description": "招募、合成、挖掘，找出出口！每挖一格都有金币，还可能发现食物、一级小人或玉盘。",
+  "entry": "index.html",
+  "cover": "cover.svg",
+  "published": true,
+  "tags": ["策略经营", "挖掘掉落"],
+  "order": 2
+}

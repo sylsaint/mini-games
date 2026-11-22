@@ -133,7 +133,7 @@
               <ul>
                 <li>不能只认封签。你对照了衣襟、透光和封签的记录。</li>
                 <li>不能用「看着轻」代替测量。天平留下了 {weighing?.trials?.length ?? 0} 次试验记录，最接近的两组对照是 {weighing?.lower ?? "—"} 克和 {weighing?.upper ?? "—"} 克。</li>
-                <li>不能把猜测写进展柜。你用接上的样布说明「透」，用平衡的天平说明「重」。</li>
+                <li>不能把猜测写进展柜。灯下的底纹说明「透」，平衡的天平验证「重」；复原样布让观众能看清线迹。</li>
               </ul>
               {#if investigation?.detour === "spare-rubbing"}<p class="bonus">附录 · 已收藏罕见的备用印样</p>{/if}
               <a href="https://www.gjrwls.com/jinghua/20250613/1118271975198818304.html" target="_blank" rel="noopener noreferrer">看真实文物档案 ↗</a>

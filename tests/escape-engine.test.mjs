@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { CELL_COUNT, DEADLINE_MS, LEVEL_MS, MAX_ACTIVE, MAX_WORKERS, createGame, tick, recruit, merge, buyFood, rescueAndFeed, buyTool, getDuration, beginRescue } from '../packages/games/src/escape-engine.js';
+import { CELL_COUNT, DEADLINE_MS, LEVEL_MS, MAX_ACTIVE, MAX_WORKERS, createGame, tick as advance, recruit, merge, buyFood, rescueAndFeed, buyTool, getDuration, beginRescue, TREASURES, LOOT_CHANCES, FIRST_FIND_CELL, redeemTreasure, claimRescuer } from '../packages/games/src/escape-engine.js';
+
+const tick = (state, now) => advance(state, now, () => 0.5);
 
 test('starts with four distinct cells and each L1 cell gives exactly one coin after ten seconds', () => {
   const s = createGame(1000);
@@ -131,7 +133,7 @@ test('tool purchases and feeding apply to workers, reject repeats and consume ac
   assert.equal(getDuration(s.workers.find(w => w.id === 1)), 10000 / 1.5);
   assert.equal(buyTool(s, 1, 1), false);
   assert.equal(buyFood(s), false);
-  tick(s, 40000);
+  tick(s, 30000);
   const coins = s.coins;
   assert.equal(buyFood(s), true);
   assert.equal(s.coins, coins - 2);
@@ -143,3 +145,131 @@ test('tool purchases and feeding apply to workers, reject repeats and consume ac
 });
 
 test('rope passengers stop digging and eat only on surface',()=>{const s=createGame(0);tick(s,10000);buyFood(s);const ids=beginRescue(s);assert.equal(ids.length,3);for(const id of ids)assert.equal(s.workers.find(w=>w.id===id).cell,null);tick(s,12000);assert.equal(s.food,3);assert.equal(rescueAndFeed(s,ids),3);assert.equal(s.food,0);for(const id of ids){const w=s.workers.find(w=>w.id===id);assert.equal(w.energy,60);assert.equal(w.onRope,false);}});
+
+
+test('loot is an independent optional bonus after the guaranteed coin, with disjoint published chances', () => {
+  const s = createGame(1000);
+  const chances = LOOT_CHANCES;
+  assert.deepEqual(chances, { food: 0.02, worker: 0.006, treasure: 0.01 });
+  const rolls = [0, chances.treasure, 0.016, 0.036];
+  let calls = 0;
+  const random = () => rolls[calls++];
+  advance(s, 10999, random);
+  assert.equal(calls, 0);
+  advance(s, 11000, random);
+  assert.equal(calls, 4);
+  assert.equal(s.completed, 4);
+  assert.equal(s.coins, 4);
+  assert.equal(s.food, 3);
+  assert.equal(s.treasures['lacquer-cup'], 1);
+  assert.equal(s.queuedRescuers, 0);
+  assert.equal(s.recruitCost, 1);
+  assert.equal(s.workers.length, 5);
+  assert.deepEqual(s.workers.find(w => w.id === 5), { id: 5, level: 1, tool: 0, energy: 60, cell: 8 });
+  assert.deepEqual(s.recentFinds, [{ kind: 'treasure', cell: 0, at: 11000, treasureId: 'lacquer-cup' }, { kind: 'worker', cell: 1, at: 11000 }, { kind: 'food', cell: 2, at: 11000 }]);
+  assert.deepEqual(s.bonusCounts, { food: 1, worker: 1, treasure: 1 });
+  advance(s, 11000, random);
+  assert.equal(calls, 4);
+  assert.equal(redeemTreasure(s, 'lacquer-cup'), true);
+  assert.equal(s.coins, 4 + TREASURES['lacquer-cup'].value);
+  assert.equal(redeemTreasure(s, 'lacquer-cup'), false);
+  assert.equal(s.coins, 4 + TREASURES['lacquer-cup'].value);
+  const ids = beginRescue(s);
+  assert.equal(ids.length, 3);
+  assert.equal(rescueAndFeed(s, ids), 3);
+  assert.equal(s.food, 0);
+});
+
+test('discovered level-one helpers queue when full and can join for free when a merge opens space', () => {
+  const s = createGame(0);
+  tick(s, 600000);
+  for (let i = 4; i < MAX_WORKERS; i++) assert.equal(recruit(s), true);
+  advance(s, 610000, () => 0.012);
+  assert.equal(s.workers.length, MAX_WORKERS);
+  assert.equal(s.workers.filter(w => w.cell !== null).length, MAX_ACTIVE);
+  assert.equal(s.queuedRescuers, 8);
+  assert.equal(s.recentFinds.every(x => x.kind === 'worker' && x.queued), true);
+  assert.equal(claimRescuer(s), false);
+  assert.equal(merge(s, 1), true);
+  const coins = s.coins, price = s.recruitCost, helperId = s.nextWorkerId;
+  assert.equal(claimRescuer(s), true);
+  assert.equal(s.queuedRescuers, 7);
+  assert.equal(s.coins, coins);
+  assert.equal(s.recruitCost, price);
+  assert.equal(s.workers.find(w => w.id === helperId).level, 1);
+  assert.equal(s.workers.length, MAX_WORKERS);
+});
+
+test('the last tile always awards its base coin and a treasure can still be redeemed after escaping', () => {
+  const s = createGame(0);
+  s.cells.fill(1);
+  s.cells[0] = 0;
+  s.completed = CELL_COUNT - 1;
+  s.workers = [s.workers[0]];
+  advance(s, 10000, () => 0);
+  assert.equal(s.status, 'won');
+  assert.equal(s.completed, CELL_COUNT);
+  assert.equal(s.coins, 1);
+  assert.equal(s.treasures['lacquer-cup'], 1);
+  assert.equal(redeemTreasure(s, 'lacquer-cup'), true);
+  assert.equal(s.coins, 1 + TREASURES['lacquer-cup'].value);
+  assert.equal(redeemTreasure(s, 'lacquer-cup'), false);
+});
+
+test('loot remains deterministic across tick sizes for the same random sequence and caps its visible journal', () => {
+  const makeRandom = () => {
+    let i = -1;
+    return () => [0.5, 0, 0.012, 0.02, 0.5, 0.5][++i % 6];
+  };
+  const regular = createGame(0);
+  const paused = createGame(0);
+  const r = makeRandom();
+  for (let now = 200; now <= 80000; now += 200) advance(regular, now, r);
+  advance(paused, 80000, makeRandom());
+  assert.deepEqual(regular, paused);
+  assert.ok(regular.bonusCounts.food + regular.bonusCounts.worker + regular.bonusCounts.treasure > 8);
+  assert.equal(regular.recentFinds.length, 8);
+  assert.equal(new Set(regular.recentFinds.map(find => find.cell)).size, 8);
+  assert.equal(regular.coins, regular.completed);
+});
+
+
+test('six real artifact entries get rarer as their separate coin values rise, capped at twenty', () => {
+  const s = createGame(0);
+  const entries = Object.values(TREASURES);
+  assert.deepEqual(entries.map(e => e.value), [3, 6, 10, 13, 15, 20]);
+  assert.ok(entries.every((e, i) => i === 0 || e.chance < entries[i - 1].chance));
+  assert.equal(entries.reduce((sum, entry) => sum + Math.round(entry.chance * 10000), 0), 100);
+  const rolls = [0.0001, 0.0041, 0.0066, 0.0081, 0.0091, 0.0098, 0.5, 0.5];
+  let i = 0;
+  advance(s, 20000, () => rolls[i++]);
+  assert.equal(s.coins, 8);
+  assert.equal(s.recentFinds.length, 6);
+  assert.deepEqual(s.recentFinds.map(e => e.treasureId), entries.map(e => e.id));
+  assert.equal(redeemTreasure(s, 'nonexistent'), false);
+  assert.equal(redeemTreasure(s, 'constructor'), false);
+  assert.equal(redeemTreasure(s, 'li-cang-seal'), true);
+  assert.equal(s.coins, 28);
+  assert.equal(s.treasures['li-cang-seal'], 0);
+  assert.equal(s.treasures['lacquer-cup'], 1);
+  assert.equal(redeemTreasure(s, 'li-cang-seal'), false);
+});
+
+test('a single early food cache guarantees a discovery only if the first sixteen rolls miss', () => {
+  const s = createGame(0);
+  tick(s, 39999);
+  assert.equal(s.completed, FIRST_FIND_CELL - 4);
+  assert.equal(s.food, 0);
+  tick(s, 40000);
+  assert.equal(s.completed, FIRST_FIND_CELL);
+  assert.equal(s.food, 3);
+  assert.deepEqual(s.recentFinds, [{ kind: 'food', cell: 15, at: 40000, cache: true }]);
+  tick(s, 90000);
+  assert.equal(s.food, 3);
+  assert.equal(s.bonusCounts.food, 1);
+  const lucky = createGame(0);
+  let i = 0;
+  advance(lucky, 40000, () => i++ ? 0.5 : 0.0041);
+  assert.equal(lucky.food, 0);
+  assert.equal(lucky.treasures['cat-dish'], 1);
+});

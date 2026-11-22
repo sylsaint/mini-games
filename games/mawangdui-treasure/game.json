@@ -4,7 +4,7 @@
   "description": "四个布包，只有一个该进展柜。查封签、试天平、接织纹，用证据破案。",
   "entry": "index.html",
   "cover": "cover.svg",
-  "published": true,
+  "published": false,
   "tags": ["文物解谜", "分章推理"],
   "order": 3
 }

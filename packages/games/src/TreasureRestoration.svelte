@@ -59,9 +59,9 @@
     {@const end = right[i]}
     {@const shape = `M 0 ${y} Q ${width*0.36} ${y+10-(i*7)} ${width/2} ${(y+end)/2} T ${width} ${end}`}
     <path d={shape} stroke={patterns[i]===0 ? "#ffda88" : patterns[i]===1 ? "#efc7a7" : "#e9b379"}
-      stroke-width={patterns[i]===2 ? 1.7 : 2.4} stroke-dasharray={patterns[i]===1 ? "3 4" : undefined} fill="none" />
+      transform={patterns[i]===2 ? "translate(0 -2.5)" : undefined} stroke-width={patterns[i]===2 ? 1.7 : 2.4} stroke-dasharray={patterns[i]===1 ? "3 4" : undefined} fill="none" />
     {#if patterns[i]===2}
-      <path d={shape} transform="translate(0 5)" stroke="#e9b379" stroke-width="1.7" fill="none" />
+      <path d={shape} transform="translate(0 2.5)" stroke="#e9b379" stroke-width="1.7" fill="none" />
     {/if}
   {/each}
 {/snippet}

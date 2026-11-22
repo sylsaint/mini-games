@@ -3,7 +3,7 @@ export const fragments = [
     id: "甲",
     name: "双线 · 点线 · 实线",
     left: [14, 54, 90],
-    right: [31, 68, 107],
+    right: [30, 67, 107],
     patterns: [2, 1, 0],
   },
   {

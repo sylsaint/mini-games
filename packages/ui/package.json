@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     "./button": "./src/Button.svelte",
+    "./card": "./src/Card.svelte",
     "./dialog": "./src/Dialog.svelte"
   },
   "peerDependencies": {

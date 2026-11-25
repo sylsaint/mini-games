@@ -1,5 +1,14 @@
 <script>import './learning.css';
-import RecordJournal from './RecordJournal.svelte';</script>
+import RecordJournal from './RecordJournal.svelte';
+import Button from '@yoyo/ui/button';
+import Card from '@yoyo/ui/card';
+
+const exams = [
+  { unit: '03', label: '第三单元 · 两套互动卷', title: '整数乘法实验站', detail: '常规卷和挑战卷各 15 题，练竖式、估算和应用推理。交卷后按小问计分，解释错在哪一步。', href: '/learning/math/integer-multiplication/', action: '打开第三单元两套试卷' },
+  { unit: '02', label: '第二单元 · 专项互动卷', title: '线与角：把线画清，把角想明白', detail: '20 道正卷题与 4 道较难选做，配图看得清，量角器可以点、可以画。不计时，独立保存进度。', href: '/learning/math/lines-and-angles/', action: '开始线与角互动卷' },
+  { unit: 'Σ', label: '四年级上册 · 综合练习', title: '慢慢想，认真答', detail: '15 道正卷题，另有 3 道选做拓展。不计时，可跳题，本机保存进度，交卷后逐题讲解。', href: '/learning/math/grade-four-fall/', action: '开始数学综合练习' },
+];
+</script>
 <svelte:head><title>数学 · 悠悠的学习之旅</title></svelte:head>
 
     <div class="learning-page"><div class="page">
@@ -19,16 +28,25 @@ import RecordJournal from './RecordJournal.svelte';</script>
             <p>从一条线出发，找到推理的乐趣。</p>
           </div>
         </section>
-        <section class="featured">
-          <div>
-            <p class="eyebrow">双套互动卷 · 四上第三单元</p>
-            <h2>整数乘法实验站</h2>
-            <p>常规卷和挑战卷各 15 题，练竖式、估算和应用推理。点开队形、看座位图，交卷后按小问计分，找出错在哪一步。</p>
-            <a class="button" href="/learning/math/integer-multiplication/">打开第三单元两套试卷 →</a>
+        <section class="exam-shelf" aria-labelledby="exam-shelf-title">
+          <div class="shelf-heading">
+            <h2 id="exam-shelf-title">数学试卷</h2>
+            <p>选一套慢慢做。每套单独保存进度。</p>
+          </div>
+          <div class="exam-cards">
+            {#each exams as exam, i (exam.href)}
+              <Card class="exam-card" aria-labelledby={`math-exam-${i}`}>
+                <span class="unit-icon" class:geometry={i === 1} class:overview={i === 2} aria-hidden="true">{exam.unit}</span>
+                <div class="exam-copy">
+                  <p class="eyebrow">{exam.label}</p>
+                  <h3 id={`math-exam-${i}`}>{exam.title}</h3>
+                  <p>{exam.detail}</p>
+                </div>
+                <Button href={exam.href} variant={i === 0 ? 'default' : 'outline'}>{exam.action} <span aria-hidden="true">→</span></Button>
+              </Card>
+            {/each}
           </div>
         </section>
-        <section class="featured"><div><p class="eyebrow">专项互动卷 · 四上第二单元</p><h2>线与角：把线画清，把角想明白</h2><p>20 道正卷题与 4 道较难选做，配图看得清，量角器可以点、可以画。不计时，独立保存，不覆盖综合卷进度。</p><a class="button" href="/learning/math/lines-and-angles/">开始线与角互动卷 →</a></div></section>
-        <section class="featured"><div><p class="eyebrow">新练习 · 四年级上册综合</p><h2>慢慢想，认真答</h2><p>15 道正卷题，另有 3 道选做拓展。不计时，可跳题，本机保存进度，交卷后逐题讲解。</p><a class="button" href="/learning/math/grade-four-fall/">开始数学综合练习 →</a></div></section>
         <section class="featured">
           <div>
             <p class="eyebrow">已收录 · 第二单元学业质量测评</p>
@@ -85,3 +103,39 @@ import RecordJournal from './RecordJournal.svelte';</script>
     </div>
   
 </div>
+
+<style>
+  .exam-shelf { margin-block: 0 2.25rem; }
+  .shelf-heading { margin-block-end: .95rem; }
+  .shelf-heading h2 { margin: 0; font-size: clamp(1.35rem, 3vw, 1.65rem); }
+  .shelf-heading p { margin: .2rem 0 0; color: #52675e; }
+  .exam-cards { display: grid; gap: clamp(1rem, 2.3vw, 1.5rem); }
+  .exam-cards :global(.exam-card) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: .9rem 1.25rem;
+    --card-padding: clamp(1rem, 3vw, 1.65rem);
+  }
+  .unit-icon {
+    display: grid; place-items: center; width: 3rem; aspect-ratio: 1;
+    border-radius: .9rem; background: #e2ecd9; color: #294f40;
+    font-size: 1.1rem; font-weight: 800; font-variant-numeric: tabular-nums;
+  }
+  .unit-icon.geometry { background: #eae4f0; color: #4d3d5d; }
+  .unit-icon.overview { background: #f2e8d4; color: #634b31; }
+  .exam-copy .eyebrow { margin: 0 0 .15rem; letter-spacing: .075em; color: #52675e; }
+  .exam-copy h3 { margin: 0; font-size: clamp(1.05rem, 3.2vw, 1.35rem); line-height: 1.4; }
+  .exam-copy p:not(.eyebrow) { margin: .3rem 0 0; color: #52675e; }
+  .exam-cards :global(.yoyo-button) { color: var(--color-primary-foreground, #fff); gap: .5rem; font-weight: 720; }
+  .exam-cards :global(.yoyo-button.outline) { color: var(--color-primary, #245b4a); }
+  @media (max-width:760px) {
+    .exam-cards :global(.exam-card) { grid-template-columns: auto minmax(0, 1fr); align-items: start; }
+    .exam-cards :global(.yoyo-button) { grid-column: 2; justify-self: start; }
+  }
+  @media (max-width:420px) {
+    .unit-icon { width: 2.4rem; font-size: .95rem; }
+    .exam-cards :global(.exam-card) { column-gap: .65rem; }
+    .exam-cards :global(.yoyo-button) { grid-column: 1 / -1; justify-self: stretch; }
+  }
+</style>

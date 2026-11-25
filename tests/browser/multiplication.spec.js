@@ -82,3 +82,57 @@ test("calculator does not fill an answer; navigating, resetting, and refreshing 
   await page.getByRole("button", { name: "查看 B 卷成绩" }).click();
   await expect(page.locator(".score")).toHaveText("3");
 });
+
+test("math paper cards have breathing room and unit 3 uses shared controls on small screens", async ({
+  page,
+}, testInfo) => {
+  await page.goto("/learning/math/");
+  const shelf = page.getByRole("region", { name: "数学试卷" });
+  const cards = shelf.locator(".yoyo-card");
+  await expect(cards).toHaveCount(3);
+  const first = await cards.nth(0).boundingBox();
+  const second = await cards.nth(1).boundingBox();
+  const third = await cards.nth(2).boundingBox();
+  expect(second.y - first.y - first.height).toBeGreaterThanOrEqual(15.9);
+  expect(third.y - second.y - second.height).toBeGreaterThanOrEqual(15.9);
+  await shelf.screenshot({
+    path: testInfo.outputPath("math-exam-shelf.png"),
+    animations: "disabled",
+  });
+  await shelf.getByRole("link", { name: /打开第三单元两套试卷/ }).click();
+  const papers = page.locator(".sets .yoyo-card");
+  await expect(papers).toHaveCount(2);
+  const paperA = await papers.nth(0).boundingBox();
+  const paperB = await papers.nth(1).boundingBox();
+  const gap =
+    paperB.x > paperA.x
+      ? paperB.x - paperA.x - paperA.width
+      : paperB.y - paperA.y - paperA.height;
+  expect(gap).toBeGreaterThanOrEqual(15.9);
+  await expect(page.locator(".multiply")).toHaveCSS(
+    "background-color",
+    "rgb(245, 247, 240)",
+  );
+  await page.screenshot({
+    path: testInfo.outputPath("multiplication-paper-picker.png"),
+    animations: "disabled",
+  });
+  await page.getByRole("button", { name: "开始 A 卷" }).click();
+  const submitButton = page.getByRole("button", {
+    name: "交卷评分",
+    exact: true,
+  });
+  await submitButton.click();
+  await expect(page.getByRole("dialog")).toHaveClass(/yoyo-dialog-content/);
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(submitButton).toBeFocused();
+  await expect(page.locator(".sheet")).toBeVisible();
+  expect(
+    await page.evaluate(() => document.documentElement.scrollWidth),
+  ).toBeLessThanOrEqual(page.viewportSize().width + 1);
+  await page.screenshot({
+    path: testInfo.outputPath("multiplication-question.png"),
+    animations: "disabled",
+  });
+});

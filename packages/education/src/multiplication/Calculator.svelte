@@ -1,4 +1,5 @@
 <script>
+  import Button from '@yoyo/ui/button';
   let left = $state(''), right = $state(''), multiplying = $state(false), result = $state(null);
   const keys = ['7', '8', '9', '×', '4', '5', '6', '退格', '1', '2', '3', '清空', '0', '='];
   const reading = $derived(result !== null ? String(result) : multiplying ? `${left} × ${right}` : left || '0');
@@ -30,7 +31,7 @@
 <div class="calc">
   <output aria-label="计算器显示" aria-live="polite">{reading}</output>
   {#each keys as key (key)}
-    <button type="button" class:equals={key === '='} onclick={() => press(key)}>{key}</button>
+    <Button variant={key === '=' ? 'default' : 'outline'} onclick={() => press(key)}>{key}</Button>
   {/each}
 </div>
 <p class="note">按 ×、再按 =，最后在下方独立填写答案。</p>
@@ -39,8 +40,7 @@
   .label{font-weight:800;letter-spacing:.1em;font-size:.8rem;margin:0}
   .calc{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;max-width:310px;margin-top:10px}
   output{grid-column:1/-1;background:#16372b;color:white;border-radius:9px;text-align:right;padding:8px 12px;font-family:monospace;font-size:1.13rem;min-height:43px;overflow-wrap:anywhere}
-  button{min-height:44px;border:1px solid #aec5b4;border-radius:9px;background:white;color:#152d27;font:inherit;font-weight:760;cursor:pointer;touch-action:manipulation}
-  button:focus-visible{outline:3px solid #9e4626;outline-offset:2px}
-  .equals{background:#164e3c;color:white}
+  .calc :global(.yoyo-button){padding: .35rem .2rem; font-variant-numeric: tabular-nums;}
+  .calc :global(.yoyo-button.outline){background:var(--color-background,#fffdf8);}
   .note{font-size:.85rem;color:#4e665e;margin:8px 0 0}
 </style>

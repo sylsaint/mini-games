@@ -19,6 +19,14 @@ import RecordJournal from './RecordJournal.svelte';</script>
             <p>从一条线出发，找到推理的乐趣。</p>
           </div>
         </section>
+        <section class="featured">
+          <div>
+            <p class="eyebrow">双套互动卷 · 四上第三单元</p>
+            <h2>整数乘法实验站</h2>
+            <p>常规卷和挑战卷各 15 题，练竖式、估算和应用推理。点开队形、看座位图，交卷后按小问计分，找出错在哪一步。</p>
+            <a class="button" href="/learning/math/integer-multiplication/">打开第三单元两套试卷 →</a>
+          </div>
+        </section>
         <section class="featured"><div><p class="eyebrow">专项互动卷 · 四上第二单元</p><h2>线与角：把线画清，把角想明白</h2><p>20 道正卷题与 4 道较难选做，配图看得清，量角器可以点、可以画。不计时，独立保存，不覆盖综合卷进度。</p><a class="button" href="/learning/math/lines-and-angles/">开始线与角互动卷 →</a></div></section>
         <section class="featured"><div><p class="eyebrow">新练习 · 四年级上册综合</p><h2>慢慢想，认真答</h2><p>15 道正卷题，另有 3 道选做拓展。不计时，可跳题，本机保存进度，交卷后逐题讲解。</p><a class="button" href="/learning/math/grade-four-fall/">开始数学综合练习 →</a></div></section>
         <section class="featured">
